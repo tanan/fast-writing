@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fast-writing-api/database"
 	"fast-writing-api/pb"
 	"fast-writing-api/service"
 	"fmt"
@@ -22,7 +23,8 @@ func main() {
 	s := grpc.NewServer()
 	// 自動生成された関数に、サーバと実際に処理を行うメソッドを実装したハンドラを設定します。
 	// protoファイルで定義した`RockPaperScissorsService`に対応しています。
-	pb.RegisterUserServiceServer(s, service.NewUserService())
+	sqlHandler, _ := database.NewSQLHandler("", false)
+	pb.RegisterUserServiceServer(s, service.NewUserService(sqlHandler))
 
 	// サーバーリフレクションを有効にしています。
 	// 有効にすることでシリアライズせずとも後述する`grpc_cli`で動作確認ができるようになります。

@@ -7,12 +7,13 @@ import (
 )
 
 type UserService struct {
-
+	SQLHandler SQLHandler
 }
 
-
-func NewUserService() *UserService {
-	return &UserService{}
+func NewUserService(s SQLHandler) *UserService {
+	return &UserService{
+		SQLHandler: s,
+	}
 }
 
 func (s *UserService) GetUser(ctx context.Context, req *pb.UserId) (*pb.User, error) {
