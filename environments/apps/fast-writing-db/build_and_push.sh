@@ -3,9 +3,9 @@
 # DOCKER_BUILDKIT=1
 # export DOCKER_BUILDKIT
 
-app="contoro-db"
+app="fast-writing-db"
 tag=${1:-"latest"}
-image_name="gcr.io/anan-project/contoro/${app}:${tag}"
+image_name="gcr.io/anan-project/fast-writing/${app}:${tag}"
 
 # docker_dir=$(cd $(dirname $0); pwd)
 # app_dir="$docker_dir/../../../apps/${app}"
