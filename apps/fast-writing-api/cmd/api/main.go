@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fast-writing-api/config"
 	"fast-writing-api/database"
 	"fast-writing-api/pb"
 	"fast-writing-api/service"
+	"flag"
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -11,10 +13,15 @@ import (
 	"net"
 )
 
+var (
+	path = flag.String("c", "./", "config directory path")
+	port = flag.Int("p", 10001, "server running port")
+)
+
 func main() {
+	flag.Parse()
 	// 起動するポート番号を指定しています。
-	port := 10001
-	listenPort, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	listenPort, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -23,7 +30,15 @@ func main() {
 	s := grpc.NewServer()
 	// 自動生成された関数に、サーバと実際に処理を行うメソッドを実装したハンドラを設定します。
 	// protoファイルで定義した`RockPaperScissorsService`に対応しています。
-	sqlHandler, _ := database.NewSQLHandler("", false)
+	c, err := config.LoadConfig(*path)
+	if err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+	sqlHandler, err := database.NewSQLHandler(c.GetSQLConnection(), c.Database.Debug)
+	if err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+	defer sqlHandler.Close()
 	pb.RegisterUserServiceServer(s, service.NewUserService(sqlHandler))
 
 	// サーバーリフレクションを有効にしています。
