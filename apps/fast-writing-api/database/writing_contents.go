@@ -19,7 +19,8 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 	}
 
 	var user model.User
-	userDb := h.Conn.Where("id = UUID_TO_BIN(?)", id).First(&user)
+	println(contents.UserId.String())
+	userDb := h.Conn.Where("id = UUID_TO_BIN(?)", contents.UserId.String()).First(&user)
 	if userDb.Error != nil {
 		return domain.Contents{}, errors.New("cannot find user by id: " + db.Error.Error())
 	}
