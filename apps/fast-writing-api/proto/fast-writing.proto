@@ -9,6 +9,48 @@ service UserService {
   rpc GetUser (UserId) returns (User) {}
 }
 
+service WritingService {
+  rpc GetContents (ContentsId) returns (Contents) {}
+  rpc GetContentsList (ContentsQueryParams) returns (ContentsList) {}
+  rpc GetUserContentsList (UserContentsQueryParams) returns (ContentsList) {}
+}
+
+message QueryParams {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ContentsQueryParams {
+  QueryParams params = 1;
+}
+
+message UserContentsQueryParams {
+  QueryParams params = 1;
+  UserId id = 2;
+}
+
+message ContentsId {
+  int32 id = 1;
+}
+
+message Contents {
+  ContentsId id = 1;
+  string title = 2;
+  string creator = 3;
+  repeated Quiz quizList = 4;
+  google.protobuf.Timestamp last_updated = 5;
+}
+
+message ContentsList {
+  repeated Contents contentsList = 1;
+}
+
+message Quiz {
+  int32 id = 1;
+  string question = 2;
+  string answer = 3;
+}
+
 message UserId {
   string id = 1;
 }

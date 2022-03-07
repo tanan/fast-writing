@@ -101,3 +101,159 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/fast-writing.proto",
 }
+
+// WritingServiceClient is the client API for WritingService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type WritingServiceClient interface {
+	GetContents(ctx context.Context, in *ContentsId, opts ...grpc.CallOption) (*Contents, error)
+	GetContentsList(ctx context.Context, in *ContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error)
+	GetUserContentsList(ctx context.Context, in *UserContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error)
+}
+
+type writingServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewWritingServiceClient(cc grpc.ClientConnInterface) WritingServiceClient {
+	return &writingServiceClient{cc}
+}
+
+func (c *writingServiceClient) GetContents(ctx context.Context, in *ContentsId, opts ...grpc.CallOption) (*Contents, error) {
+	out := new(Contents)
+	err := c.cc.Invoke(ctx, "/tutorial.WritingService/GetContents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *writingServiceClient) GetContentsList(ctx context.Context, in *ContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error) {
+	out := new(ContentsList)
+	err := c.cc.Invoke(ctx, "/tutorial.WritingService/GetContentsList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *writingServiceClient) GetUserContentsList(ctx context.Context, in *UserContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error) {
+	out := new(ContentsList)
+	err := c.cc.Invoke(ctx, "/tutorial.WritingService/GetUserContentsList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// WritingServiceServer is the server API for WritingService service.
+// All implementations should embed UnimplementedWritingServiceServer
+// for forward compatibility
+type WritingServiceServer interface {
+	GetContents(context.Context, *ContentsId) (*Contents, error)
+	GetContentsList(context.Context, *ContentsQueryParams) (*ContentsList, error)
+	GetUserContentsList(context.Context, *UserContentsQueryParams) (*ContentsList, error)
+}
+
+// UnimplementedWritingServiceServer should be embedded to have forward compatible implementations.
+type UnimplementedWritingServiceServer struct {
+}
+
+func (UnimplementedWritingServiceServer) GetContents(context.Context, *ContentsId) (*Contents, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetContents not implemented")
+}
+func (UnimplementedWritingServiceServer) GetContentsList(context.Context, *ContentsQueryParams) (*ContentsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetContentsList not implemented")
+}
+func (UnimplementedWritingServiceServer) GetUserContentsList(context.Context, *UserContentsQueryParams) (*ContentsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserContentsList not implemented")
+}
+
+// UnsafeWritingServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to WritingServiceServer will
+// result in compilation errors.
+type UnsafeWritingServiceServer interface {
+	mustEmbedUnimplementedWritingServiceServer()
+}
+
+func RegisterWritingServiceServer(s grpc.ServiceRegistrar, srv WritingServiceServer) {
+	s.RegisterService(&WritingService_ServiceDesc, srv)
+}
+
+func _WritingService_GetContents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContentsId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WritingServiceServer).GetContents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tutorial.WritingService/GetContents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WritingServiceServer).GetContents(ctx, req.(*ContentsId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WritingService_GetContentsList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContentsQueryParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WritingServiceServer).GetContentsList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tutorial.WritingService/GetContentsList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WritingServiceServer).GetContentsList(ctx, req.(*ContentsQueryParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WritingService_GetUserContentsList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserContentsQueryParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WritingServiceServer).GetUserContentsList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tutorial.WritingService/GetUserContentsList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WritingServiceServer).GetUserContentsList(ctx, req.(*UserContentsQueryParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// WritingService_ServiceDesc is the grpc.ServiceDesc for WritingService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var WritingService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "tutorial.WritingService",
+	HandlerType: (*WritingServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetContents",
+			Handler:    _WritingService_GetContents_Handler,
+		},
+		{
+			MethodName: "GetContentsList",
+			Handler:    _WritingService_GetContentsList_Handler,
+		},
+		{
+			MethodName: "GetUserContentsList",
+			Handler:    _WritingService_GetUserContentsList_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/fast-writing.proto",
+}
