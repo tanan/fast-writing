@@ -12,3 +12,22 @@ create table user
   last_updated datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 )
 charset=utf8mb4;
+
+create table writing_contents
+(
+  id bigint primary key AUTO_INCREMENT,
+  user_id binary(16) not null,
+  title varchar(256) not null,
+  last_updated datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+)
+charset=utf8mb4;
+
+create table quiz
+(
+  id bigint primary key AUTO_INCREMENT,
+  contents_id bigint not null,
+  question varchar(256) not null,
+  answer varchar(256) not null,
+  last_updated datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+)
+charset=utf8mb4;
