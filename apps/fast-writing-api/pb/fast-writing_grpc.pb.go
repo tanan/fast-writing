@@ -2,12 +2,13 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.4
-// source: proto/fast-writing.proto
+// source: fast-writing.proto
 
 package pb
 
 import (
 	context "context"
+	models "fast-writing-api/pb/models"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -22,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	GetUser(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*User, error)
+	GetUser(ctx context.Context, in *models.UserId, opts ...grpc.CallOption) (*models.User, error)
 }
 
 type userServiceClient struct {
@@ -33,8 +34,8 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) GetUser(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*User, error) {
-	out := new(User)
+func (c *userServiceClient) GetUser(ctx context.Context, in *models.UserId, opts ...grpc.CallOption) (*models.User, error) {
+	out := new(models.User)
 	err := c.cc.Invoke(ctx, "/fastwriting.UserService/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,14 +47,14 @@ func (c *userServiceClient) GetUser(ctx context.Context, in *UserId, opts ...grp
 // All implementations should embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	GetUser(context.Context, *UserId) (*User, error)
+	GetUser(context.Context, *models.UserId) (*models.User, error)
 }
 
 // UnimplementedUserServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) GetUser(context.Context, *UserId) (*User, error) {
+func (UnimplementedUserServiceServer) GetUser(context.Context, *models.UserId) (*models.User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
 
@@ -69,7 +70,7 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 }
 
 func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserId)
+	in := new(models.UserId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -81,7 +82,7 @@ func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/fastwriting.UserService/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetUser(ctx, req.(*UserId))
+		return srv.(UserServiceServer).GetUser(ctx, req.(*models.UserId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -99,16 +100,16 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/fast-writing.proto",
+	Metadata: "fast-writing.proto",
 }
 
 // WritingServiceClient is the client API for WritingService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WritingServiceClient interface {
-	GetContents(ctx context.Context, in *ContentsId, opts ...grpc.CallOption) (*Contents, error)
-	GetContentsList(ctx context.Context, in *ContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error)
-	GetUserContentsList(ctx context.Context, in *UserContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error)
+	GetContents(ctx context.Context, in *models.ContentsId, opts ...grpc.CallOption) (*models.Contents, error)
+	GetContentsList(ctx context.Context, in *models.ContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
+	GetUserContentsList(ctx context.Context, in *models.UserContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
 }
 
 type writingServiceClient struct {
@@ -119,8 +120,8 @@ func NewWritingServiceClient(cc grpc.ClientConnInterface) WritingServiceClient {
 	return &writingServiceClient{cc}
 }
 
-func (c *writingServiceClient) GetContents(ctx context.Context, in *ContentsId, opts ...grpc.CallOption) (*Contents, error) {
-	out := new(Contents)
+func (c *writingServiceClient) GetContents(ctx context.Context, in *models.ContentsId, opts ...grpc.CallOption) (*models.Contents, error) {
+	out := new(models.Contents)
 	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/GetContents", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -128,8 +129,8 @@ func (c *writingServiceClient) GetContents(ctx context.Context, in *ContentsId, 
 	return out, nil
 }
 
-func (c *writingServiceClient) GetContentsList(ctx context.Context, in *ContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error) {
-	out := new(ContentsList)
+func (c *writingServiceClient) GetContentsList(ctx context.Context, in *models.ContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error) {
+	out := new(models.ContentsList)
 	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/GetContentsList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -137,8 +138,8 @@ func (c *writingServiceClient) GetContentsList(ctx context.Context, in *Contents
 	return out, nil
 }
 
-func (c *writingServiceClient) GetUserContentsList(ctx context.Context, in *UserContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error) {
-	out := new(ContentsList)
+func (c *writingServiceClient) GetUserContentsList(ctx context.Context, in *models.UserContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error) {
+	out := new(models.ContentsList)
 	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/GetUserContentsList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -150,22 +151,22 @@ func (c *writingServiceClient) GetUserContentsList(ctx context.Context, in *User
 // All implementations should embed UnimplementedWritingServiceServer
 // for forward compatibility
 type WritingServiceServer interface {
-	GetContents(context.Context, *ContentsId) (*Contents, error)
-	GetContentsList(context.Context, *ContentsQueryParams) (*ContentsList, error)
-	GetUserContentsList(context.Context, *UserContentsQueryParams) (*ContentsList, error)
+	GetContents(context.Context, *models.ContentsId) (*models.Contents, error)
+	GetContentsList(context.Context, *models.ContentsQueryParams) (*models.ContentsList, error)
+	GetUserContentsList(context.Context, *models.UserContentsQueryParams) (*models.ContentsList, error)
 }
 
 // UnimplementedWritingServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedWritingServiceServer struct {
 }
 
-func (UnimplementedWritingServiceServer) GetContents(context.Context, *ContentsId) (*Contents, error) {
+func (UnimplementedWritingServiceServer) GetContents(context.Context, *models.ContentsId) (*models.Contents, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetContents not implemented")
 }
-func (UnimplementedWritingServiceServer) GetContentsList(context.Context, *ContentsQueryParams) (*ContentsList, error) {
+func (UnimplementedWritingServiceServer) GetContentsList(context.Context, *models.ContentsQueryParams) (*models.ContentsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetContentsList not implemented")
 }
-func (UnimplementedWritingServiceServer) GetUserContentsList(context.Context, *UserContentsQueryParams) (*ContentsList, error) {
+func (UnimplementedWritingServiceServer) GetUserContentsList(context.Context, *models.UserContentsQueryParams) (*models.ContentsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserContentsList not implemented")
 }
 
@@ -181,7 +182,7 @@ func RegisterWritingServiceServer(s grpc.ServiceRegistrar, srv WritingServiceSer
 }
 
 func _WritingService_GetContents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContentsId)
+	in := new(models.ContentsId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -193,13 +194,13 @@ func _WritingService_GetContents_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/fastwriting.WritingService/GetContents",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WritingServiceServer).GetContents(ctx, req.(*ContentsId))
+		return srv.(WritingServiceServer).GetContents(ctx, req.(*models.ContentsId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WritingService_GetContentsList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContentsQueryParams)
+	in := new(models.ContentsQueryParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -211,13 +212,13 @@ func _WritingService_GetContentsList_Handler(srv interface{}, ctx context.Contex
 		FullMethod: "/fastwriting.WritingService/GetContentsList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WritingServiceServer).GetContentsList(ctx, req.(*ContentsQueryParams))
+		return srv.(WritingServiceServer).GetContentsList(ctx, req.(*models.ContentsQueryParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WritingService_GetUserContentsList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserContentsQueryParams)
+	in := new(models.UserContentsQueryParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -229,7 +230,7 @@ func _WritingService_GetUserContentsList_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/fastwriting.WritingService/GetUserContentsList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WritingServiceServer).GetUserContentsList(ctx, req.(*UserContentsQueryParams))
+		return srv.(WritingServiceServer).GetUserContentsList(ctx, req.(*models.UserContentsQueryParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -255,5 +256,5 @@ var WritingService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/fast-writing.proto",
+	Metadata: "fast-writing.proto",
 }

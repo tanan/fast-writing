@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fast-writing-api/domain"
-	"fast-writing-api/pb"
+	"fast-writing-api/pb/models"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -18,13 +18,13 @@ func NewUserService(s SQLHandler) *UserService {
 	}
 }
 
-func (s *UserService) GetUser(ctx context.Context, req *pb.UserId) (*pb.User, error) {
+func (s *UserService) GetUser(ctx context.Context, req *models.UserId) (*models.User, error) {
 	user, err := s.SQLHandler.FindUserById(domain.UserId(req.Id))
 	if err != nil {
 		return nil, errors.New("cannot find user: " + err.Error())
 	}
-	return &pb.User{
-		Id:          &pb.UserId{Id: string(user.Id)},
+	return &models.User{
+		Id:          &models.UserId{Id: string(user.Id)},
 		Name:        user.Name,
 		Email:       user.Email,
 		LastUpdated: timestamppb.Now(),

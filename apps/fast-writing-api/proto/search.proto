@@ -1,0 +1,22 @@
+syntax = "proto3";
+package fastwriting;
+
+import "google/protobuf/timestamp.proto";
+import "models/query.proto";
+import "models/contents.proto";
+
+option go_package = "fast-writing-api/pb/";
+
+service SearchService {
+  rpc FindContentsIdListByTitle (models.TitleQueryParams) returns (ContentsScoreList) {}
+}
+
+message ContentsScore {
+    models.ContentsId contentsId = 1;
+    int64 score = 2;
+    google.protobuf.Timestamp last_updated = 3;
+}
+
+message ContentsScoreList {
+  repeated ContentsScore contentsScore = 1;
+}

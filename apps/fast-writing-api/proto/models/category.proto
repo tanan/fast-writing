@@ -1,0 +1,17 @@
+syntax = "proto3";
+package models;
+
+option go_package = "fast-writing-api/pb/models";
+
+message Categories {
+    repeated Category categories = 1;
+}
+
+message CategoryId {
+  int32 id = 1;
+}
+
+message Category {
+  CategoryId id = 1;
+  string name = 2;
+}

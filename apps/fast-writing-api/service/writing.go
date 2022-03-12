@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fast-writing-api/domain"
-	"fast-writing-api/pb"
+	"fast-writing-api/pb/models"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -18,13 +18,13 @@ func NewWritingService(s SQLHandler) *WritingService {
 	}
 }
 
-func (s *WritingService) GetContents(ctx context.Context, req *pb.ContentsId) (*pb.Contents, error) {
+func (s *WritingService) GetContents(ctx context.Context, req *models.ContentsId) (*models.Contents, error) {
 	contents, err := s.SQLHandler.FindContentsById(domain.ContentsId(req.Id))
 	if err != nil {
 		return nil, errors.New("cannot find user: " + err.Error())
 	}
-	return &pb.Contents{
-		Id:          &pb.ContentsId{Id: int64(contents.ContentsId)},
+	return &models.Contents{
+		Id:          &models.ContentsId{Id: int64(contents.ContentsId)},
 		Title:       contents.Title,
 		Creator:     contents.Creator,
 		QuizList:    s.toQuizList(contents.QuizList),
@@ -32,10 +32,10 @@ func (s *WritingService) GetContents(ctx context.Context, req *pb.ContentsId) (*
 	}, nil
 }
 
-func (s *WritingService) toQuizList(l []domain.Quiz) []*pb.Quiz {
-	var quizList []*pb.Quiz
+func (s *WritingService) toQuizList(l []domain.Quiz) []*models.Quiz {
+	var quizList []*models.Quiz
 	for _, v := range l {
-		quizList = append(quizList, &pb.Quiz{
+		quizList = append(quizList, &models.Quiz{
 			Id:       v.Id,
 			Question: v.Question,
 			Answer:   v.Answer,
@@ -44,10 +44,10 @@ func (s *WritingService) toQuizList(l []domain.Quiz) []*pb.Quiz {
 	return quizList
 }
 
-func (s *WritingService) GetContentsList(ctx context.Context, req *pb.ContentsQueryParams) (*pb.ContentsList, error) {
+func (s *WritingService) GetContentsList(ctx context.Context, req *models.ContentsQueryParams) (*models.ContentsList, error) {
 	return nil, nil
 }
 
-func (s *WritingService) GetUserContentsList(ctx context.Context, req *pb.UserContentsQueryParams) (*pb.ContentsList, error) {
+func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.UserContentsQueryParams) (*models.ContentsList, error) {
 	return nil, nil
 }

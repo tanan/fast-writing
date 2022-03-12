@@ -1,63 +1,18 @@
 syntax = "proto3";
 package fastwriting;
 
-import "google/protobuf/timestamp.proto";
+import "models/query.proto";
+import "models/user.proto";
+import "models/contents.proto";
 
-option go_package = "pb/";
+option go_package = "fast-writing-api/pb/";
 
 service UserService {
-  rpc GetUser (UserId) returns (User) {}
+  rpc GetUser (models.UserId) returns (models.User) {}
 }
 
 service WritingService {
-  rpc GetContents (ContentsId) returns (Contents) {}
-  rpc GetContentsList (ContentsQueryParams) returns (ContentsList) {}
-  rpc GetUserContentsList (UserContentsQueryParams) returns (ContentsList) {}
-}
-
-message QueryParams {
-  int32 limit = 1;
-  int32 offset = 2;
-}
-
-message ContentsQueryParams {
-  QueryParams params = 1;
-}
-
-message UserContentsQueryParams {
-  QueryParams params = 1;
-  UserId id = 2;
-}
-
-message ContentsId {
-  int64 id = 1;
-}
-
-message Contents {
-  ContentsId id = 1;
-  string title = 2;
-  string creator = 3;
-  repeated Quiz quizList = 4;
-  google.protobuf.Timestamp last_updated = 5;
-}
-
-message ContentsList {
-  repeated Contents contentsList = 1;
-}
-
-message Quiz {
-  int64 id = 1;
-  string question = 2;
-  string answer = 3;
-}
-
-message UserId {
-  string id = 1;
-}
-
-message User {
-  UserId id = 1;  // Unique ID number for this person.
-  string name = 2;
-  string email = 3;
-  google.protobuf.Timestamp last_updated = 4;
+  rpc GetContents (models.ContentsId) returns (models.Contents) {}
+  rpc GetContentsList (models.ContentsQueryParams) returns (models.ContentsList) {}
+  rpc GetUserContentsList (models.UserContentsQueryParams) returns (models.ContentsList) {}
 }
