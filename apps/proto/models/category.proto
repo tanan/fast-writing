@@ -1,7 +1,7 @@
 syntax = "proto3";
 package models;
 
-option go_package = "github.com/tanan/fast-writing/pkg/pb/models";
+option go_package = "fast-writing/pkg/pb/models";
 
 message Categories {
     repeated Category categories = 1;

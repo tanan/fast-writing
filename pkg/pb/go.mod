@@ -1,3 +1,3 @@
-module github.com/tanan/fast-writing
+module fast-writing/pkg/pb
 
 go 1.17

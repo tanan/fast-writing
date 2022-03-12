@@ -3,7 +3,7 @@ package models;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/tanan/fast-writing/pkg/pb/models";
+option go_package = "fast-writing/pkg/pb/models";
 
 message UserId {
   string id = 1;

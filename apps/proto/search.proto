@@ -5,7 +5,7 @@ import "google/protobuf/timestamp.proto";
 import "models/query.proto";
 import "models/contents.proto";
 
-option go_package = "github.com/tanan/fast-writing/pkg/pb/";
+option go_package = "fast-writing/pkg/pb/";
 
 service SearchService {
   rpc FindContentsIdListByTitle (models.TitleQueryParams) returns (ContentsScoreList) {}

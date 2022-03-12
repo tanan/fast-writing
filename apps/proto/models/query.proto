@@ -3,7 +3,7 @@ package models;
 
 import "models/user.proto";
 
-option go_package = "github.com/tanan/fast-writing/pkg/pb/models";
+option go_package = "fast-writing/pkg/pb/models";
 
 message QueryParams {
   int32 limit = 1;
