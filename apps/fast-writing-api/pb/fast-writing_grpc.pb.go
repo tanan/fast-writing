@@ -35,7 +35,7 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 
 func (c *userServiceClient) GetUser(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/tutorial.UserService/GetUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/fastwriting.UserService/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tutorial.UserService/GetUser",
+		FullMethod: "/fastwriting.UserService/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetUser(ctx, req.(*UserId))
@@ -90,7 +90,7 @@ func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UserService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tutorial.UserService",
+	ServiceName: "fastwriting.UserService",
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -121,7 +121,7 @@ func NewWritingServiceClient(cc grpc.ClientConnInterface) WritingServiceClient {
 
 func (c *writingServiceClient) GetContents(ctx context.Context, in *ContentsId, opts ...grpc.CallOption) (*Contents, error) {
 	out := new(Contents)
-	err := c.cc.Invoke(ctx, "/tutorial.WritingService/GetContents", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/GetContents", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (c *writingServiceClient) GetContents(ctx context.Context, in *ContentsId, 
 
 func (c *writingServiceClient) GetContentsList(ctx context.Context, in *ContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error) {
 	out := new(ContentsList)
-	err := c.cc.Invoke(ctx, "/tutorial.WritingService/GetContentsList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/GetContentsList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func (c *writingServiceClient) GetContentsList(ctx context.Context, in *Contents
 
 func (c *writingServiceClient) GetUserContentsList(ctx context.Context, in *UserContentsQueryParams, opts ...grpc.CallOption) (*ContentsList, error) {
 	out := new(ContentsList)
-	err := c.cc.Invoke(ctx, "/tutorial.WritingService/GetUserContentsList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/GetUserContentsList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +190,7 @@ func _WritingService_GetContents_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tutorial.WritingService/GetContents",
+		FullMethod: "/fastwriting.WritingService/GetContents",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WritingServiceServer).GetContents(ctx, req.(*ContentsId))
@@ -208,7 +208,7 @@ func _WritingService_GetContentsList_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tutorial.WritingService/GetContentsList",
+		FullMethod: "/fastwriting.WritingService/GetContentsList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WritingServiceServer).GetContentsList(ctx, req.(*ContentsQueryParams))
@@ -226,7 +226,7 @@ func _WritingService_GetUserContentsList_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tutorial.WritingService/GetUserContentsList",
+		FullMethod: "/fastwriting.WritingService/GetUserContentsList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WritingServiceServer).GetUserContentsList(ctx, req.(*UserContentsQueryParams))
@@ -238,7 +238,7 @@ func _WritingService_GetUserContentsList_Handler(srv interface{}, ctx context.Co
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var WritingService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tutorial.WritingService",
+	ServiceName: "fastwriting.WritingService",
 	HandlerType: (*WritingServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

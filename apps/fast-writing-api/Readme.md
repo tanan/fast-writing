@@ -21,5 +21,5 @@
 
 - request
 ```
-% grpc_cli call localhost:10001 tutorial.UserService.GetUser 'id: "test"'
+% grpc_cli call localhost:10001 fastwriting.UserService.GetUser 'id: "test"'
 ```

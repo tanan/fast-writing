@@ -26,8 +26,12 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	interceptor := service.NewAuthInterceptor()
 	// gRPCサーバーの生成
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(interceptor.Unary()),
+		grpc.StreamInterceptor(interceptor.Stream()),
+	)
 	// 自動生成された関数に、サーバと実際に処理を行うメソッドを実装したハンドラを設定します。
 	// protoファイルで定義した`RockPaperScissorsService`に対応しています。
 	c, err := config.LoadConfig(*path)
