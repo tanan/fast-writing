@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fast-writing-api/domain"
-	"fast-writing-api/pb/models"
+	"fast-writing/pkg/pb/models"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

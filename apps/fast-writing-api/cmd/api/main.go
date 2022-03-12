@@ -3,8 +3,8 @@ package main
 import (
 	"fast-writing-api/config"
 	"fast-writing-api/database"
-	"fast-writing-api/pb"
 	"fast-writing-api/service"
+	pb "fast-writing/pkg/pb"
 	"flag"
 	"fmt"
 	"google.golang.org/grpc"
