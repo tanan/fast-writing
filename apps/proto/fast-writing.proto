@@ -5,7 +5,7 @@ import "models/query.proto";
 import "models/user.proto";
 import "models/contents.proto";
 
-option go_package = "fast-writing-api/pb/";
+option go_package = "github.com/tanan/fast-writing/pkg/pb/";
 
 service UserService {
   rpc GetUser (models.UserId) returns (models.User) {}
