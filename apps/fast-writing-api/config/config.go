@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/spf13/viper"
 	"strconv"
+	"strings"
 )
 
 type Config struct {
@@ -29,19 +30,25 @@ func LoadConfig(path string) (*Config, error) {
 	viper.SetConfigName(FileName)
 	viper.SetConfigType(FileType)
 	viper.AddConfigPath(path)
+	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, errors.New("cannot read from " + path + ": " + err.Error())
 	}
+	var cfg Config
+	if err := viper.Unmarshal(&cfg); err != nil {
+		return nil, errors.New("cannot unmarshal config: " + err.Error())
+	}
 	return &Config{
 		Database: Database{
-			Host:     viper.GetString("database.host"),
-			Port:     viper.GetInt("database.port"),
-			User:     viper.GetString("database.user"),
-			Password: "system",
-			Schema:   viper.GetString("database.schema"),
-			Timeout:  viper.GetInt("database.timeout"),
-			Debug:    viper.GetBool("database.debug"),
+			Host:     cfg.Database.Host,
+			Port:     cfg.Database.Port,
+			User:     cfg.Database.User,
+			Password: cfg.Database.Password,
+			Schema:   cfg.Database.Schema,
+			Timeout:  cfg.Database.Timeout,
+			Debug:    cfg.Database.Debug,
 		}}, nil
 }
 
