@@ -57,7 +57,8 @@ func LoadConfig(path string) (*Config, error) {
 
 func (c *Config) GetSQLConnection() string {
 	if c.Database.Type == "cloudsql" {
-		return fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", c.Database.User, c.Database.Password, c.Database.Type, c.Database.Host, c.Database.Schema)
+		test := fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", c.Database.User, c.Database.Password, c.Database.Type, c.Database.Host, c.Database.Schema)
+		return test
 	}
 	return c.Database.User + ":" + c.Database.Password + "@tcp(" + c.Database.Host + ":" + strconv.Itoa(c.Database.Port) + ")/" + c.Database.Schema + "?timeout=" + strconv.Itoa(c.Database.Timeout) + "s" + "&parseTime=true"
 }
