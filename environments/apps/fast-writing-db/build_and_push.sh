@@ -2,7 +2,7 @@
 
 app="fast-writing-db"
 tag=${1:-"latest"}
-image_name="gcr.io/anan-project/fast-writing/${app}:${tag}"
+image_name="asia-northeast1-docker.pkg.dev/anan-project/fast-writing/${app}:${tag}"
 
 build () {
     docker build -t "${image_name}" .
