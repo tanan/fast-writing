@@ -4,13 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/viper"
-	"log"
 	"strconv"
 	"strings"
 )
 
 type Config struct {
-	Database Database
+	Application Application
+	Database    Database
+	SearchApi   SearchApi
+}
+
+type Application struct {
+	Port int
 }
 
 type Database struct {
@@ -22,6 +27,11 @@ type Database struct {
 	Schema   string
 	Timeout  int
 	Debug    bool
+}
+
+type SearchApi struct {
+	Host string
+	Port int
 }
 
 const (
@@ -44,6 +54,9 @@ func LoadConfig(path string) (*Config, error) {
 		return nil, errors.New("cannot unmarshal config: " + err.Error())
 	}
 	return &Config{
+		Application: Application{
+			Port: cfg.Application.Port,
+		},
 		Database: Database{
 			Type:     cfg.Database.Type,
 			Host:     cfg.Database.Host,
@@ -53,14 +66,17 @@ func LoadConfig(path string) (*Config, error) {
 			Schema:   cfg.Database.Schema,
 			Timeout:  cfg.Database.Timeout,
 			Debug:    cfg.Database.Debug,
-		}}, nil
+		},
+		SearchApi: SearchApi{
+			Host: cfg.SearchApi.Host,
+			Port: cfg.SearchApi.Port,
+		},
+	}, nil
 }
 
 func (c *Config) GetSQLConnection() string {
 	if c.Database.Type == "cloudsql" {
-		test := fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", c.Database.User, c.Database.Password, c.Database.Type, c.Database.Host, c.Database.Schema)
-		log.Println(test)
-		return test
+		return fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", c.Database.User, c.Database.Password, c.Database.Type, c.Database.Host, c.Database.Schema)
 	}
 	return c.Database.User + ":" + c.Database.Password + "@tcp(" + c.Database.Host + ":" + strconv.Itoa(c.Database.Port) + ")/" + c.Database.Schema + "?timeout=" + strconv.Itoa(c.Database.Timeout) + "s" + "&parseTime=true"
 }

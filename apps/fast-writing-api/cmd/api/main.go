@@ -15,16 +15,10 @@ import (
 
 var (
 	path = flag.String("c", "./", "config directory path")
-	port = flag.Int("p", 10001, "server running port")
 )
 
 func main() {
 	flag.Parse()
-	// 起動するポート番号を指定しています。
-	listenPort, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
 
 	interceptor := service.NewAuthInterceptor()
 	// gRPCサーバーの生成
@@ -49,7 +43,11 @@ func main() {
 	// サーバーリフレクションを有効にしています。
 	// 有効にすることでシリアライズせずとも後述する`grpc_cli`で動作確認ができるようになります。
 	reflection.Register(s)
-	// サーバーを起動
+
+	listenPort, err := net.Listen("tcp", fmt.Sprintf(":%d", c.Application.Port))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
 	if err := s.Serve(listenPort); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
