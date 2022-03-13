@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"github.com/spf13/viper"
 	"strconv"
 	"strings"
@@ -12,6 +13,7 @@ type Config struct {
 }
 
 type Database struct {
+	Type     string
 	Host     string
 	Port     int
 	User     string
@@ -42,6 +44,7 @@ func LoadConfig(path string) (*Config, error) {
 	}
 	return &Config{
 		Database: Database{
+			Type:     cfg.Database.Type,
 			Host:     cfg.Database.Host,
 			Port:     cfg.Database.Port,
 			User:     cfg.Database.User,
@@ -53,5 +56,8 @@ func LoadConfig(path string) (*Config, error) {
 }
 
 func (c *Config) GetSQLConnection() string {
+	if c.Database.Type == "cloudsql" {
+		return fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", c.Database.User, c.Database.Password, c.Database.Type, c.Database.Host, c.Database.Schema)
+	}
 	return c.Database.User + ":" + c.Database.Password + "@tcp(" + c.Database.Host + ":" + strconv.Itoa(c.Database.Port) + ")/" + c.Database.Schema + "?timeout=" + strconv.Itoa(c.Database.Timeout) + "s" + "&parseTime=true"
 }
