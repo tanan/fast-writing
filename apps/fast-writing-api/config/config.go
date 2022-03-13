@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/viper"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -58,6 +59,7 @@ func LoadConfig(path string) (*Config, error) {
 func (c *Config) GetSQLConnection() string {
 	if c.Database.Type == "cloudsql" {
 		test := fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", c.Database.User, c.Database.Password, c.Database.Type, c.Database.Host, c.Database.Schema)
+		log.Println(test)
 		return test
 	}
 	return c.Database.User + ":" + c.Database.Password + "@tcp(" + c.Database.Host + ":" + strconv.Itoa(c.Database.Port) + ")/" + c.Database.Schema + "?timeout=" + strconv.Itoa(c.Database.Timeout) + "s" + "&parseTime=true"
