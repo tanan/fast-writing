@@ -31,12 +31,10 @@ jobs:
         run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: Build Image for Fast Writing
         run: |-
-          cd ./apps/$FAST_WRITING_API_SERVICE_NAME/
-          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag .
+          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag -f apps/$FAST_WRITING_API_SERVICE_NAME/Dockerfile .
       - name: Build Image for Search
         run: |-
-          cd ./apps/$SEARCH_API_SERVICE_NAME/
-          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag .
+          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag -f apps/$SEARCH_API_SERVICE_NAME/Dockerfile .
       # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
           gcloud auth configure-docker asia-northeast1-docker.pkg.dev
