@@ -1,16 +1,18 @@
 package main
 
 import (
+	"fast-writing-api/client"
 	"fast-writing-api/config"
 	"fast-writing-api/database"
 	"fast-writing-api/service"
-	pb "fast-writing/pkg/pb"
+	"fast-writing/pkg/pb"
 	"flag"
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
+	"strconv"
 )
 
 var (
@@ -37,6 +39,11 @@ func main() {
 		log.Fatalf("failed to serve: %v", err)
 	}
 	defer sqlHandler.Close()
+
+	//// for search
+	cc, err := client.NewClientConn(c.SearchApi.Host, strconv.Itoa(c.SearchApi.Port), c.SearchApi.UseSSL, c.SearchApi.UseToken)
+	searchClient := pb.NewSearchServiceClient(cc)
+	pb.RegisterSearchServiceServer(s, service.NewSearchService(sqlHandler, searchClient))
 	pb.RegisterUserServiceServer(s, service.NewUserService(sqlHandler))
 	pb.RegisterWritingServiceServer(s, service.NewWritingService(sqlHandler))
 

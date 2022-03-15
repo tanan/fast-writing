@@ -14,3 +14,5 @@ database:
 search-api:
   host: "127.0.0.1"
   port: "10002"
+  use-ssl: false
+  use-token: false

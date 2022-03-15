@@ -30,8 +30,10 @@ type Database struct {
 }
 
 type SearchApi struct {
-	Host string
-	Port int
+	Host     string
+	Port     int
+	UseSSL   bool
+	UseToken bool
 }
 
 const (
@@ -68,8 +70,10 @@ func LoadConfig(path string) (*Config, error) {
 			Debug:    cfg.Database.Debug,
 		},
 		SearchApi: SearchApi{
-			Host: cfg.SearchApi.Host,
-			Port: cfg.SearchApi.Port,
+			Host:     cfg.SearchApi.Host,
+			Port:     cfg.SearchApi.Port,
+			UseSSL:   cfg.SearchApi.UseSSL,
+			UseToken: cfg.SearchApi.UseToken,
 		},
 	}, nil
 }
