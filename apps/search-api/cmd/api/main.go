@@ -1,10 +1,10 @@
 package main
 
 import (
+	pb "fast-writing/pkg/pb"
 	"flag"
 	"fmt"
 	"google.golang.org/grpc"
-	pb "fast-writing/pkg/pb"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
@@ -14,7 +14,7 @@ import (
 
 var (
 	path = flag.String("c", "./", "config directory path")
-	port = flag.Int("p", 10001, "server running port")
+	port = flag.Int("p", 10002, "server running port")
 )
 
 func main() {
