@@ -11,7 +11,7 @@ import (
 type Config struct {
 	Application Application
 	Database    Database
-	SearchApi   SearchApi
+	Search      Search
 }
 
 type Application struct {
@@ -29,11 +29,11 @@ type Database struct {
 	Debug    bool
 }
 
-type SearchApi struct {
-	Host     string
-	Port     int
-	UseSSL   bool
-	UseToken bool
+type Search struct {
+	Host  string
+	Port  int
+	Ssl   bool
+	Token bool
 }
 
 const (
@@ -55,7 +55,7 @@ func LoadConfig(path string) (*Config, error) {
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, errors.New("cannot unmarshal config: " + err.Error())
 	}
-	fmt.Printf("search api: {host: %s, port: %v, usessl: %v, usetoken: %v}\n", cfg.SearchApi.Host, cfg.SearchApi.Port, cfg.SearchApi.UseSSL, cfg.SearchApi.UseToken)
+	fmt.Printf("search api: {host: %s, port: %v, usessl: %v, usetoken: %v}\n", cfg.Search.Host, cfg.Search.Port, cfg.Search.Ssl, cfg.Search.Token)
 	return &Config{
 		Application: Application{
 			Port: cfg.Application.Port,
@@ -70,11 +70,11 @@ func LoadConfig(path string) (*Config, error) {
 			Timeout:  cfg.Database.Timeout,
 			Debug:    cfg.Database.Debug,
 		},
-		SearchApi: SearchApi{
-			Host:     cfg.SearchApi.Host,
-			Port:     cfg.SearchApi.Port,
-			UseSSL:   cfg.SearchApi.UseSSL,
-			UseToken: cfg.SearchApi.UseToken,
+		Search: Search{
+			Host:  cfg.Search.Host,
+			Port:  cfg.Search.Port,
+			Ssl:   cfg.Search.Ssl,
+			Token: cfg.Search.Token,
 		},
 	}, nil
 }

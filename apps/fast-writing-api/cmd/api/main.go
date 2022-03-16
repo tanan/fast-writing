@@ -41,7 +41,7 @@ func main() {
 	defer sqlHandler.Close()
 
 	//// for search
-	cc, err := client.NewClientConn(c.SearchApi.Host, strconv.Itoa(c.SearchApi.Port), c.SearchApi.UseSSL, c.SearchApi.UseToken)
+	cc, err := client.NewClientConn(c.Search.Host, strconv.Itoa(c.Search.Port), c.Search.Ssl, c.Search.Token)
 	if err != nil {
 		log.Fatalf("failed to client connection: %v", err)
 	}

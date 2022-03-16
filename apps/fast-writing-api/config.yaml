@@ -1,11 +1,11 @@
 application:
   port: 10001
 
-searchApi:
+search:
   host: "127.0.0.1"
   port: 10002
-  useSsl: false
-  useToken: false
+  ssl: false
+  token: false
 
 database:
   type: "local"
