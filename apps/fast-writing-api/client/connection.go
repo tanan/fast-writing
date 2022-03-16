@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/grpc/credentials/oauth"
@@ -22,7 +23,10 @@ func NewClientConn(hostname string, port string, useSSL bool, useToken bool) (*g
 	dialOptions := []grpc.DialOption{do}
 
 	if useToken {
-		tokenSource, _ := google.DefaultTokenSource(context.Background(), "https://www.googleapis.com/auth/cloud-platform")
+		tokenSource, err := google.DefaultTokenSource(context.Background(), "https://www.googleapis.com/auth/cloud-platform")
+		if err != nil {
+			return nil, errors.New("cannot get tokenSource:" + err.Error())
+		}
 		dialOptions = append(dialOptions, grpc.WithPerRPCCredentials(oauth.TokenSource{
 			TokenSource: tokenSource,
 		}))
