@@ -55,6 +55,7 @@ func LoadConfig(path string) (*Config, error) {
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, errors.New("cannot unmarshal config: " + err.Error())
 	}
+	fmt.Printf("search api: {host: %s, port: %v, usessl: %v, usetoken: %v}\n", cfg.SearchApi.Host, cfg.SearchApi.Port, cfg.SearchApi.UseSSL, cfg.SearchApi.UseToken)
 	return &Config{
 		Application: Application{
 			Port: cfg.Application.Port,
