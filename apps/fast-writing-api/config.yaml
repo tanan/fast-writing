@@ -1,6 +1,12 @@
 application:
   port: 10001
 
+searchApi:
+  host: "127.0.0.1"
+  port: 10002
+  useSsl: false
+  useToken: false
+
 database:
   type: "local"
   host: "127.0.0.1"
@@ -10,9 +16,3 @@ database:
   schema: "fast_writing"
   timeout: 5
   debug: true
-
-search-api:
-  host: "127.0.0.1"
-  port: "10002"
-  use-ssl: false
-  use-token: false

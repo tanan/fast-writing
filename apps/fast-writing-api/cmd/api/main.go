@@ -42,6 +42,9 @@ func main() {
 
 	//// for search
 	cc, err := client.NewClientConn(c.SearchApi.Host, strconv.Itoa(c.SearchApi.Port), c.SearchApi.UseSSL, c.SearchApi.UseToken)
+	if err != nil {
+		log.Fatalf("failed to client connection: %v", err)
+	}
 	searchClient := pb.NewSearchServiceClient(cc)
 	pb.RegisterSearchServiceServer(s, service.NewSearchService(sqlHandler, searchClient))
 	pb.RegisterUserServiceServer(s, service.NewUserService(sqlHandler))
