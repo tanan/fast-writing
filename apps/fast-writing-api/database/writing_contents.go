@@ -6,6 +6,32 @@ import (
 	"fast-writing-api/domain"
 )
 
+func (h *SQLHandler) FindContentsList(limit int32, offset int32) ([]*domain.Contents, error) {
+	var m []model.Contents
+	db := h.Conn.Where("id > ?", offset).Order("id").Limit(limit).Find(&m)
+	if db.Error != nil {
+		return []*domain.Contents{}, errors.New("cannot find contents list: " + db.Error.Error())
+	}
+
+	var contentsList []*domain.Contents
+	for _, v := range m {
+		var user model.User
+		userDb := h.Conn.Where("id = UUID_TO_BIN(?)", v.UserId.String()).First(&user)
+		if userDb.Error != nil {
+			return []*domain.Contents{}, errors.New("cannot find user by id: " + db.Error.Error())
+		}
+		contents := domain.Contents{
+			ContentsId:  domain.ContentsId(v.Id),
+			Creator:     user.Name,
+			Title:       v.Title,
+			QuizList:    nil,
+			LastUpdated: v.LastUpdated,
+		}
+		contentsList = append(contentsList, &contents)
+	}
+	return contentsList, nil
+}
+
 func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, error) {
 	var contents model.Contents
 	db := h.Conn.Where("id = ?", id).First(&contents)

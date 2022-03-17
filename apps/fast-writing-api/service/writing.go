@@ -45,7 +45,22 @@ func (s *WritingService) toQuizList(l []domain.Quiz) []*models.Quiz {
 }
 
 func (s *WritingService) GetContentsList(ctx context.Context, req *models.ContentsQueryParams) (*models.ContentsList, error) {
-	return nil, nil
+	contentsList, err := s.SQLHandler.FindContentsList(req.GetParams().GetLimit(), req.GetParams().GetOffset())
+	if err != nil {
+		return nil, errors.New("cannot find contents list: " + err.Error())
+	}
+	var m []*models.Contents
+	for _, v := range contentsList {
+		m = append(m, &models.Contents{
+			Id:          &models.ContentsId{Id: int64(v.ContentsId)},
+			Title:       v.Title,
+			Creator:     v.Creator,
+			LastUpdated: timestamppb.New(v.LastUpdated),
+		})
+	}
+	return &models.ContentsList{
+		ContentsList: m,
+	}, nil
 }
 
 func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.UserContentsQueryParams) (*models.ContentsList, error) {
