@@ -1,6 +1,8 @@
 <template>
   <MainHeader />
-  <ContentsList />
+  <div class="top-page">
+    <ContentsList />
+  </div>
 </template>
 
 <script>
@@ -17,3 +19,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+  // .top-page {
+  //    max-width: 80%;
+  // }
+</style>
