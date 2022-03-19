@@ -1,0 +1,28 @@
+@charset 'UTF-8';
+
+// colors
+$color-black: #454a4d;
+$color-white: #fff;
+$color-light-gray: #f0f2f2;
+
+$color-background-gray: #f1f1f1;
+$color-title-gray: #4d4d4d;
+$color-border-gray: #c4c4c4;
+
+$color-font-gray: #898b8c;
+$color-font-black: #454a4d;
+
+$color-accent: #fff;
+
+$color-link: #50a2f5;
+
+// sizes
+
+$slide-width: 1440px;
+$slide-height: 1024px;
+
+@mixin clear-both {
+  display: block;
+  content: '';
+  clear: both;
+}
