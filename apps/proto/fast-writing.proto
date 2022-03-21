@@ -9,10 +9,27 @@ option go_package = "fast-writing/pkg/pb/";
 
 service UserService {
   rpc GetUser (models.UserId) returns (models.User) {}
+  rpc CreateUserContents (CreateContentsRequest) returns (CreateResponse) {}
+  rpc CreateUserQuiz (CreateQuizRequest) returns (CreateResponse) {}
 }
 
 service WritingService {
   rpc GetContents (models.ContentsId) returns (models.Contents) {}
   rpc GetContentsList (models.ContentsQueryParams) returns (models.ContentsList) {}
   rpc GetUserContentsList (models.UserContentsQueryParams) returns (models.ContentsList) {}
+}
+
+message CreateResponse {
+  bool created  = 1;
+  string message = 2;
+}
+
+message CreateContentsRequest {
+  models.Contents contents = 1;
+}
+
+message CreateQuizRequest {
+  models.Quiz quiz = 1;
+  models.ContentsId contentsId = 2;
+  models.UserId userId = 3;
 }
