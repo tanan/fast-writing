@@ -9,8 +9,10 @@ jobs:
 
     env:
       PRODUCT_NAME: fast-writing
+      FAST_WRITING_API_ENDPOINT: https://fast-writing-api-cmfot4feta-an.a.run.app
       FAST_WRITING_API_SERVICE_NAME: fast-writing-api
       SEARCH_API_SERVICE_NAME: search-api
+      FRONT_SERVICE_NAME: front
     
     permissions:
       contents: 'read'
@@ -35,6 +37,11 @@ jobs:
       - name: Build Image for Search
         run: |-
           docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag -f apps/$SEARCH_API_SERVICE_NAME/Dockerfile .
+      - name: Build Image for front
+        run: |-
+          cd ./apps/front/
+          echo "VUE_APP_WRITING_API_HOST=$FAST_WRITING_API_ENDPOINT" >> .env
+          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$FRONT_SERVICE_NAME:$tag .
       # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
           gcloud auth configure-docker asia-northeast1-docker.pkg.dev
@@ -45,3 +52,6 @@ jobs:
       - name: Push Search API
         run: |-
           docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag
+      - name: Push Front
+        run: |-
+          docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FRONT_SERVICE_NAME:$tag
