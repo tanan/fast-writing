@@ -9,14 +9,14 @@ option go_package = "fast-writing/pkg/pb/";
 
 service UserService {
   rpc GetUser (models.UserId) returns (models.User) {}
-  rpc CreateUserContents (CreateContentsRequest) returns (CreateResponse) {}
-  rpc CreateUserQuiz (CreateQuizRequest) returns (CreateResponse) {}
 }
 
 service WritingService {
   rpc GetContents (models.ContentsId) returns (models.Contents) {}
   rpc GetContentsList (models.ContentsQueryParams) returns (models.ContentsList) {}
   rpc GetUserContentsList (models.UserContentsQueryParams) returns (models.ContentsList) {}
+  rpc CreateUserContents (CreateContentsRequest) returns (CreateResponse) {}
+  rpc CreateUserQuiz (CreateQuizRequest) returns (CreateResponse) {}
 }
 
 message CreateResponse {

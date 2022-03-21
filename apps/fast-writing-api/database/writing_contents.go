@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fast-writing-api/database/model"
 	"fast-writing-api/domain"
+	"github.com/google/uuid"
 )
 
 func (h *SQLHandler) FindContentsList(limit int32, offset int32) ([]*domain.Contents, error) {
@@ -57,6 +58,35 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 		QuizList:    h.toQuizList(quiz),
 		LastUpdated: contents.LastUpdated,
 	}, nil
+}
+
+func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.UserId) (int, error) {
+	uid, err := uuid.Parse(string(userId))
+	if err != nil {
+		return 0, errors.New(string(userId) + " is not valid:" + err.Error())
+	}
+	m := model.Contents{
+		UserId: uid,
+		Title:  contents.Title,
+	}
+	db := h.Conn.Create(&m)
+	if db.Error != nil {
+		return 0, errors.New("cannot create contents: " + db.Error.Error())
+	}
+	return 1, nil
+}
+
+func (h *SQLHandler) CreateQuiz(contentsId domain.ContentsId, quiz domain.Quiz) (int, error) {
+	m := model.Quiz{
+		ContentsId: int64(contentsId),
+		Question:   quiz.Question,
+		Answer:     quiz.Answer,
+	}
+	db := h.Conn.Create(&m)
+	if db.Error != nil {
+		return 0, errors.New("cannot create quiz: " + db.Error.Error())
+	}
+	return 1, nil
 }
 
 func (h *SQLHandler) toQuizList(l []model.Quiz) []domain.Quiz {

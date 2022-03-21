@@ -7,7 +7,7 @@ import (
 
 type Contents struct {
 	Id          int64     `gorm:"column:id"`
-	UserId      uuid.UUID `gorm:"type:uuid;column:user_id"`
+	UserId      uuid.UUID `gorm:"type:uuid;column:user_id;default:uuid_generate_v4()"`
 	Title       string    `gorm:"column:title"`
 	LastUpdated time.Time `gorm:"column:last_updated"`
 }

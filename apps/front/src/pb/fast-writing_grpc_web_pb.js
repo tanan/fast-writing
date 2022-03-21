@@ -372,5 +372,127 @@ proto.fastwriting.WritingServicePromiseClient.prototype.getUserContentsList =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.fastwriting.CreateContentsRequest,
+ *   !proto.fastwriting.CreateResponse>}
+ */
+const methodDescriptor_WritingService_CreateUserContents = new grpc.web.MethodDescriptor(
+  '/fastwriting.WritingService/CreateUserContents',
+  grpc.web.MethodType.UNARY,
+  proto.fastwriting.CreateContentsRequest,
+  proto.fastwriting.CreateResponse,
+  /**
+   * @param {!proto.fastwriting.CreateContentsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.fastwriting.CreateResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.fastwriting.CreateContentsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.fastwriting.CreateResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.CreateResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.fastwriting.WritingServiceClient.prototype.createUserContents =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/fastwriting.WritingService/CreateUserContents',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_CreateUserContents,
+      callback);
+};
+
+
+/**
+ * @param {!proto.fastwriting.CreateContentsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.fastwriting.CreateResponse>}
+ *     Promise that resolves to the response
+ */
+proto.fastwriting.WritingServicePromiseClient.prototype.createUserContents =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/fastwriting.WritingService/CreateUserContents',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_CreateUserContents);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.fastwriting.CreateQuizRequest,
+ *   !proto.fastwriting.CreateResponse>}
+ */
+const methodDescriptor_WritingService_CreateUserQuiz = new grpc.web.MethodDescriptor(
+  '/fastwriting.WritingService/CreateUserQuiz',
+  grpc.web.MethodType.UNARY,
+  proto.fastwriting.CreateQuizRequest,
+  proto.fastwriting.CreateResponse,
+  /**
+   * @param {!proto.fastwriting.CreateQuizRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.fastwriting.CreateResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.fastwriting.CreateQuizRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.fastwriting.CreateResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.CreateResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.fastwriting.WritingServiceClient.prototype.createUserQuiz =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/fastwriting.WritingService/CreateUserQuiz',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_CreateUserQuiz,
+      callback);
+};
+
+
+/**
+ * @param {!proto.fastwriting.CreateQuizRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.fastwriting.CreateResponse>}
+ *     Promise that resolves to the response
+ */
+proto.fastwriting.WritingServicePromiseClient.prototype.createUserQuiz =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/fastwriting.WritingService/CreateUserQuiz',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_CreateUserQuiz);
+};
+
+
 module.exports = proto.fastwriting;
 

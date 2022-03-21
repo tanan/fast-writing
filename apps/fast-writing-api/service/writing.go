@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fast-writing-api/domain"
+	"fast-writing/pkg/pb"
 	"fast-writing/pkg/pb/models"
+	"fmt"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -64,5 +66,14 @@ func (s *WritingService) GetContentsList(ctx context.Context, req *models.Conten
 }
 
 func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.UserContentsQueryParams) (*models.ContentsList, error) {
+	return nil, nil
+}
+
+func (s *WritingService) CreateUserQuiz(ctx context.Context, in *pb.CreateQuizRequest) (*pb.CreateResponse, error) {
+	fmt.Println(ctx, in)
+	return nil, nil
+}
+
+func (s *WritingService) CreateUserContents(ctx context.Context, in *pb.CreateContentsRequest) (*pb.CreateResponse, error) {
 	return nil, nil
 }
