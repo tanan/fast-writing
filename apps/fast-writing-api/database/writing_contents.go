@@ -39,7 +39,7 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 		return domain.Contents{}, errors.New("cannot find contents by id: " + db.Error.Error())
 	}
 	var quiz []model.Quiz
-	quizDb := h.Conn.Where("contents_id = ?", id).First(&quiz)
+	quizDb := h.Conn.Where("contents_id = ?", id).Find(&quiz)
 	if quizDb.Error != nil {
 		return domain.Contents{}, errors.New("cannot find quiz by contents_id: " + db.Error.Error())
 	}
