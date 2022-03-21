@@ -7,6 +7,15 @@
       <v-col cols="12" sm="4">
         <ContentsCard :contents=contents />
       </v-col>
+      <v-col cols="12" sm="4">
+        <ContentsCard :contents=contents />
+      </v-col>
+      <v-col cols="12" sm="4">
+        <ContentsCard :contents=contents />
+      </v-col>
+      <v-col cols="12" sm="4">
+        <ContentsCard :contents=contents />
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -29,7 +38,7 @@ export default {
   },
   methods: {
     getShows () {
-      const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_HOST}`, null, null)
+      const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
       let req = new ContentsId()
       req.setId(1)
       try {

@@ -35,7 +35,7 @@ export default defineComponent({
   },
   methods: {
     async getContentsById (id) {
-      const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_HOST}`, null, null)
+      const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
       let req = new ContentsId()
       req.setId(id)
         await client.getContents(req, {}, (err, resp) => {
