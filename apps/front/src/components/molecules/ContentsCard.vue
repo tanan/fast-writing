@@ -1,9 +1,16 @@
 <template>
   <v-card class="contents-card" elevation="2">
     <v-card-title>{{ contents.title }}</v-card-title>
-    <v-card-text class="creator">作成者: {{ contents.creator }}</v-card-text>
-    <v-card-text class="last-updated">更新日時: {{ getUpdatedDate(contents.lastUpdated) }}</v-card-text>
+    <v-card-subtitle class="info">
+      <div class="creator">作成者: {{ contents.creator }}</div>
+      <div class="last-updated">更新日時: {{ getUpdatedDate(contents.lastUpdated) }}</div>
+    </v-card-subtitle>
     <v-card-text class="description">買い物で使う英文を中心に練習します</v-card-text>
+    <v-card-actions>
+      <v-btn color="blue" text>
+        <a href="/contents/1" target="_blank" rel="noopener" class="link">Go to Lesson</a>
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -29,12 +36,17 @@ export default {
   .contents-card {
     margin: 8px 16px;
 
-    .creator {
-      padding: 8px 16px;
-      padding-bottom: 4px;
-    }
-    .last-updated {
+    .info {
+      display: flex;
       padding: 4px 16px;
+      font-weight: 0.8rem;
+      .last-updated {
+        padding-left: 24px;
+      }
+    }
+
+    .link {
+      text-decoration: none;
     }
   }
 </style>
