@@ -2,7 +2,7 @@
   <div>
     <MainHeader />
     <div class="quiz-page">
-      <!-- <QuizHeader /> -->
+      <QuizHeader :contents="contents" :interval="interval" />
       <QuizList :indecies="indecies" :questions="questions" :answers="answers" />
     </div>
   </div>
@@ -12,6 +12,7 @@
 import { defineComponent } from 'vue';
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { ContentsId } from "@/pb/models/contents_pb.js"
+import QuizHeader from '@/components/organisms/QuizHeader.vue'
 import QuizList from '@/components/organisms/QuizList.vue'
 import MainHeader from '@/components/organisms/MainHeader.vue'
 
@@ -19,13 +20,15 @@ export default defineComponent({
   name: 'WritingQuizPage',
   components: {
     MainHeader,
-    QuizList
+    QuizList,
+    QuizHeader
   },
   data: () => ({
     contents: {},
     indecies: [],
     questions: [],
     answers: [],
+    interval: 5
   }),
   async created() {
    this.getContentsById(this.$route.params.id)
@@ -47,9 +50,9 @@ export default defineComponent({
       for(var i in quizList) {
         this.indecies.push(quizList[i].id)
         this.questions.push(quizList[i].question)
-        await new Promise((resolve) => setTimeout(resolve, 7000));
+        await new Promise((resolve) => setTimeout(resolve, this.interval*1000));
         this.answers.push(quizList[i].answer)
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     }
   }

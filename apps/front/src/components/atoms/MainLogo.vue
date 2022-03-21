@@ -1,7 +1,7 @@
 <template>
   <div>
     <a class="logo" href="/">
-      <div class="logo-text">Fast Writing</div>
+      <div class="logo-text">- SPEAK ENGLISH -</div>
     </a>
   </div>
 </template>
