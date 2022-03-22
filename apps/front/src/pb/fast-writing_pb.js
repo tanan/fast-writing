@@ -285,7 +285,8 @@ proto.fastwriting.CreateContentsRequest.prototype.toObject = function(opt_includ
  */
 proto.fastwriting.CreateContentsRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    contents: (f = msg.getContents()) && models_contents_pb.Contents.toObject(includeInstance, f)
+    contents: (f = msg.getContents()) && models_contents_pb.Contents.toObject(includeInstance, f),
+    userid: (f = msg.getUserid()) && models_user_pb.UserId.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -327,6 +328,11 @@ proto.fastwriting.CreateContentsRequest.deserializeBinaryFromReader = function(m
       reader.readMessage(value,models_contents_pb.Contents.deserializeBinaryFromReader);
       msg.setContents(value);
       break;
+    case 2:
+      var value = new models_user_pb.UserId;
+      reader.readMessage(value,models_user_pb.UserId.deserializeBinaryFromReader);
+      msg.setUserid(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -362,6 +368,14 @@ proto.fastwriting.CreateContentsRequest.serializeBinaryToWriter = function(messa
       1,
       f,
       models_contents_pb.Contents.serializeBinaryToWriter
+    );
+  }
+  f = message.getUserid();
+  if (f != null) {
+    writer.writeMessage(
+      2,
+      f,
+      models_user_pb.UserId.serializeBinaryToWriter
     );
   }
 };
@@ -404,6 +418,43 @@ proto.fastwriting.CreateContentsRequest.prototype.hasContents = function() {
 };
 
 
+/**
+ * optional models.UserId userId = 2;
+ * @return {?proto.models.UserId}
+ */
+proto.fastwriting.CreateContentsRequest.prototype.getUserid = function() {
+  return /** @type{?proto.models.UserId} */ (
+    jspb.Message.getWrapperField(this, models_user_pb.UserId, 2));
+};
+
+
+/**
+ * @param {?proto.models.UserId|undefined} value
+ * @return {!proto.fastwriting.CreateContentsRequest} returns this
+*/
+proto.fastwriting.CreateContentsRequest.prototype.setUserid = function(value) {
+  return jspb.Message.setWrapperField(this, 2, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.fastwriting.CreateContentsRequest} returns this
+ */
+proto.fastwriting.CreateContentsRequest.prototype.clearUserid = function() {
+  return this.setUserid(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.fastwriting.CreateContentsRequest.prototype.hasUserid = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
 
 
 
@@ -437,8 +488,7 @@ proto.fastwriting.CreateQuizRequest.prototype.toObject = function(opt_includeIns
 proto.fastwriting.CreateQuizRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     quiz: (f = msg.getQuiz()) && models_contents_pb.Quiz.toObject(includeInstance, f),
-    contentsid: (f = msg.getContentsid()) && models_contents_pb.ContentsId.toObject(includeInstance, f),
-    userid: (f = msg.getUserid()) && models_user_pb.UserId.toObject(includeInstance, f)
+    contentsid: (f = msg.getContentsid()) && models_contents_pb.ContentsId.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -485,11 +535,6 @@ proto.fastwriting.CreateQuizRequest.deserializeBinaryFromReader = function(msg, 
       reader.readMessage(value,models_contents_pb.ContentsId.deserializeBinaryFromReader);
       msg.setContentsid(value);
       break;
-    case 3:
-      var value = new models_user_pb.UserId;
-      reader.readMessage(value,models_user_pb.UserId.deserializeBinaryFromReader);
-      msg.setUserid(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -533,14 +578,6 @@ proto.fastwriting.CreateQuizRequest.serializeBinaryToWriter = function(message, 
       2,
       f,
       models_contents_pb.ContentsId.serializeBinaryToWriter
-    );
-  }
-  f = message.getUserid();
-  if (f != null) {
-    writer.writeMessage(
-      3,
-      f,
-      models_user_pb.UserId.serializeBinaryToWriter
     );
   }
 };
@@ -617,43 +654,6 @@ proto.fastwriting.CreateQuizRequest.prototype.clearContentsid = function() {
  */
 proto.fastwriting.CreateQuizRequest.prototype.hasContentsid = function() {
   return jspb.Message.getField(this, 2) != null;
-};
-
-
-/**
- * optional models.UserId userId = 3;
- * @return {?proto.models.UserId}
- */
-proto.fastwriting.CreateQuizRequest.prototype.getUserid = function() {
-  return /** @type{?proto.models.UserId} */ (
-    jspb.Message.getWrapperField(this, models_user_pb.UserId, 3));
-};
-
-
-/**
- * @param {?proto.models.UserId|undefined} value
- * @return {!proto.fastwriting.CreateQuizRequest} returns this
-*/
-proto.fastwriting.CreateQuizRequest.prototype.setUserid = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.fastwriting.CreateQuizRequest} returns this
- */
-proto.fastwriting.CreateQuizRequest.prototype.clearUserid = function() {
-  return this.setUserid(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.fastwriting.CreateQuizRequest.prototype.hasUserid = function() {
-  return jspb.Message.getField(this, 3) != null;
 };
 
 
