@@ -5,6 +5,7 @@ import (
 	"fast-writing-api/database/model"
 	"fast-writing-api/domain"
 	"github.com/google/uuid"
+	"time"
 )
 
 func (h *SQLHandler) FindContentsList(limit int32, offset int32) ([]*domain.Contents, error) {
@@ -65,11 +66,7 @@ func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.User
 	if err != nil {
 		return 0, errors.New(string(userId) + " is not valid:" + err.Error())
 	}
-	m := model.Contents{
-		UserId: uid,
-		Title:  contents.Title,
-	}
-	db := h.Conn.Create(&m)
+	db := h.Conn.Exec("INSERT INTO `writing_contents` (`user_id`,`title`,`last_updated`) VALUES (UUID_TO_BIN(?),?,?)", uid, contents.Title, time.Now())
 	if db.Error != nil {
 		return 0, errors.New("cannot create contents: " + db.Error.Error())
 	}

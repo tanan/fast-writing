@@ -6,7 +6,6 @@ import (
 	"fast-writing-api/domain"
 	"fast-writing/pkg/pb"
 	"fast-writing/pkg/pb/models"
-	"fmt"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -69,11 +68,23 @@ func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.Us
 	return nil, nil
 }
 
-func (s *WritingService) CreateUserQuiz(ctx context.Context, in *pb.CreateQuizRequest) (*pb.CreateResponse, error) {
-	fmt.Println(ctx, in)
+func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizRequest) (*pb.CreateResponse, error) {
 	return nil, nil
 }
 
-func (s *WritingService) CreateUserContents(ctx context.Context, in *pb.CreateContentsRequest) (*pb.CreateResponse, error) {
-	return nil, nil
+func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateContentsRequest) (*pb.CreateResponse, error) {
+	contents := domain.Contents{
+		Title: req.Contents.Title,
+	}
+	count, err := s.SQLHandler.CreateContents(contents, domain.UserId(req.UserId.Id))
+	if err != nil || count == 0 {
+		return &pb.CreateResponse{
+			Created: false,
+			Message: "failed to create contens",
+		}, err
+	}
+	return &pb.CreateResponse{
+		Created: true,
+		Message: "success",
+	}, nil
 }
