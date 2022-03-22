@@ -26,10 +26,10 @@ message CreateResponse {
 
 message CreateContentsRequest {
   models.Contents contents = 1;
+  models.UserId userId = 2;
 }
 
 message CreateQuizRequest {
   models.Quiz quiz = 1;
   models.ContentsId contentsId = 2;
-  models.UserId userId = 3;
 }
