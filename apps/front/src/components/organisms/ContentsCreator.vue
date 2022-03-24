@@ -1,8 +1,25 @@
 <template>
   <v-form class="contents-creator-form" ref="form">
-    <v-text-field class="title" v-model="title" label="title" required></v-text-field>
-    <!-- <ContentsQuizCreator /> -->
-    <v-btn @click="save" color="success">SAVE</v-btn>
+    <v-container>
+      <v-row>
+        <v-col>
+          <v-text-field class="title" v-model="title" label="title" required></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <div class="quiz">
+          <span>Quiz</span>
+          <v-text-field v-model="question" label="question"></v-text-field>
+          <v-text-field class="answer" v-model="answer" label="answer"></v-text-field>
+        </div>
+        </v-col>
+      </v-row>
+      <v-btn class="mx-2 append-btn" fab dark color="indigo">
+        <v-icon dark>mdi-plus</v-icon>
+      </v-btn>
+      <v-btn @click="save" color="success">SAVE</v-btn>
+    </v-container>
   </v-form>
 </template>
 
@@ -47,9 +64,5 @@ export default {
   .contents-creator-form {
     margin: 0 8%;
     margin-top: 2%;
-
-    .title {
-      width: 50%;
-    }
   }
 </style>
