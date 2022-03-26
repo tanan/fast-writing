@@ -31,9 +31,11 @@
 
 <script>
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
-import { Contents, ContentsId, Quiz } from "@/pb/models/contents_pb.js"
+import { Contents, ContentsId, Quiz, QuizId } from "@/pb/models/contents_pb.js"
 import { CreateContentsRequest, CreateQuizRequest } from "@/pb/fast-writing_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
+
+const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
 export default {
   name: 'ContentsCreator',
@@ -46,7 +48,7 @@ export default {
     title: "",
     contentsId: 32,
     quizzes: [
-      {"question": "question1", "answer": "answer1"}
+      {"id": null, "question": "question1", "answer": "answer1"}
     ]
   }),
   methods: {
@@ -55,22 +57,32 @@ export default {
       this.quizzes.push(quiz)
     },
     async save () {
-      const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
       let req = this.createContentsRequest()
-      await client.createUserContents(req, {}, (err, resp) => {
-        if (err != null) {
-          throw new Error(err)
-        }
-        this.contentsId = resp.toObject().contentsid.id
+      let response = await new Promise((resolve, reject) => {
+        client.createUserContents( req, {}, ( err, resp ) => {
+          if ( err ) {
+            reject(err)
+          }
+          resolve(resp)
+        } );
       })
-      let quizReq = this.createQuizRequest()
-      await client.createUserQuiz(quizReq, {}, (err, resp) => {
-        if (err != null) {
-          console.log(err)
-          throw new Error("Could not receive the data from API!")
-        }
-        console.log(resp.toObject())
-      })
+      this.contentsId = await response.toObject().contentsid.id
+      this.saveQuiz(response.toObject().contentsid.id)
+    },
+    async saveQuiz (contentsId) {
+      for (const [index, quiz] of this.quizzes.entries()) {
+        let quizReq = await this.createQuizRequest(quiz, contentsId)
+        let quizResponse = await new Promise((resolve, reject) => {
+          client.createUserQuiz(quizReq, {}, (err, resp) => {
+            if (err != null) {
+              reject(err)
+            }
+            this.quizzes[index].id = resp.toObject().quizid.id
+            resolve(resp)
+          })
+        })
+        console.log(quizResponse.toObject())
+      }
     },
     createContentsRequest () {
       let req = new CreateContentsRequest()
@@ -80,7 +92,6 @@ export default {
       userId.setId("11eae085-55e6-e2ca-a15d-0242ac110002")
       contents.setTitle(this.title)
       if (this.contentsId) {
-        console.log("setid",this.contentsId)
         contentsId.setId(this.contentsId)
       }
       contents.setId(contentsId)
@@ -88,14 +99,17 @@ export default {
       req.setUserid(userId)
       return req
     },
-    createQuizRequest () {
+    createQuizRequest (q, cid) {
       let req = new CreateQuizRequest()
       let contentsId = new ContentsId()
-      contentsId.setId(this.contentsId)
+      contentsId.setId(cid)
       let quiz = new Quiz()
-      console.log(this.quizzes[0].question)
-      quiz.setQuestion(this.quizzes[0].question)
-      quiz.setAnswer(this.quizzes[0].answer)
+      let quizId = new QuizId()
+      quizId.setId(q.id)
+      console.log(q.id)
+      quiz.setId(quizId)
+      quiz.setQuestion(q.question)
+      quiz.setAnswer(q.answer)
       req.setContentsid(contentsId)
       req.setQuiz(quiz)
       return req
