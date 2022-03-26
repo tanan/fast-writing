@@ -71,29 +71,6 @@ func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.Us
 	return nil, nil
 }
 
-func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizRequest) (*pb.CreateQuizResponse, error) {
-	fmt.Println(req.Quiz.Answer)
-	quiz := domain.Quiz{
-		Question:   req.Quiz.Question,
-		Answer:     req.Quiz.Answer,
-		ContentsId: domain.ContentsId(req.ContentsId.Id),
-	}
-	quizId, err := s.SQLHandler.CreateQuiz(quiz)
-	if err != nil {
-		return &pb.CreateQuizResponse{
-			Created: false,
-			Message: "failed to create contens",
-		}, err
-	}
-	return &pb.CreateQuizResponse{
-		Created: true,
-		Message: "success",
-		QuizId: &models.QuizId{
-			Id: quizId,
-		},
-	}, nil
-}
-
 func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateContentsRequest) (*pb.CreateContentsResponse, error) {
 	contents := domain.Contents{
 		Title: req.Contents.Title,
@@ -113,6 +90,32 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 		Message: "success",
 		ContentsId: &models.ContentsId{
 			Id: contentsId,
+		},
+	}, nil
+}
+
+func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizRequest) (*pb.CreateQuizResponse, error) {
+	fmt.Println(req.Quiz.Answer)
+	quiz := domain.Quiz{
+		Question:   req.Quiz.Question,
+		Answer:     req.Quiz.Answer,
+		ContentsId: domain.ContentsId(req.ContentsId.Id),
+	}
+	if req.Quiz.Id != nil {
+		quiz.Id = req.Quiz.Id.Id
+	}
+	quizId, err := s.SQLHandler.CreateQuiz(quiz)
+	if err != nil {
+		return &pb.CreateQuizResponse{
+			Created: false,
+			Message: "failed to create contens",
+		}, err
+	}
+	return &pb.CreateQuizResponse{
+		Created: true,
+		Message: "success",
+		QuizId: &models.QuizId{
+			Id: quizId,
 		},
 	}, nil
 }
