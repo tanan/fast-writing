@@ -437,13 +437,13 @@ proto.fastwriting.WritingServicePromiseClient.prototype.createUserContents =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.fastwriting.CreateQuizRequest,
- *   !proto.fastwriting.CreateResponse>}
+ *   !proto.fastwriting.CreateQuizResponse>}
  */
 const methodDescriptor_WritingService_CreateUserQuiz = new grpc.web.MethodDescriptor(
   '/fastwriting.WritingService/CreateUserQuiz',
   grpc.web.MethodType.UNARY,
   proto.fastwriting.CreateQuizRequest,
-  proto.fastwriting.CreateResponse,
+  proto.fastwriting.CreateQuizResponse,
   /**
    * @param {!proto.fastwriting.CreateQuizRequest} request
    * @return {!Uint8Array}
@@ -451,7 +451,7 @@ const methodDescriptor_WritingService_CreateUserQuiz = new grpc.web.MethodDescri
   function(request) {
     return request.serializeBinary();
   },
-  proto.fastwriting.CreateResponse.deserializeBinary
+  proto.fastwriting.CreateQuizResponse.deserializeBinary
 );
 
 
@@ -460,9 +460,9 @@ const methodDescriptor_WritingService_CreateUserQuiz = new grpc.web.MethodDescri
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.RpcError, ?proto.fastwriting.CreateResponse)}
+ * @param {function(?grpc.web.RpcError, ?proto.fastwriting.CreateQuizResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.CreateResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.CreateQuizResponse>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.fastwriting.WritingServiceClient.prototype.createUserQuiz =
@@ -481,7 +481,7 @@ proto.fastwriting.WritingServiceClient.prototype.createUserQuiz =
  *     request proto
  * @param {?Object<string, string>=} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.fastwriting.CreateResponse>}
+ * @return {!Promise<!proto.fastwriting.CreateQuizResponse>}
  *     Promise that resolves to the response
  */
 proto.fastwriting.WritingServicePromiseClient.prototype.createUserQuiz =

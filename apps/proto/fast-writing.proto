@@ -38,5 +38,5 @@ message CreateQuizRequest {
 message CreateQuizResponse {
   bool created  = 1;
   string message = 2;
-  models.QuizId contentsId = 3;
+  models.QuizId quizId = 3;
 }

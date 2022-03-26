@@ -44,6 +44,7 @@ export default {
   },
   data: () => ({
     title: "",
+    contentsId: 32,
     quizzes: [
       {"question": "question1", "answer": "answer1"}
     ]
@@ -55,31 +56,49 @@ export default {
     },
     async save () {
       const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
+      let req = this.createContentsRequest()
+      await client.createUserContents(req, {}, (err, resp) => {
+        if (err != null) {
+          throw new Error(err)
+        }
+        this.contentsId = resp.toObject().contentsid.id
+      })
+      let quizReq = this.createQuizRequest()
+      await client.createUserQuiz(quizReq, {}, (err, resp) => {
+        if (err != null) {
+          console.log(err)
+          throw new Error("Could not receive the data from API!")
+        }
+        console.log(resp.toObject())
+      })
+    },
+    createContentsRequest () {
       let req = new CreateContentsRequest()
-      let contents = new Contents()
       let contentsId = new ContentsId()
+      let contents = new Contents()
       let userId = new UserId()
       userId.setId("11eae085-55e6-e2ca-a15d-0242ac110002")
       contents.setTitle(this.title)
+      if (this.contentsId) {
+        console.log("setid",this.contentsId)
+        contentsId.setId(this.contentsId)
+      }
+      contents.setId(contentsId)
       req.setContents(contents)
       req.setUserid(userId)
-      await client.createUserContents(req, {}, (err, resp) => {
-        if (err != null) {
-          throw new Error("Could not receive the data from API!")
-        }
-        console.log(resp.toObject())
-        contentsId.setId(resp.toObject().contentsId)
-      })
-      let req2 = CreateQuizRequest()
+      return req
+    },
+    createQuizRequest () {
+      let req = new CreateQuizRequest()
+      let contentsId = new ContentsId()
+      contentsId.setId(this.contentsId)
       let quiz = new Quiz()
+      console.log(this.quizzes[0].question)
       quiz.setQuestion(this.quizzes[0].question)
       quiz.setAnswer(this.quizzes[0].answer)
-      await client.createUserQuiz(req2, {}, (err, resp) => {
-        if (err != null) {
-          throw new Error("Could not receive the data from API!")
-        }
-        console.log(resp.toObject())
-      })
+      req.setContentsid(contentsId)
+      req.setQuiz(quiz)
+      return req
     }
   }
 }
