@@ -15,13 +15,19 @@ service WritingService {
   rpc GetContents (models.ContentsId) returns (models.Contents) {}
   rpc GetContentsList (models.ContentsQueryParams) returns (models.ContentsList) {}
   rpc GetUserContentsList (models.UserContentsQueryParams) returns (models.ContentsList) {}
-  rpc CreateUserContents (CreateContentsRequest) returns (CreateResponse) {}
+  rpc CreateUserContents (CreateContentsRequest) returns (CreateContentsResponse) {}
   rpc CreateUserQuiz (CreateQuizRequest) returns (CreateResponse) {}
 }
 
 message CreateResponse {
   bool created  = 1;
   string message = 2;
+}
+
+message CreateContentsResponse {
+  bool created  = 1;
+  string message = 2;
+  models.ContentsId contentsId = 3;
 }
 
 message CreateContentsRequest {

@@ -25,4 +25,5 @@ message Quiz {
   int64 id = 1;
   string question = 2;
   string answer = 3;
+  int64 order = 4;
 }

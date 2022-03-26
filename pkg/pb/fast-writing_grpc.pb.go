@@ -110,7 +110,7 @@ type WritingServiceClient interface {
 	GetContents(ctx context.Context, in *models.ContentsId, opts ...grpc.CallOption) (*models.Contents, error)
 	GetContentsList(ctx context.Context, in *models.ContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
 	GetUserContentsList(ctx context.Context, in *models.UserContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
-	CreateUserContents(ctx context.Context, in *CreateContentsRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	CreateUserContents(ctx context.Context, in *CreateContentsRequest, opts ...grpc.CallOption) (*CreateContentsResponse, error)
 	CreateUserQuiz(ctx context.Context, in *CreateQuizRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 }
 
@@ -149,8 +149,8 @@ func (c *writingServiceClient) GetUserContentsList(ctx context.Context, in *mode
 	return out, nil
 }
 
-func (c *writingServiceClient) CreateUserContents(ctx context.Context, in *CreateContentsRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
+func (c *writingServiceClient) CreateUserContents(ctx context.Context, in *CreateContentsRequest, opts ...grpc.CallOption) (*CreateContentsResponse, error) {
+	out := new(CreateContentsResponse)
 	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/CreateUserContents", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -174,7 +174,7 @@ type WritingServiceServer interface {
 	GetContents(context.Context, *models.ContentsId) (*models.Contents, error)
 	GetContentsList(context.Context, *models.ContentsQueryParams) (*models.ContentsList, error)
 	GetUserContentsList(context.Context, *models.UserContentsQueryParams) (*models.ContentsList, error)
-	CreateUserContents(context.Context, *CreateContentsRequest) (*CreateResponse, error)
+	CreateUserContents(context.Context, *CreateContentsRequest) (*CreateContentsResponse, error)
 	CreateUserQuiz(context.Context, *CreateQuizRequest) (*CreateResponse, error)
 }
 
@@ -191,7 +191,7 @@ func (UnimplementedWritingServiceServer) GetContentsList(context.Context, *model
 func (UnimplementedWritingServiceServer) GetUserContentsList(context.Context, *models.UserContentsQueryParams) (*models.ContentsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserContentsList not implemented")
 }
-func (UnimplementedWritingServiceServer) CreateUserContents(context.Context, *CreateContentsRequest) (*CreateResponse, error) {
+func (UnimplementedWritingServiceServer) CreateUserContents(context.Context, *CreateContentsRequest) (*CreateContentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUserContents not implemented")
 }
 func (UnimplementedWritingServiceServer) CreateUserQuiz(context.Context, *CreateQuizRequest) (*CreateResponse, error) {
