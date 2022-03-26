@@ -6,6 +6,7 @@ import (
 	"fast-writing-api/domain"
 	"fast-writing/pkg/pb"
 	"fast-writing/pkg/pb/models"
+	"fmt"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -37,7 +38,9 @@ func (s *WritingService) toQuizList(l []domain.Quiz) []*models.Quiz {
 	var quizList []*models.Quiz
 	for _, v := range l {
 		quizList = append(quizList, &models.Quiz{
-			Id:       v.Id,
+			Id: &models.QuizId{
+				Id: v.Id,
+			},
 			Question: v.Question,
 			Answer:   v.Answer,
 		})
@@ -68,23 +71,48 @@ func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.Us
 	return nil, nil
 }
 
-func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizRequest) (*pb.CreateResponse, error) {
-	return nil, nil
-}
-
-func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateContentsRequest) (*pb.CreateResponse, error) {
-	contents := domain.Contents{
-		Title: req.Contents.Title,
+func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizRequest) (*pb.CreateQuizResponse, error) {
+	fmt.Println(req.Quiz.Answer)
+	quiz := domain.Quiz{
+		Question:   req.Quiz.Question,
+		Answer:     req.Quiz.Answer,
+		ContentsId: domain.ContentsId(req.ContentsId.Id),
 	}
-	count, err := s.SQLHandler.CreateContents(contents, domain.UserId(req.UserId.Id))
-	if err != nil || count == 0 {
-		return &pb.CreateResponse{
+	quizId, err := s.SQLHandler.CreateQuiz(quiz)
+	if err != nil {
+		return &pb.CreateQuizResponse{
 			Created: false,
 			Message: "failed to create contens",
 		}, err
 	}
-	return &pb.CreateResponse{
+	return &pb.CreateQuizResponse{
 		Created: true,
 		Message: "success",
+		QuizId: &models.QuizId{
+			Id: quizId,
+		},
+	}, nil
+}
+
+func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateContentsRequest) (*pb.CreateContentsResponse, error) {
+	contents := domain.Contents{
+		Title: req.Contents.Title,
+	}
+	if req.Contents.Id != nil {
+		contents.ContentsId = domain.ContentsId(req.Contents.Id.Id)
+	}
+	contentsId, err := s.SQLHandler.CreateContents(contents, domain.UserId(req.UserId.Id))
+	if err != nil {
+		return &pb.CreateContentsResponse{
+			Created: false,
+			Message: "failed to create contents",
+		}, err
+	}
+	return &pb.CreateContentsResponse{
+		Created: true,
+		Message: "success",
+		ContentsId: &models.ContentsId{
+			Id: contentsId,
+		},
 	}, nil
 }

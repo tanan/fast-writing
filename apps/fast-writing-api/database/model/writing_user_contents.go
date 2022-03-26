@@ -1,13 +1,12 @@
 package model
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
 type UserContents struct {
 	Id          int64     `gorm:"column:id"`
-	UserId      uuid.UUID `gorm:"type:uuid;column:id"`
+	UserId      MysqlUUID `gorm:"column:user_id"`
 	Title       string    `gorm:"column:title"`
 	LastUpdated time.Time `gorm:"column:last_updated"`
 }

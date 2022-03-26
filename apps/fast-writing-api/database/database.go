@@ -1,9 +1,9 @@
 package database
 
 import (
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
-	"time"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	_ "gorm.io/gorm/clause"
 )
 
 type SQLHandler struct {
@@ -11,17 +11,17 @@ type SQLHandler struct {
 }
 
 func NewSQLHandler(connInfo string, verbose bool) (*SQLHandler, error) {
-	db, err := gorm.Open("mysql", connInfo)
+	db, err := gorm.Open(mysql.Open(connInfo), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	if verbose {
-		db.LogMode(true)
-	}
+	//if verbose {
+	//	db.LogMode(true)
+	//}
 
-	db.DB().SetConnMaxLifetime(time.Minute * 3)
-	db.DB().SetMaxOpenConns(10)
-	db.DB().SetMaxIdleConns(10)
+	//db.DB().SetConnMaxLifetime(time.Minute * 3)
+	//db.DB().SetMaxOpenConns(10)
+	//db.DB().SetMaxIdleConns(10)
 
 	return &SQLHandler{
 		Conn: db,
@@ -29,5 +29,6 @@ func NewSQLHandler(connInfo string, verbose bool) (*SQLHandler, error) {
 }
 
 func (h *SQLHandler) Close() error {
-	return h.Conn.Close()
+	//return h.Conn.Close()
+	return nil
 }

@@ -5,12 +5,13 @@ import (
 	"fast-writing-api/database/model"
 	"fast-writing-api/domain"
 	"github.com/google/uuid"
+	"gorm.io/gorm/clause"
 	"time"
 )
 
 func (h *SQLHandler) FindContentsList(limit int32, offset int32) ([]*domain.Contents, error) {
 	var m []model.Contents
-	db := h.Conn.Where("id > ?", offset).Order("id").Limit(limit).Find(&m)
+	db := h.Conn.Where("id > ?", offset).Order("id").Limit(int(limit)).Find(&m)
 	if db.Error != nil {
 		return []*domain.Contents{}, errors.New("cannot find contents list: " + db.Error.Error())
 	}
@@ -61,29 +62,44 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 	}, nil
 }
 
-func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.UserId) (int, error) {
+func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.UserId) (int64, error) {
 	uid, err := uuid.Parse(string(userId))
 	if err != nil {
 		return 0, errors.New(string(userId) + " is not valid:" + err.Error())
 	}
-	db := h.Conn.Exec("INSERT INTO `writing_contents` (`user_id`,`title`,`last_updated`) VALUES (UUID_TO_BIN(?),?,?)", uid, contents.Title, time.Now())
+	m := model.Contents{
+		Id:          int64(contents.ContentsId),
+		UserId:      model.MysqlUUID(uid),
+		Title:       contents.Title,
+		LastUpdated: time.Now(),
+	}
+	db := h.Conn.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "id"}},
+		DoUpdates: clause.Assignments(map[string]interface{}{"user_id": m.UserId, "title": m.Title, "last_updated": time.Now()}),
+	}).Create(&m)
+
 	if db.Error != nil {
 		return 0, errors.New("cannot create contents: " + db.Error.Error())
 	}
-	return 1, nil
+	return int64(m.Id), nil
 }
 
-func (h *SQLHandler) CreateQuiz(contentsId domain.ContentsId, quiz domain.Quiz) (int, error) {
+func (h *SQLHandler) CreateQuiz(quiz domain.Quiz) (int64, error) {
 	m := model.Quiz{
-		ContentsId: int64(contentsId),
-		Question:   quiz.Question,
-		Answer:     quiz.Answer,
+		Id:          quiz.Id,
+		ContentsId:  int64(quiz.ContentsId),
+		Question:    quiz.Question,
+		Answer:      quiz.Answer,
+		LastUpdated: time.Now(),
 	}
-	db := h.Conn.Create(&m)
+	db := h.Conn.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "id"}},
+		DoUpdates: clause.Assignments(map[string]interface{}{"contents_id": m.ContentsId, "question": m.Question, "answer": m.Answer, "last_updated": time.Now()}),
+	}).Create(&m)
 	if db.Error != nil {
 		return 0, errors.New("cannot create quiz: " + db.Error.Error())
 	}
-	return 1, nil
+	return m.Id, nil
 }
 
 func (h *SQLHandler) toQuizList(l []model.Quiz) []domain.Quiz {
