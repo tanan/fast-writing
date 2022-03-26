@@ -1,19 +1,7 @@
 <template>
   <v-container>
     <v-row no-gutters>
-      <v-col cols="12" sm="4">
-        <ContentsCard :contents=contents />
-      </v-col>
-      <v-col cols="12" sm="4">
-        <ContentsCard :contents=contents />
-      </v-col>
-      <v-col cols="12" sm="4">
-        <ContentsCard :contents=contents />
-      </v-col>
-      <v-col cols="12" sm="4">
-        <ContentsCard :contents=contents />
-      </v-col>
-      <v-col cols="12" sm="4">
+      <v-col v-for="contents in contentsList" :key="contents.id" cols="12" sm="4">
         <ContentsCard :contents=contents />
       </v-col>
     </v-row>
@@ -22,8 +10,10 @@
 
 <script>
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
-import { ContentsId } from "@/pb/models/contents_pb.js"
+import { QueryParams, ContentsQueryParams } from "@/pb/models/query_pb.js"
 import ContentsCard from "@/components/molecules/ContentsCard.vue"
+
+const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
 export default {
   name: 'ContentsList',
@@ -31,24 +21,35 @@ export default {
     ContentsCard
   },
   data: () => ({
-    contents: {},
+    contentsList: [],
   }),
   async created() {
    this.shows = await this.getShows();
   },
   methods: {
-    getShows () {
-      const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
-      let req = new ContentsId()
-      req.setId(1)
-      try {
-        client.getContents(req, {}, (err, resp) => {
-          this.contents = resp.toObject()
+    async getShows () {
+      let req = new ContentsQueryParams()
+      let queryParams = new QueryParams()
+      req.setParams(queryParams)
+      let response = await new Promise((resolve, reject) => {
+        client.getContentsList(req, {}, (err, resp) => {
+          if (err) {
+            reject(err)
+          }
+          resolve(resp)
         })
-      } catch (error) {
-        throw new Error("Could not receive the data from API!")
+      })
+      this.toContentsList(response.toObject().contentslistList)
+    },
+    toContentsList(list) {
+      for(var contents of list) {
+        let c = {}
+        c.id = contents.id.id
+        c.title = contents.title
+        c.lastUpdated = contents.lastUpdated
+        c.creator = contents.creator
+        this.contentsList.push(c)
       }
-      
     }
   }
 }

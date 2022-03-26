@@ -8,7 +8,7 @@
     <v-card-text class="description">買い物で使う英文を中心に練習します</v-card-text>
     <v-card-actions>
       <v-btn color="blue" text>
-        <a href="/contents/1" rel="noopener" class="link">Go to Lesson</a>
+        <a :href="`/contents/${contents.id}`" rel="noopener" class="link">Go to Lesson</a>
       </v-btn>
     </v-card-actions>
   </v-card>

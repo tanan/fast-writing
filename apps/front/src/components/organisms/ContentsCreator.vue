@@ -64,7 +64,7 @@ export default {
             reject(err)
           }
           resolve(resp)
-        } );
+        })
       })
       this.contentsId = await response.toObject().contentsid.id
       this.saveQuiz(response.toObject().contentsid.id)

@@ -19,9 +19,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss">
-  // .top-page {
-  //    max-width: 80%;
-  // }
-</style>
