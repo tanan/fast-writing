@@ -376,13 +376,13 @@ proto.fastwriting.WritingServicePromiseClient.prototype.getUserContentsList =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.fastwriting.CreateContentsRequest,
- *   !proto.fastwriting.CreateResponse>}
+ *   !proto.fastwriting.CreateContentsResponse>}
  */
 const methodDescriptor_WritingService_CreateUserContents = new grpc.web.MethodDescriptor(
   '/fastwriting.WritingService/CreateUserContents',
   grpc.web.MethodType.UNARY,
   proto.fastwriting.CreateContentsRequest,
-  proto.fastwriting.CreateResponse,
+  proto.fastwriting.CreateContentsResponse,
   /**
    * @param {!proto.fastwriting.CreateContentsRequest} request
    * @return {!Uint8Array}
@@ -390,7 +390,7 @@ const methodDescriptor_WritingService_CreateUserContents = new grpc.web.MethodDe
   function(request) {
     return request.serializeBinary();
   },
-  proto.fastwriting.CreateResponse.deserializeBinary
+  proto.fastwriting.CreateContentsResponse.deserializeBinary
 );
 
 
@@ -399,9 +399,9 @@ const methodDescriptor_WritingService_CreateUserContents = new grpc.web.MethodDe
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.RpcError, ?proto.fastwriting.CreateResponse)}
+ * @param {function(?grpc.web.RpcError, ?proto.fastwriting.CreateContentsResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.CreateResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.CreateContentsResponse>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.fastwriting.WritingServiceClient.prototype.createUserContents =
@@ -420,7 +420,7 @@ proto.fastwriting.WritingServiceClient.prototype.createUserContents =
  *     request proto
  * @param {?Object<string, string>=} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.fastwriting.CreateResponse>}
+ * @return {!Promise<!proto.fastwriting.CreateContentsResponse>}
  *     Promise that resolves to the response
  */
 proto.fastwriting.WritingServicePromiseClient.prototype.createUserContents =

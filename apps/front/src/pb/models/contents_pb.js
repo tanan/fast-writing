@@ -757,7 +757,8 @@ proto.models.Quiz.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
     question: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    answer: jspb.Message.getFieldWithDefault(msg, 3, "")
+    answer: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    order: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -806,6 +807,10 @@ proto.models.Quiz.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setAnswer(value);
       break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setOrder(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -853,6 +858,13 @@ proto.models.Quiz.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getOrder();
+  if (f !== 0) {
+    writer.writeInt64(
+      4,
       f
     );
   }
@@ -910,6 +922,24 @@ proto.models.Quiz.prototype.getAnswer = function() {
  */
 proto.models.Quiz.prototype.setAnswer = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional int64 order = 4;
+ * @return {number}
+ */
+proto.models.Quiz.prototype.getOrder = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.models.Quiz} returns this
+ */
+proto.models.Quiz.prototype.setOrder = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
 };
 
 
