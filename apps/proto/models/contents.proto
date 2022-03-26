@@ -21,8 +21,12 @@ message ContentsList {
   repeated Contents contentsList = 1;
 }
 
-message Quiz {
+message QuizId {
   int64 id = 1;
+}
+
+message Quiz {
+  QuizId id = 1;
   string question = 2;
   string answer = 3;
   int64 order = 4;
