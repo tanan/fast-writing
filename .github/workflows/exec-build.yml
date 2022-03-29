@@ -2,17 +2,17 @@ name: build and deploy for fast-writing
 on: [push]
 env:
   PROJECT_ID: anan-project
+  PRODUCT_NAME: fast-writing
+  FAST_WRITING_API_SERVICE_NAME: fast-writing-api
+  SEARCH_API_SERVICE_NAME: search-api
+  FRONT_SERVICE_NAME: front
 jobs:
   build:
     name: Build image
     runs-on: ubuntu-latest
 
     env:
-      PRODUCT_NAME: fast-writing
       FAST_WRITING_API_ENDPOINT: https://fast-writing-api-cmfot4feta-an.a.run.app
-      FAST_WRITING_API_SERVICE_NAME: fast-writing-api
-      SEARCH_API_SERVICE_NAME: search-api
-      FRONT_SERVICE_NAME: front
     
     permissions:
       contents: 'read'
@@ -55,3 +55,31 @@ jobs:
       - name: Push Front
         run: |-
           docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FRONT_SERVICE_NAME:$tag
+
+  deploy:
+    needs: [build]
+    name: Cloud Run Deploy
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI
+      - uses: 'google-github-actions/auth@v0'
+        with:
+          workload_identity_provider: projects/474794270878/locations/global/workloadIdentityPools/gh-pools/providers/gh-provider
+          service_account: github-actions@anan-project.iam.gserviceaccount.com
+
+      # - name: Set Env
+      #   run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Deploy
+        run: gcloud run deploy $FAST_WRITING_API_SERVICE_NAME \
+              --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag \
+              --project $PROJECT_ID \
+              --platform managed --region asia-northeast1 --allow-unauthenticated --update-env-vars foo=bar
