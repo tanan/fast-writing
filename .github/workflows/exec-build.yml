@@ -6,6 +6,7 @@ env:
   FAST_WRITING_API_SERVICE_NAME: fast-writing-api
   SEARCH_API_SERVICE_NAME: search-api
   FRONT_SERVICE_NAME: front
+  SAMPLE_SECRET_NAME: anan-test
 jobs:
   build:
     name: Build image
@@ -78,8 +79,17 @@ jobs:
       - name: Set Env
         run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+      - name: Update Secret
+        run: echo "test3" | gcloud secrets versions add $SAMPLE_SECRET_NAME --data-file=-
+
       - name: Deploy
         run: gcloud run deploy $FAST_WRITING_API_SERVICE_NAME \
               --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag \
               --project $PROJECT_ID \
-              --platform managed --region asia-northeast1 --allow-unauthenticated --update-env-vars foo=bar
+              --platform managed --region asia-northeast1 --update-secrets sample_secret=$SAMPLE_SECRET_NAME:latest
+
+      - name: Deploy
+        run: gcloud run deploy $SEARCH_API_SERVICE_NAME \
+              --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag \
+              --project $PROJECT_ID \
+              --platform managed --region asia-northeast1 --update-secrets sample_secret=$SAMPLE_SECRET_NAME:latest
