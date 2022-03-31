@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.5.9",
-    "@mdi/font": "5.9.55",
-    "@mdi/js": "^6.5.95",
+    "@mdi/font": "^6.6.96",
+    "@mdi/js": "^6.6.96",
     "ansi-regex": "github:chalk/ansi-regex",
     "contentful": "^9.1.4",
     "core-js": "^3.6.5",

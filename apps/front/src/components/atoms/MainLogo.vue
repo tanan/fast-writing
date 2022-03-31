@@ -1,22 +1,20 @@
 <template>
-  <div>
-    <a class="logo" href="/">
-      <div class="logo-text">- SPEAK ENGLISH -</div>
-    </a>
+  <div class="main-logo">
+    <a class="logo" href="/">- SPEAK ENGLISH -</a>
   </div>
 </template>
 
 <style scoped lang="scss">
-.logo {
-  display: block;
-  text-decoration: none;
-  color: white;
-
-  .logo-text {
-    font-size: 26px;
+.main-logo {
+  height: 48px;
+  text-align: center;
+  .logo {
+    text-decoration: none;
+    line-height: 48px;
+    color: white;
+    font-size: 2em;
     font-weight: 600;
-    padding-top: 12px;
-    padding-left: 36px;
   }
 }
+
 </style>
