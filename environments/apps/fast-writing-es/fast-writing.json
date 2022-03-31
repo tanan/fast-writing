@@ -1,0 +1,129 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "lowercase_keyword": {
+          "type":"custom",
+          "tokenizer": "keyword",
+          "filter": [
+            "lowercase"
+          ]
+        },
+        "japanese_analyzer": {
+          "type":"custom",
+          "tokenizer": "kuromoji_search",
+          "char_filter": [
+            "icu_normalizer",
+            "kuromoji_iteration_mark",
+            "mapping_for_search"
+          ],
+          "filter": [
+            "word_delimiter",
+            "cjk_width",
+            "kuromoji_stemmer",
+            "kuromoji_baseform",
+            "part_of_speech",
+            "asciifolding",
+            "lowercase",
+            "kana_filter"
+          ]
+        }
+      },
+      "char_filter": {
+        "mapping_for_search": {
+          "type": "mapping",
+          "mappings": [
+            "・=>　",
+            "ぁ=>ァ", "ぃ=>ィ", "ぅ=>ゥ", "ぇ=>ェ", "ぉ=>ォ",
+            "っ=>ッ", "ゃ=>ャ", "ゅ=>ュ", "ょ=>ョ",
+            "が=>ガ", "ぎ=>ギ", "ぐ=>グ", "げ=>ゲ", "ご=>ゴ",
+            "ざ=>ザ", "じ=>ジ", "ず=>ズ", "ぜ=>ゼ", "ぞ=>ゾ",
+            "だ=>ダ", "ぢ=>ヂ", "づ=>ヅ", "で=>デ", "ど=>ド",
+            "ば=>バ", "び=>ビ", "ぶ=>ブ", "べ=>ベ", "ぼ=>ボ",
+            "ぱ=>パ", "ぴ=>ピ", "ぷ=>プ", "ぺ=>ペ", "ぽ=>ポ",
+            "ゔ=>ヴ",
+            "あ=>ア", "い=>イ", "う=>ウ", "え=>エ", "お=>オ",
+            "か=>カ", "き=>キ", "く=>ク", "け=>ケ", "こ=>コ",
+            "さ=>サ", "し=>シ", "す=>ス", "せ=>セ", "そ=>ソ",
+            "た=>タ", "ち=>チ", "つ=>ツ", "て=>テ", "と=>ト",
+            "な=>ナ", "に=>ニ", "ぬ=>ヌ", "ね=>ネ", "の=>ノ",
+            "は=>ハ", "ひ=>ヒ", "ふ=>フ", "へ=>ヘ", "ほ=>ホ",
+            "ま=>マ", "み=>ミ", "む=>ム", "め=>メ", "も=>モ",
+            "や=>ヤ", "ゆ=>ユ", "よ=>ヨ",
+            "ら=>ラ", "り=>リ", "る=>ル", "れ=>レ", "ろ=>ロ",
+            "わ=>ワ", "を=>ヲ", "ん=>ン"
+          ]
+        }
+      },
+      "tokenizer": {
+        "kuromoji_search": {
+          "type": "kuromoji_tokenizer",
+          "mode": "search"
+        }
+      },
+      "filter": {
+        "kana_filter": {
+          "type": "icu_transform",
+          "id": "Hiragana-Katakana"
+        },
+        "part_of_speech": {
+          "type": "kuromoji_part_of_speech",
+          "stoptags": [
+            "接続詞",
+            "助詞",
+            "助詞-格助詞",
+            "助詞-格助詞-一般",
+            "助詞-格助詞-引用",
+            "助詞-格助詞-連語",
+            "助詞-接続助詞",
+            "助詞-係助詞",
+            "助詞-副助詞",
+            "助詞-間投助詞",
+            "助詞-並立助詞",
+            "助詞-終助詞",
+            "助詞-副助詞／並立助詞／終助詞",
+            "助詞-連体化",
+            "助詞-副詞化",
+            "助詞-特殊",
+            "助動詞",
+            "記号",
+            "記号-一般",
+            "記号-読点",
+            "記号-句点",
+            "記号-空白",
+            "記号-括弧開",
+            "記号-括弧閉",
+            "その他-間投",
+            "フィラー",
+            "非言語音"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "contents_id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "japanese_analyzer"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "username": {
+        "type": "keyword"
+      },
+      "quiz": {
+        "type": "text",
+        "analyzer": "lowercase_keyword"
+      },
+      "answer": {
+        "type": "text",
+        "analyzer": "lowercase_keyword"
+      }
+    }
+  }
+}
