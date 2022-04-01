@@ -4,11 +4,14 @@ go 1.17
 
 require (
 	fast-writing/pkg/pb v0.0.0-00010101000000-000000000000
+	github.com/elastic/go-elasticsearch/v8 v8.1.0
 	github.com/spf13/viper v1.10.1
 	google.golang.org/grpc v1.45.0
+	google.golang.org/protobuf v1.27.1
 )
 
 require (
+	github.com/elastic/elastic-transport-go/v8 v8.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -24,7 +27,6 @@ require (
 	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
