@@ -20,9 +20,32 @@ func NewSearchService() *SearchService {
 	}
 }
 
-func (s *SearchService) SaveSearchContents(ctx context.Context, params *models.ContentsQueryParams) (*pb.ContentsScoreList, error) {
-	s.SaveContents(domain.Contents{})
-	return nil, nil
+func (s *SearchService) SaveSearchContents(ctx context.Context, params *models.Contents) (*pb.CreateSearchResponse, error) {
+	var quiz string
+	var answer string
+	for i, v := range params.QuizList {
+		if i == 0 {
+			quiz = v.Question
+			answer = v.Answer
+			continue
+		}
+		quiz += " " + v.Question
+		answer += " " + v.Answer
+	}
+	_, err := s.SaveContents(domain.Contents{
+		Id:       domain.ContentsId(params.Id.Id),
+		Title:    params.Title,
+		Username: params.Creator,
+		Quiz:     quiz,
+		Answer:   answer,
+	})
+	if err != nil {
+		return &pb.CreateSearchResponse{}, err
+	}
+	return &pb.CreateSearchResponse{
+		Created: true,
+		Message: "success",
+	}, nil
 }
 
 func (s *SearchService) FindContentsIdListByTitle(ctx context.Context, params *models.TitleQueryParams) (*pb.ContentsScoreList, error) {

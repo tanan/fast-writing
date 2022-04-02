@@ -15,7 +15,7 @@ curl -XPOST /fast-writing/_doc/ -d '
 ### search
 
 ```
-curl -XGET -H "Content-Type: application/json" localhost:9200/fast-writing/_search/ -d '
+$ curl -XGET -H "Content-Type: application/json" localhost:9200/fast-writing/_search/ -d '
 {
 "query": {
 "match": {
@@ -24,4 +24,8 @@ curl -XGET -H "Content-Type: application/json" localhost:9200/fast-writing/_sear
 }
 }
 '
+```
+
+```
+$ cat save-test.json | grpcurl -plaintext -d @ localhost:10002 fastwriting.SearchService.SaveSearchContents
 ```

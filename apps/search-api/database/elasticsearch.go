@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"log"
 	"search-api/domain"
-	"search-api/service"
+	"strconv"
 	"time"
 
 	"github.com/elastic/go-elasticsearch/v8/esapi"
@@ -22,7 +22,7 @@ type SearchHandler struct {
 
 const INDEX = "fast-writing"
 
-func NewElasticsearch() service.SearchHandler {
+func NewElasticsearch() *SearchHandler {
 	cfg := elasticsearch8.Config{
 		Addresses: []string{
 			"http://localhost:9200",
@@ -109,26 +109,27 @@ func (handler *SearchHandler) toContentsList(hits []interface{}) []domain.Conten
 	return contentsList
 }
 
-func (handler *SearchHandler) SaveContents(contents domain.Contents) (domain.ContentsId, error) {
+func (handler *SearchHandler) SaveContents(contents domain.Contents) (string, error) {
 	data, err := json.Marshal(&contents)
 	if err != nil {
 		log.Fatalf("Cannot encode: %d", err)
 	}
 	req := esapi.IndexRequest{
-		Index: INDEX,
-		Body:  bytes.NewReader(data),
+		Index:      INDEX,
+		DocumentID: strconv.Itoa(int(contents.Id)),
+		Body:       bytes.NewReader(data),
 	}
 	res, err := req.Do(context.Background(), handler.Client)
 	defer res.Body.Close()
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	if res.IsError() {
-		return 0, errors.New(fmt.Sprintf("[%s] Error indexing document", res.Status()))
+		return "", errors.New(fmt.Sprintf("[%s] Error indexing document", res.Status()))
 	}
 	var r map[string]interface{}
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-		return 0, errors.New(fmt.Sprintf("Error parsing the response body: %s", err))
+		return "", errors.New(fmt.Sprintf("Error parsing the response body: %s", err))
 	}
-	return domain.ContentsId(r["_id"].(int64)), nil
+	return r["_id"].(string), nil
 }
