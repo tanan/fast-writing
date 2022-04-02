@@ -9,6 +9,7 @@ option go_package = "fast-writing/pkg/pb/";
 
 service SearchService {
   rpc FindContentsIdListByTitle (models.TitleQueryParams) returns (ContentsScoreList) {}
+  rpc SaveSearchContents (models.Contents) returns (CreateSearchResponse) {}
 }
 
 message ContentsScore {
@@ -19,4 +20,9 @@ message ContentsScore {
 
 message ContentsScoreList {
   repeated ContentsScore contentsScore = 1;
+}
+
+message CreateSearchResponse {
+  bool created  = 1;
+  string message = 2;
 }

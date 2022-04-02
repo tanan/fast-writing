@@ -137,5 +137,66 @@ proto.fastwriting.SearchServicePromiseClient.prototype.findContentsIdListByTitle
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.models.Contents,
+ *   !proto.fastwriting.CreateSearchResponse>}
+ */
+const methodDescriptor_SearchService_SaveSearchContents = new grpc.web.MethodDescriptor(
+  '/fastwriting.SearchService/SaveSearchContents',
+  grpc.web.MethodType.UNARY,
+  models_contents_pb.Contents,
+  proto.fastwriting.CreateSearchResponse,
+  /**
+   * @param {!proto.models.Contents} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.fastwriting.CreateSearchResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.models.Contents} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.fastwriting.CreateSearchResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.CreateSearchResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.fastwriting.SearchServiceClient.prototype.saveSearchContents =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/fastwriting.SearchService/SaveSearchContents',
+      request,
+      metadata || {},
+      methodDescriptor_SearchService_SaveSearchContents,
+      callback);
+};
+
+
+/**
+ * @param {!proto.models.Contents} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.fastwriting.CreateSearchResponse>}
+ *     Promise that resolves to the response
+ */
+proto.fastwriting.SearchServicePromiseClient.prototype.saveSearchContents =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/fastwriting.SearchService/SaveSearchContents',
+      request,
+      metadata || {},
+      methodDescriptor_SearchService_SaveSearchContents);
+};
+
+
 module.exports = proto.fastwriting;
 
