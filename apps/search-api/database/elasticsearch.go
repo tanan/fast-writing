@@ -10,6 +10,7 @@ import (
 	"search-api/domain"
 	"strconv"
 	"time"
+	"unicode"
 
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 
@@ -47,16 +48,39 @@ func (handler *SearchHandler) Version() {
 	log.Println(res)
 }
 
-func (handler *SearchHandler) FindContents(keyword string, limit int32, offset int32) ([]domain.ContentsScore, error) {
-	query := map[string]interface{}{
+func (handler *SearchHandler) getQuizFieldByLanguage(isJapanese bool) string {
+	if isJapanese {
+		return "question"
+	}
+	return "answer"
+}
+
+func (handler *SearchHandler) generateQuery(keyword string, limit int32, offset int32, isJapanese bool) map[string]interface{} {
+	return map[string]interface{}{
 		"limit":  limit,
 		"offset": offset,
 		"query": map[string]interface{}{
-			"match": map[string]interface{}{
-				"title": keyword,
+			"multi_match": map[string]interface{}{
+				"query":    keyword,
+				"type":     "most_fields",
+				"operator": "or",
+				"fields":   []string{"title", handler.getQuizFieldByLanguage(isJapanese)},
 			},
 		},
 	}
+}
+
+func (handler *SearchHandler) isJapanese(keyword string) bool {
+	for _, v := range []rune(keyword) {
+		if !unicode.In(v, unicode.Hiragana, unicode.Katakana, unicode.Han) {
+			return false
+		}
+	}
+	return true
+}
+
+func (handler *SearchHandler) FindContents(keyword string, limit int32, offset int32) ([]domain.ContentsScore, error) {
+	query := handler.generateQuery(keyword, limit, offset, handler.isJapanese(keyword))
 	data, err := json.Marshal(&query)
 	if err != nil {
 		log.Fatalf("Cannot encode: %d", err)
@@ -102,7 +126,7 @@ func (handler *SearchHandler) toContentsList(hits []interface{}) []domain.Conten
 			Title:    source.(map[string]interface{})["title"].(string),
 			Category: source.(map[string]interface{})["category"].(string),
 			Username: source.(map[string]interface{})["username"].(string),
-			Quiz:     source.(map[string]interface{})["quiz"].(string),
+			Question: source.(map[string]interface{})["question"].(string),
 			Answer:   source.(map[string]interface{})["answer"].(string),
 		})
 	}

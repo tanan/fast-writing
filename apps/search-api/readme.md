@@ -1,13 +1,13 @@
 ### index api
 ```
-curl -XPOST /fast-writing/_doc/ -d '
+$ curl -XPOST -H "Content-Type: application/json" localhost:9200/fast-writing/_doc/ -d '
 {
-"title": "test",
-"category": "category",
-"contents_id": "1234567890asdfghjk",
-"username": "anan",
-"quiz": "私は誰ですか?",
-"answer": "Who am I?"
+  "title": "空港での会話",
+  "category": "category",
+  "contents_id": "123",
+  "username": "anan",
+  "question": "いつ関西空港に到着しますか？",
+  "answer": "When do you arrive Kansai Airport?"
 }
 '
 ```
@@ -17,11 +17,11 @@ curl -XPOST /fast-writing/_doc/ -d '
 ```
 $ curl -XGET -H "Content-Type: application/json" localhost:9200/fast-writing/_search/ -d '
 {
-"query": {
-"match": {
-"username": "anan"
-}
-}
+  "query": {
+    "match": {
+      "title": "空港"
+    }
+  }
 }
 '
 ```

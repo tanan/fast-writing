@@ -116,7 +116,7 @@
       "username": {
         "type": "keyword"
       },
-      "quiz": {
+      "question": {
         "type": "text",
         "analyzer": "lowercase_keyword"
       },

@@ -21,22 +21,22 @@ func NewSearchService() *SearchService {
 }
 
 func (s *SearchService) SaveSearchContents(ctx context.Context, params *models.Contents) (*pb.CreateSearchResponse, error) {
-	var quiz string
+	var question string
 	var answer string
 	for i, v := range params.QuizList {
 		if i == 0 {
-			quiz = v.Question
+			question = v.Question
 			answer = v.Answer
 			continue
 		}
-		quiz += " " + v.Question
+		question += " " + v.Question
 		answer += " " + v.Answer
 	}
 	_, err := s.SaveContents(domain.Contents{
 		Id:       domain.ContentsId(params.Id.Id),
 		Title:    params.Title,
 		Username: params.Creator,
-		Quiz:     quiz,
+		Question: question,
 		Answer:   answer,
 	})
 	if err != nil {

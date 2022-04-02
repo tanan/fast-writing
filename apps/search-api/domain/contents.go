@@ -9,7 +9,7 @@ type Contents struct {
 	Title    string
 	Category string
 	Username string
-	Quiz     string
+	Question string
 	Answer   string
 }
 
