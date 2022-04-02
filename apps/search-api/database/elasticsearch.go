@@ -9,6 +9,7 @@ import (
 	"log"
 	"search-api/domain"
 	"search-api/service"
+	"time"
 
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 
@@ -19,11 +20,12 @@ type SearchHandler struct {
 	*elasticsearch8.Client
 }
 
+const INDEX = "fast-writing"
+
 func NewElasticsearch() service.SearchHandler {
 	cfg := elasticsearch8.Config{
 		Addresses: []string{
 			"http://localhost:9200",
-			"http://localhost:9201",
 		},
 	}
 	es, err := elasticsearch8.NewClient(cfg)
@@ -45,8 +47,10 @@ func (handler *SearchHandler) Version() {
 	log.Println(res)
 }
 
-func (handler *SearchHandler) FindContents(keyword string, limit int32, offset int32) ([]domain.Contents, error) {
+func (handler *SearchHandler) FindContents(keyword string, limit int32, offset int32) ([]domain.ContentsScore, error) {
 	query := map[string]interface{}{
+		"limit":  limit,
+		"offset": offset,
 		"query": map[string]interface{}{
 			"match": map[string]interface{}{
 				"title": keyword,
@@ -58,7 +62,7 @@ func (handler *SearchHandler) FindContents(keyword string, limit int32, offset i
 		log.Fatalf("Cannot encode: %d", err)
 	}
 	req := esapi.SearchRequest{
-		Index: []string{"fast-writing"},
+		Index: []string{INDEX},
 		Body:  bytes.NewReader(data),
 	}
 	res, err := req.Do(context.Background(), handler.Client)
@@ -73,7 +77,20 @@ func (handler *SearchHandler) FindContents(keyword string, limit int32, offset i
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 		log.Fatalf("Error parsing the response body: %s", err)
 	}
-	return handler.toContentsList(r["hits"].(map[string]interface{})["hits"].([]interface{})), nil
+	return handler.toContentsScoreList(r["hits"].(map[string]interface{})["hits"].([]interface{})), nil
+}
+
+func (handler *SearchHandler) toContentsScoreList(hits []interface{}) []domain.ContentsScore {
+	var contentsScores []domain.ContentsScore
+	for _, hit := range hits {
+		source := hit.(map[string]interface{})["_source"]
+		contentsScores = append(contentsScores, domain.ContentsScore{
+			Id:          domain.ContentsId(source.(map[string]interface{})["contents_id"].(int64)),
+			Score:       hit.(map[string]interface{})["_score"].(float32),
+			LastUpdated: time.Now(),
+		})
+	}
+	return contentsScores
 }
 
 func (handler *SearchHandler) toContentsList(hits []interface{}) []domain.Contents {
@@ -81,7 +98,7 @@ func (handler *SearchHandler) toContentsList(hits []interface{}) []domain.Conten
 	for _, hit := range hits {
 		source := hit.(map[string]interface{})["_source"]
 		contentsList = append(contentsList, domain.Contents{
-			Id:       domain.ContentsId(source.(map[string]interface{})["contents_id"].(string)),
+			Id:       domain.ContentsId(source.(map[string]interface{})["contents_id"].(int64)),
 			Title:    source.(map[string]interface{})["title"].(string),
 			Category: source.(map[string]interface{})["category"].(string),
 			Username: source.(map[string]interface{})["username"].(string),
@@ -92,26 +109,26 @@ func (handler *SearchHandler) toContentsList(hits []interface{}) []domain.Conten
 	return contentsList
 }
 
-func (handler *SearchHandler) SaveContents(contents domain.Contents) (string, error) {
+func (handler *SearchHandler) SaveContents(contents domain.Contents) (domain.ContentsId, error) {
 	data, err := json.Marshal(&contents)
 	if err != nil {
 		log.Fatalf("Cannot encode: %d", err)
 	}
 	req := esapi.IndexRequest{
-		Index: "fast-writing",
+		Index: INDEX,
 		Body:  bytes.NewReader(data),
 	}
 	res, err := req.Do(context.Background(), handler.Client)
 	defer res.Body.Close()
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	if res.IsError() {
-		return "", errors.New(fmt.Sprintf("[%s] Error indexing document", res.Status()))
+		return 0, errors.New(fmt.Sprintf("[%s] Error indexing document", res.Status()))
 	}
 	var r map[string]interface{}
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-		return "", errors.New(fmt.Sprintf("Error parsing the response body: %s", err))
+		return 0, errors.New(fmt.Sprintf("Error parsing the response body: %s", err))
 	}
-	return r["_id"].(string), nil
+	return domain.ContentsId(r["_id"].(int64)), nil
 }

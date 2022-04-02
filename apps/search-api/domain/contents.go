@@ -1,6 +1,8 @@
 package domain
 
-type ContentsId string
+import "time"
+
+type ContentsId int64
 
 type Contents struct {
 	Id       ContentsId
@@ -9,4 +11,10 @@ type Contents struct {
 	Username string
 	Quiz     string
 	Answer   string
+}
+
+type ContentsScore struct {
+	Id          ContentsId
+	Score       float32
+	LastUpdated time.Time
 }
