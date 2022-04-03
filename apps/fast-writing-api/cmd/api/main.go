@@ -48,7 +48,7 @@ func main() {
 	searchClient := pb.NewSearchServiceClient(cc)
 	pb.RegisterSearchServiceServer(s, service.NewSearchService(sqlHandler, searchClient))
 	pb.RegisterUserServiceServer(s, service.NewUserService(sqlHandler))
-	pb.RegisterWritingServiceServer(s, service.NewWritingService(sqlHandler))
+	pb.RegisterWritingServiceServer(s, service.NewWritingService(sqlHandler, searchClient))
 
 	// サーバーリフレクションを有効にしています。
 	// 有効にすることでシリアライズせずとも後述する`grpc_cli`で動作確認ができるようになります。

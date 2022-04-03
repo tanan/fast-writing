@@ -39,11 +39,6 @@ const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPO
 
 export default {
   name: 'ContentsCreator',
-  props: {
-    indecies: Array,
-    questions: Array,
-    answers: Array,
-  },
   data: () => ({
     title: "",
     contentsId: 32,
@@ -67,7 +62,7 @@ export default {
         })
       })
       this.contentsId = await response.toObject().contentsid.id
-      this.saveQuiz(response.toObject().contentsid.id)
+      // this.saveQuiz(response.toObject().contentsid.id)
     },
     async saveQuiz (contentsId) {
       for (const [index, quiz] of this.quizzes.entries()) {
@@ -89,6 +84,9 @@ export default {
       let contentsId = new ContentsId()
       let contents = new Contents()
       let userId = new UserId()
+      for (const quiz of this.quizzes) {
+        contents.addQuizlist(this.createQuiz(quiz))
+      }
       userId.setId("11eae085-55e6-e2ca-a15d-0242ac110002")
       contents.setTitle(this.title)
       if (this.contentsId) {
@@ -98,6 +96,15 @@ export default {
       req.setContents(contents)
       req.setUserid(userId)
       return req
+    },
+    createQuiz (q) {
+      let quiz = new Quiz()
+      let quizId = new QuizId()
+      quizId.setId(q.id)
+      quiz.setId(quizId)
+      quiz.setQuestion(q.question)
+      quiz.setAnswer(q.answer)
+      return quiz
     },
     createQuizRequest (q, cid) {
       let req = new CreateQuizRequest()

@@ -6,17 +6,19 @@ import (
 	"fast-writing-api/domain"
 	"fast-writing/pkg/pb"
 	"fast-writing/pkg/pb/models"
-	"fmt"
+	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type WritingService struct {
 	SQLHandler SQLHandler
+	Client     pb.SearchServiceClient
 }
 
-func NewWritingService(s SQLHandler) *WritingService {
+func NewWritingService(s SQLHandler, serviceClient pb.SearchServiceClient) *WritingService {
 	return &WritingService{
 		SQLHandler: s,
+		Client:     serviceClient,
 	}
 }
 
@@ -29,12 +31,12 @@ func (s *WritingService) GetContents(ctx context.Context, req *models.ContentsId
 		Id:          &models.ContentsId{Id: int64(contents.ContentsId)},
 		Title:       contents.Title,
 		Creator:     contents.Creator,
-		QuizList:    s.toQuizList(contents.QuizList),
+		QuizList:    s.encodeQuizList(contents.QuizList),
 		LastUpdated: timestamppb.New(contents.LastUpdated),
 	}, nil
 }
 
-func (s *WritingService) toQuizList(l []domain.Quiz) []*models.Quiz {
+func (s *WritingService) encodeQuizList(l []domain.Quiz) []*models.Quiz {
 	var quizList []*models.Quiz
 	for _, v := range l {
 		quizList = append(quizList, &models.Quiz{
@@ -46,6 +48,18 @@ func (s *WritingService) toQuizList(l []domain.Quiz) []*models.Quiz {
 		})
 	}
 	return quizList
+}
+
+func (s *WritingService) decodeQuizList(quiz []*models.Quiz, contentsId *models.ContentsId) []domain.Quiz {
+	var list []domain.Quiz
+	for _, v := range quiz {
+		list = append(list, domain.Quiz{
+			Question:   v.Question,
+			Answer:     v.Answer,
+			ContentsId: domain.ContentsId(contentsId.Id),
+		})
+	}
+	return list
 }
 
 func (s *WritingService) GetContentsList(ctx context.Context, req *models.ContentsQueryParams) (*models.ContentsList, error) {
@@ -77,6 +91,7 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 	}
 	if req.Contents.Id != nil {
 		contents.ContentsId = domain.ContentsId(req.Contents.Id.Id)
+		contents.QuizList = s.decodeQuizList(req.Contents.QuizList, req.Contents.Id)
 	}
 	contentsId, err := s.SQLHandler.CreateContents(contents, domain.UserId(req.UserId.Id))
 	if err != nil {
@@ -84,6 +99,13 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 			Created: false,
 			Message: "failed to create contents",
 		}, err
+	}
+	_, err = s.Client.SaveSearchContents(context.Background(), req.Contents, grpc.MaxCallRecvMsgSize(10240))
+	if err != nil {
+		return &pb.CreateContentsResponse{
+			Created: false,
+			Message: "failed to create contents",
+		}, errors.New("failed to create contents on search-api:" + err.Error())
 	}
 	return &pb.CreateContentsResponse{
 		Created: true,
@@ -95,7 +117,6 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 }
 
 func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizRequest) (*pb.CreateQuizResponse, error) {
-	fmt.Println(req.Quiz.Answer)
 	quiz := domain.Quiz{
 		Question:   req.Quiz.Question,
 		Answer:     req.Quiz.Answer,
@@ -108,7 +129,7 @@ func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizR
 	if err != nil {
 		return &pb.CreateQuizResponse{
 			Created: false,
-			Message: "failed to create contens",
+			Message: "failed to create contents",
 		}, err
 	}
 	return &pb.CreateQuizResponse{
