@@ -1,14 +1,15 @@
 {
   "settings": {
     "analysis": {
-      "analyzer": {
+      "normalizer": {
         "lowercase_keyword": {
           "type":"custom",
-          "tokenizer": "keyword",
           "filter": [
             "lowercase"
           ]
-        },
+        }
+      },
+      "analyzer": {
         "japanese_analyzer": {
           "type":"custom",
           "tokenizer": "kuromoji_search",
@@ -102,27 +103,29 @@
     }
   },
   "mappings": {
+    "dynamic": "strict",
     "properties": {
       "contents_id": {
-        "type": "keyword"
+        "type": "integer"
       },
       "title": {
         "type": "text",
         "analyzer": "japanese_analyzer"
       },
       "category": {
-        "type": "keyword"
+        "type": "keyword",
+        "normalizer": "lowercase_keyword"
       },
       "username": {
-        "type": "keyword"
+        "type": "keyword",
+        "normalizer": "lowercase_keyword"
       },
       "question": {
         "type": "text",
-        "analyzer": "lowercase_keyword"
+        "analyzer": "japanese_analyzer"
       },
       "answer": {
-        "type": "text",
-        "analyzer": "lowercase_keyword"
+        "type": "text"
       }
     }
   }
