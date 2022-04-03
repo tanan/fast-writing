@@ -57,8 +57,8 @@ func (handler *SearchHandler) getQuizFieldByLanguage(isJapanese bool) string {
 
 func (handler *SearchHandler) generateQuery(keyword string, limit int32, offset int32, isJapanese bool) map[string]interface{} {
 	return map[string]interface{}{
-		"limit":  limit,
-		"offset": offset,
+		"size": limit,
+		"from": offset,
 		"query": map[string]interface{}{
 			"multi_match": map[string]interface{}{
 				"query":    keyword,
@@ -109,8 +109,8 @@ func (handler *SearchHandler) toContentsScoreList(hits []interface{}) []domain.C
 	for _, hit := range hits {
 		source := hit.(map[string]interface{})["_source"]
 		contentsScores = append(contentsScores, domain.ContentsScore{
-			Id:          domain.ContentsId(source.(map[string]interface{})["contents_id"].(int64)),
-			Score:       hit.(map[string]interface{})["_score"].(float32),
+			Id:          domain.ContentsId(int64(source.(map[string]interface{})["contents_id"].(float64))),
+			Score:       float32(hit.(map[string]interface{})["_score"].(float64)),
 			LastUpdated: time.Now(),
 		})
 	}
@@ -122,7 +122,7 @@ func (handler *SearchHandler) toContentsList(hits []interface{}) []domain.Conten
 	for _, hit := range hits {
 		source := hit.(map[string]interface{})["_source"]
 		contentsList = append(contentsList, domain.Contents{
-			Id:       domain.ContentsId(source.(map[string]interface{})["contents_id"].(int64)),
+			Id:       domain.ContentsId(int64(source.(map[string]interface{})["contents_id"].(float64))),
 			Title:    source.(map[string]interface{})["title"].(string),
 			Category: source.(map[string]interface{})["category"].(string),
 			Username: source.(map[string]interface{})["username"].(string),

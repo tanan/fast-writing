@@ -49,7 +49,13 @@ func (s *SearchService) SaveSearchContents(ctx context.Context, params *models.C
 }
 
 func (s *SearchService) FindContentsIdListByTitle(ctx context.Context, params *models.TitleQueryParams) (*pb.ContentsScoreList, error) {
-	contents, err := s.FindContents(params.Title, params.Params.Limit, params.Params.Offset)
+	var limit int32 = 10
+	var offset int32 = 0
+	if params.GetParams() != nil {
+		limit = params.Params.Limit
+		offset = params.Params.Offset
+	}
+	contents, err := s.FindContents(params.Title, limit, offset)
 	if err != nil {
 		return &pb.ContentsScoreList{}, err
 	}

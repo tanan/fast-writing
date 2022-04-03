@@ -5,12 +5,12 @@ import "time"
 type ContentsId int64
 
 type Contents struct {
-	Id       ContentsId
-	Title    string
-	Category string
-	Username string
-	Question string
-	Answer   string
+	Id       ContentsId `json:"contents_id"`
+	Title    string     `json:"title"`
+	Category string     `json:"category"`
+	Username string     `json:"username"`
+	Question string     `json:"question"`
+	Answer   string     `json:"answer"`
 }
 
 type ContentsScore struct {
