@@ -12,11 +12,11 @@
           <div class="quiz" v-for="(quiz, i) in quizzes" :key="i">
             <div class="mb-4 question">
               <span class="index">{{ i+1 }}.</span>
-              <v-text-field dense hide-details v-model="quizzes[i].question" label="question"></v-text-field>
+              <v-text-field dense hide-details v-model="quizzes[i].question" @blur="save" label="question"></v-text-field>
             </div>
             <div class="quiz-answer">
               <span class="index"></span>
-              <v-text-field dense hide-details class="answer" v-model="quizzes[i].answer" label="answer"></v-text-field>
+              <v-text-field dense hide-details class="answer" v-model="quizzes[i].answer" @blur="save" label="answer"></v-text-field>
             </div>
           </div>
         </v-col>

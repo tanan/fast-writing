@@ -351,7 +351,7 @@ proto.fastwriting.CreateContentsResponse.toObject = function(includeInstance, ms
   var f, obj = {
     created: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
     message: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    contentsid: (f = msg.getContentsid()) && models_contents_pb.ContentsId.toObject(includeInstance, f)
+    contents: (f = msg.getContents()) && models_contents_pb.Contents.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -397,9 +397,9 @@ proto.fastwriting.CreateContentsResponse.deserializeBinaryFromReader = function(
       msg.setMessage(value);
       break;
     case 3:
-      var value = new models_contents_pb.ContentsId;
-      reader.readMessage(value,models_contents_pb.ContentsId.deserializeBinaryFromReader);
-      msg.setContentsid(value);
+      var value = new models_contents_pb.Contents;
+      reader.readMessage(value,models_contents_pb.Contents.deserializeBinaryFromReader);
+      msg.setContents(value);
       break;
     default:
       reader.skipField();
@@ -444,12 +444,12 @@ proto.fastwriting.CreateContentsResponse.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getContentsid();
+  f = message.getContents();
   if (f != null) {
     writer.writeMessage(
       3,
       f,
-      models_contents_pb.ContentsId.serializeBinaryToWriter
+      models_contents_pb.Contents.serializeBinaryToWriter
     );
   }
 };
@@ -492,20 +492,20 @@ proto.fastwriting.CreateContentsResponse.prototype.setMessage = function(value) 
 
 
 /**
- * optional models.ContentsId contentsId = 3;
- * @return {?proto.models.ContentsId}
+ * optional models.Contents contents = 3;
+ * @return {?proto.models.Contents}
  */
-proto.fastwriting.CreateContentsResponse.prototype.getContentsid = function() {
-  return /** @type{?proto.models.ContentsId} */ (
-    jspb.Message.getWrapperField(this, models_contents_pb.ContentsId, 3));
+proto.fastwriting.CreateContentsResponse.prototype.getContents = function() {
+  return /** @type{?proto.models.Contents} */ (
+    jspb.Message.getWrapperField(this, models_contents_pb.Contents, 3));
 };
 
 
 /**
- * @param {?proto.models.ContentsId|undefined} value
+ * @param {?proto.models.Contents|undefined} value
  * @return {!proto.fastwriting.CreateContentsResponse} returns this
 */
-proto.fastwriting.CreateContentsResponse.prototype.setContentsid = function(value) {
+proto.fastwriting.CreateContentsResponse.prototype.setContents = function(value) {
   return jspb.Message.setWrapperField(this, 3, value);
 };
 
@@ -514,8 +514,8 @@ proto.fastwriting.CreateContentsResponse.prototype.setContentsid = function(valu
  * Clears the message field making it undefined.
  * @return {!proto.fastwriting.CreateContentsResponse} returns this
  */
-proto.fastwriting.CreateContentsResponse.prototype.clearContentsid = function() {
-  return this.setContentsid(undefined);
+proto.fastwriting.CreateContentsResponse.prototype.clearContents = function() {
+  return this.setContents(undefined);
 };
 
 
@@ -523,7 +523,7 @@ proto.fastwriting.CreateContentsResponse.prototype.clearContentsid = function() 
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.fastwriting.CreateContentsResponse.prototype.hasContentsid = function() {
+proto.fastwriting.CreateContentsResponse.prototype.hasContents = function() {
   return jspb.Message.getField(this, 3) != null;
 };
 

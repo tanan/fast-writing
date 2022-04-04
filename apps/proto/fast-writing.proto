@@ -27,7 +27,7 @@ message CreateContentsRequest {
 message CreateContentsResponse {
   bool created  = 1;
   string message = 2;
-  models.ContentsId contentsId = 3;
+  models.Contents contents = 3;
 }
 
 message CreateQuizRequest {
