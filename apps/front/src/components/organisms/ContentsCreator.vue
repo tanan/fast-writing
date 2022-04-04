@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <v-text-field dense clearable class="title my-0 py-0" v-model="title" label="title" required></v-text-field>
+          <v-text-field dense clearable class="title my-0 py-0" v-model="title" @blur="save" @keydown.enter="save" label="title" required></v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -12,11 +12,11 @@
           <div class="quiz" v-for="(quiz, i) in quizzes" :key="i">
             <div class="mb-4 question">
               <span class="index">{{ i+1 }}.</span>
-              <v-text-field dense hide-details v-model="quizzes[i].question" @blur="save" label="question"></v-text-field>
+              <v-text-field dense hide-details v-model="quizzes[i].question" @blur="saveQuiz" @keydown.enter="saveQuiz" label="question"></v-text-field>
             </div>
             <div class="quiz-answer">
               <span class="index"></span>
-              <v-text-field dense hide-details class="answer" v-model="quizzes[i].answer" @blur="save" label="answer"></v-text-field>
+              <v-text-field dense hide-details class="answer" v-model="quizzes[i].answer" @blur="saveQuiz" @keydown.enter="saveQuiz" label="answer"></v-text-field>
             </div>
           </div>
         </v-col>
@@ -41,7 +41,7 @@ export default {
   name: 'ContentsCreator',
   data: () => ({
     title: "",
-    contentsId: 32,
+    contentsId: null,
     quizzes: [
       {"id": null, "question": "question1", "answer": "answer1"}
     ]
@@ -58,26 +58,40 @@ export default {
           if ( err ) {
             reject(err)
           }
+          console.log("contents was created")
           resolve(resp)
         })
       })
-      this.contentsId = await response.toObject().contentsid.id
-      // this.saveQuiz(response.toObject().contentsid.id)
+      this.contentsId = await response.toObject().contents.id.id
+      this.setQuizList(await response.toObject().contents.quizlistList)
     },
-    async saveQuiz (contentsId) {
+    async saveQuiz () {
       for (const [index, quiz] of this.quizzes.entries()) {
-        let quizReq = await this.createQuizRequest(quiz, contentsId)
-        let quizResponse = await new Promise((resolve, reject) => {
+        let quizReq = await this.createQuizRequest(quiz, this.contentsId)
+        await new Promise((resolve, reject) => {
           client.createUserQuiz(quizReq, {}, (err, resp) => {
             if (err != null) {
               reject(err)
             }
             this.quizzes[index].id = resp.toObject().quizid.id
+            console.log("quiz was created")
             resolve(resp)
           })
         })
-        console.log(quizResponse.toObject())
       }
+    },
+    setQuizList (quizList) {
+      let quizzes = []
+      for (const q of quizList) {
+        let quiz = {
+          id: q.id.id,
+          answer: q.answer,
+          question: q.question,
+          order: q.order
+        }
+        quizzes.push(quiz)
+      }
+      this.quizzes = quizzes
     },
     createContentsRequest () {
       let req = new CreateContentsRequest()
@@ -113,7 +127,6 @@ export default {
       let quiz = new Quiz()
       let quizId = new QuizId()
       quizId.setId(q.id)
-      console.log(q.id)
       quiz.setId(quizId)
       quiz.setQuestion(q.question)
       quiz.setAnswer(q.answer)
