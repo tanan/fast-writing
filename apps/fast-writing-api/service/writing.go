@@ -93,7 +93,7 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 		contents.ContentsId = domain.ContentsId(req.Contents.Id.Id)
 		contents.QuizList = s.decodeQuizList(req.Contents.QuizList, req.Contents.Id)
 	}
-	contentsId, err := s.SQLHandler.CreateContents(contents, domain.UserId(req.UserId.Id))
+	contents, err := s.SQLHandler.CreateContents(contents, domain.UserId(req.UserId.Id))
 	if err != nil {
 		return &pb.CreateContentsResponse{
 			Created: false,
@@ -110,8 +110,14 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 	return &pb.CreateContentsResponse{
 		Created: true,
 		Message: "success",
-		ContentsId: &models.ContentsId{
-			Id: contentsId,
+		Contents: &models.Contents{
+			Id: &models.ContentsId{
+				Id: int64(contents.ContentsId),
+			},
+			Title:       contents.Title,
+			Creator:     contents.Creator,
+			QuizList:    s.encodeQuizList(contents.QuizList),
+			LastUpdated: timestamppb.New(contents.LastUpdated),
 		},
 	}, nil
 }

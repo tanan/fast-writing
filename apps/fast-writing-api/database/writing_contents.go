@@ -62,10 +62,10 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 	}, nil
 }
 
-func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.UserId) (int64, error) {
+func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.UserId) (domain.Contents, error) {
 	uid, err := uuid.Parse(string(userId))
 	if err != nil {
-		return 0, errors.New(string(userId) + " is not valid:" + err.Error())
+		return domain.Contents{}, errors.New(string(userId) + " is not valid:" + err.Error())
 	}
 	m := model.Contents{
 		Id:          int64(contents.ContentsId),
@@ -73,15 +73,28 @@ func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.User
 		Title:       contents.Title,
 		LastUpdated: time.Now(),
 	}
-	db := h.Conn.Clauses(clause.OnConflict{
+	if db := h.Conn.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
 		DoUpdates: clause.Assignments(map[string]interface{}{"user_id": m.UserId, "title": m.Title, "last_updated": time.Now()}),
-	}).Create(&m)
-
-	if db.Error != nil {
-		return 0, errors.New("cannot create contents: " + db.Error.Error())
+	}).Create(&m); db.Error != nil {
+		return domain.Contents{}, errors.New("cannot create contents: " + db.Error.Error())
 	}
-	return int64(m.Id), nil
+
+	for i, v := range contents.QuizList {
+		if quizId, err := h.CreateQuiz(v); err != nil {
+			return domain.Contents{}, err
+		} else {
+			contents.QuizList[i] = domain.Quiz{
+				Id:         quizId,
+				Question:   v.Question,
+				Answer:     v.Answer,
+				ContentsId: v.ContentsId,
+			}
+		}
+	}
+	contents.ContentsId = domain.ContentsId(m.Id)
+	contents.LastUpdated = m.LastUpdated
+	return contents, nil
 }
 
 func (h *SQLHandler) CreateQuiz(quiz domain.Quiz) (int64, error) {
