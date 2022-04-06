@@ -57,7 +57,14 @@ export default {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log(user)
+          this.$store.dispatch("auth", {
+            userId: user.uid,
+            userToken: user.accessToken
+          });
+          if (this.$router.query) {
+            this.$router.push(this.$route.query.redirect)
+          }
+          this.$router.push('/')
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -71,7 +78,7 @@ export default {
 </script>
 
 <style lang="scss">
-  .signin {
+  .signin { 
     margin-top: 10%;
     
     .text-field {
