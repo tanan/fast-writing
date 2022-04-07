@@ -12,6 +12,7 @@
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { QueryParams, ContentsQueryParams } from "@/pb/models/query_pb.js"
 import ContentsCard from "@/components/molecules/ContentsCard.vue"
+import Store from '@/store/index.js'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
@@ -31,8 +32,10 @@ export default {
       let req = new ContentsQueryParams()
       let queryParams = new QueryParams()
       req.setParams(queryParams)
+      const token = Store.state.userToken
+      const metadata = { 'authorization': 'Bearer ' + token }
       let response = await new Promise((resolve, reject) => {
-        client.getContentsList(req, {}, (err, resp) => {
+        client.getContentsList(req, metadata, (err, resp) => {
           if (err) {
             reject(err)
           }

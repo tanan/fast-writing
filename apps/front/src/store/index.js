@@ -14,6 +14,16 @@ const store = new Vuex.Store({
     actions: {
         auth(context, user) {
             context.commit('updateUser', user);
+            let value = JSON.stringify(user);
+            localStorage.setItem('user', value);
+        },
+        loadState(context) {
+            let item = localStorage.getItem('user')
+            if (!item) {
+                return
+            }
+            let user = JSON.parse(item)
+            context.commit('updateUser', user)
         }
     },
     modules: {},
