@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fast-writing-api/database/model"
 	"fast-writing-api/domain"
+	"github.com/google/uuid"
 )
 
 func (h *SQLHandler) FindUserById(id domain.UserId) (domain.User, error) {
@@ -21,8 +22,12 @@ func (h *SQLHandler) FindUserById(id domain.UserId) (domain.User, error) {
 }
 
 func (h *SQLHandler) CreateUser(user domain.User) (domain.UserId, error) {
-	model := domain.User{
-		Id:    user.Id,
+	id, err := uuid.Parse(string(user.Id))
+	if err != nil {
+		return domain.UserId(""), errors.New("cannot parse uuid:" + string(user.Id))
+	}
+	model := model.User{
+		Id:    model.MysqlUUID(id),
 		Name:  user.Name,
 		Email: user.Email,
 	}
