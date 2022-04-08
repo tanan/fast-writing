@@ -19,3 +19,16 @@ func (h *SQLHandler) FindUserById(id domain.UserId) (domain.User, error) {
 		Email: user.Email,
 	}, nil
 }
+
+func (h *SQLHandler) CreateUser(user domain.User) (domain.UserId, error) {
+	model := domain.User{
+		Id:    user.Id,
+		Name:  user.Name,
+		Email: user.Email,
+	}
+	db := h.Conn.Create(&model)
+	if db.Error != nil {
+		return "", errors.New("cannot create user:" + db.Error.Error())
+	}
+	return user.Id, nil
+}

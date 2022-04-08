@@ -23,7 +23,10 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		log.Println("--> unary interceptor: ", info.FullMethod)
 		userId, err := interceptor.Authorize(ctx, info.FullMethod)
 		if err != nil {
-			return nil, err
+			if err.Error() != "error getting token from header\n" {
+				log.Println(err.Error())
+			}
+			return handler(ctx, req)
 		}
 		return handler(metadata.AppendToOutgoingContext(ctx, "user_id", userId), req)
 	}
@@ -41,6 +44,10 @@ func (interceptor *AuthInterceptor) Stream() grpc.StreamServerInterceptor {
 }
 
 func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string) (string, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return "", fmt.Errorf("error getting token from header\n")
+	}
 	opt := option.WithCredentialsFile("firebase-credentials.json")
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
@@ -50,16 +57,9 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	if err != nil {
 		return "", fmt.Errorf("error getting Auth client: %v\n", err)
 	}
-
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return "", fmt.Errorf("error getting token from header: %v\n", err)
-	}
-	fmt.Println(strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1))
 	token, err := client.VerifyIDToken(context.Background(), strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1))
 	if err != nil {
 		return "", fmt.Errorf("error verifying ID token: %v\n", err)
 	}
-	log.Printf("Verified ID token: %v\n", token)
-	return "", nil
+	return token.UID, nil
 }

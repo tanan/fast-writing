@@ -18,6 +18,19 @@ func NewUserService(s SQLHandler) *UserService {
 	}
 }
 
+func (s *UserService) CreateUser(ctx context.Context, req *models.User) (*models.UserId, error) {
+	user := domain.User{
+		Id:    domain.UserId(req.Id.Id),
+		Name:  req.Name,
+		Email: req.Email,
+	}
+	id, err := s.SQLHandler.CreateUser(user)
+	if err != nil {
+		return &models.UserId{}, err
+	}
+	return &models.UserId{Id: string(id)}, nil
+}
+
 func (s *UserService) GetUser(ctx context.Context, req *models.UserId) (*models.User, error) {
 	user, err := s.SQLHandler.FindUserById(domain.UserId(req.Id))
 	if err != nil {
