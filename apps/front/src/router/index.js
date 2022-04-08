@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TopPage from '../components/pages/TopPage.vue'
 import SigninPage from '../components/pages/SigninPage.vue'
+import SignupPage from '../components/pages/SignupPage.vue'
 import WritingQuizPage from '../components/pages/WritingQuizPage.vue'
 import CreateQuizPage from '../components/pages/CreateQuizPage.vue'
 import Store from '@/store/index.js'
@@ -10,7 +11,7 @@ const routes = [
     path: '/',
     name: 'TopPage',
     component: TopPage,
-    meta: { requiresAuth: true }
+    // meta: { requiresAuth: true }
   },
   {
     path: '/signin',
@@ -18,10 +19,15 @@ const routes = [
     component: SigninPage
   },
   {
+    path: '/signup',
+    name: 'SignupPage',
+    component: SignupPage
+  },
+  {
     path: '/contents/:id',
     name: 'WritingQuizPage',
     component: WritingQuizPage,
-    meta: { requiresAuth: true }
+    // meta: { requiresAuth: true }
   },
   {
     path: '/contents/create',
