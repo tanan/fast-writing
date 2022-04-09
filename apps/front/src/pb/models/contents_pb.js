@@ -269,7 +269,7 @@ proto.models.ContentsId.prototype.setId = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.models.Contents.repeatedFields_ = [4];
+proto.models.Contents.repeatedFields_ = [5];
 
 
 
@@ -305,6 +305,7 @@ proto.models.Contents.toObject = function(includeInstance, msg) {
     id: (f = msg.getId()) && proto.models.ContentsId.toObject(includeInstance, f),
     title: jspb.Message.getFieldWithDefault(msg, 2, ""),
     creator: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    scope: jspb.Message.getFieldWithDefault(msg, 4, ""),
     quizlistList: jspb.Message.toObjectList(msg.getQuizlistList(),
     proto.models.Quiz.toObject, includeInstance),
     lastUpdated: (f = msg.getLastUpdated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
@@ -358,11 +359,15 @@ proto.models.Contents.deserializeBinaryFromReader = function(msg, reader) {
       msg.setCreator(value);
       break;
     case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setScope(value);
+      break;
+    case 5:
       var value = new proto.models.Quiz;
       reader.readMessage(value,proto.models.Quiz.deserializeBinaryFromReader);
       msg.addQuizlist(value);
       break;
-    case 5:
+    case 6:
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setLastUpdated(value);
@@ -418,10 +423,17 @@ proto.models.Contents.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getScope();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
   f = message.getQuizlistList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      4,
+      5,
       f,
       proto.models.Quiz.serializeBinaryToWriter
     );
@@ -429,7 +441,7 @@ proto.models.Contents.serializeBinaryToWriter = function(message, writer) {
   f = message.getLastUpdated();
   if (f != null) {
     writer.writeMessage(
-      5,
+      6,
       f,
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
     );
@@ -511,12 +523,30 @@ proto.models.Contents.prototype.setCreator = function(value) {
 
 
 /**
- * repeated Quiz quizList = 4;
+ * optional string scope = 4;
+ * @return {string}
+ */
+proto.models.Contents.prototype.getScope = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.models.Contents} returns this
+ */
+proto.models.Contents.prototype.setScope = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * repeated Quiz quizList = 5;
  * @return {!Array<!proto.models.Quiz>}
  */
 proto.models.Contents.prototype.getQuizlistList = function() {
   return /** @type{!Array<!proto.models.Quiz>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.models.Quiz, 4));
+    jspb.Message.getRepeatedWrapperField(this, proto.models.Quiz, 5));
 };
 
 
@@ -525,7 +555,7 @@ proto.models.Contents.prototype.getQuizlistList = function() {
  * @return {!proto.models.Contents} returns this
 */
 proto.models.Contents.prototype.setQuizlistList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 4, value);
+  return jspb.Message.setRepeatedWrapperField(this, 5, value);
 };
 
 
@@ -535,7 +565,7 @@ proto.models.Contents.prototype.setQuizlistList = function(value) {
  * @return {!proto.models.Quiz}
  */
 proto.models.Contents.prototype.addQuizlist = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 4, opt_value, proto.models.Quiz, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.models.Quiz, opt_index);
 };
 
 
@@ -549,12 +579,12 @@ proto.models.Contents.prototype.clearQuizlistList = function() {
 
 
 /**
- * optional google.protobuf.Timestamp last_updated = 5;
+ * optional google.protobuf.Timestamp last_updated = 6;
  * @return {?proto.google.protobuf.Timestamp}
  */
 proto.models.Contents.prototype.getLastUpdated = function() {
   return /** @type{?proto.google.protobuf.Timestamp} */ (
-    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 5));
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 6));
 };
 
 
@@ -563,7 +593,7 @@ proto.models.Contents.prototype.getLastUpdated = function() {
  * @return {!proto.models.Contents} returns this
 */
 proto.models.Contents.prototype.setLastUpdated = function(value) {
-  return jspb.Message.setWrapperField(this, 5, value);
+  return jspb.Message.setWrapperField(this, 6, value);
 };
 
 
@@ -581,7 +611,7 @@ proto.models.Contents.prototype.clearLastUpdated = function() {
  * @return {boolean}
  */
 proto.models.Contents.prototype.hasLastUpdated = function() {
-  return jspb.Message.getField(this, 5) != null;
+  return jspb.Message.getField(this, 6) != null;
 };
 
 
