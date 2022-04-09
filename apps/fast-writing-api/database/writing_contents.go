@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fast-writing-api/database/model"
 	"fast-writing-api/domain"
-	"github.com/google/uuid"
 	"gorm.io/gorm/clause"
 	"time"
 )
@@ -19,7 +18,7 @@ func (h *SQLHandler) FindContentsList(limit int32, offset int32) ([]*domain.Cont
 	var contentsList []*domain.Contents
 	for _, v := range m {
 		var user model.User
-		userDb := h.Conn.Where("id = UUID_TO_BIN(?)", v.UserId.String()).First(&user)
+		userDb := h.Conn.Where("id = ?", v.UserId).First(&user)
 		if userDb.Error != nil {
 			return []*domain.Contents{}, errors.New("cannot find user by id: " + db.Error.Error())
 		}
@@ -48,8 +47,7 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 	}
 
 	var user model.User
-	println(contents.UserId.String())
-	userDb := h.Conn.Where("id = UUID_TO_BIN(?)", contents.UserId.String()).First(&user)
+	userDb := h.Conn.Where("id = ?", contents.UserId).First(&user)
 	if userDb.Error != nil {
 		return domain.Contents{}, errors.New("cannot find user by id: " + db.Error.Error())
 	}
@@ -63,13 +61,9 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 }
 
 func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.UserId) (domain.Contents, error) {
-	uid, err := uuid.Parse(string(userId))
-	if err != nil {
-		return domain.Contents{}, errors.New(string(userId) + " is not valid:" + err.Error())
-	}
 	m := model.Contents{
 		Id:          int64(contents.ContentsId),
-		UserId:      model.MysqlUUID(uid),
+		UserId:      string(userId),
 		Title:       contents.Title,
 		LastUpdated: time.Now(),
 	}
