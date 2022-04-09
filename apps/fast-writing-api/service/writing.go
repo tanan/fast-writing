@@ -73,6 +73,7 @@ func (s *WritingService) GetContentsList(ctx context.Context, req *models.Conten
 			Id:          &models.ContentsId{Id: int64(v.ContentsId)},
 			Title:       v.Title,
 			Creator:     v.Creator,
+			Scope:       v.Scope,
 			LastUpdated: timestamppb.New(v.LastUpdated),
 		})
 	}
@@ -82,7 +83,23 @@ func (s *WritingService) GetContentsList(ctx context.Context, req *models.Conten
 }
 
 func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.UserContentsQueryParams) (*models.ContentsList, error) {
-	return nil, nil
+	contentsList, err := s.SQLHandler.FindContentsListByUserId(domain.UserId(req.GetId().Id), req.GetParams().GetLimit(), req.GetParams().GetOffset())
+	if err != nil {
+		return nil, errors.New("cannot find contents list: " + err.Error())
+	}
+	var m []*models.Contents
+	for _, v := range contentsList {
+		m = append(m, &models.Contents{
+			Id:          &models.ContentsId{Id: int64(v.ContentsId)},
+			Title:       v.Title,
+			Creator:     v.Creator,
+			Scope:       v.Scope,
+			LastUpdated: timestamppb.New(v.LastUpdated),
+		})
+	}
+	return &models.ContentsList{
+		ContentsList: m,
+	}, nil
 }
 
 func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateContentsRequest) (*pb.CreateContentsResponse, error) {
@@ -116,6 +133,7 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 			},
 			Title:       contents.Title,
 			Creator:     contents.Creator,
+			Scope:       contents.Scope,
 			QuizList:    s.encodeQuizList(contents.QuizList),
 			LastUpdated: timestamppb.New(contents.LastUpdated),
 		},

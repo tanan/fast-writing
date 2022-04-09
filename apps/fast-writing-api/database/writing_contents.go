@@ -10,22 +10,35 @@ import (
 
 func (h *SQLHandler) FindContentsList(limit int32, offset int32) ([]*domain.Contents, error) {
 	var m []model.Contents
-	db := h.Conn.Where("id > ?", offset).Order("id").Limit(int(limit)).Find(&m)
+	db := h.Conn.Where("id > ? and scope = ?", offset, "public").Order("id").Limit(int(limit)).Find(&m)
 	if db.Error != nil {
 		return []*domain.Contents{}, errors.New("cannot find contents list: " + db.Error.Error())
 	}
+	return h.toContentsList(m)
+}
 
+func (h *SQLHandler) FindContentsListByUserId(userId domain.UserId, limit int32, offset int32) ([]*domain.Contents, error) {
+	var m []model.Contents
+	db := h.Conn.Where("id > ? and user_id = ?", offset, userId).Order("id").Limit(int(limit)).Find(&m)
+	if db.Error != nil {
+		return []*domain.Contents{}, errors.New("cannot find contents list by user: " + db.Error.Error())
+	}
+	return h.toContentsList(m)
+}
+
+func (h *SQLHandler) toContentsList(m []model.Contents) ([]*domain.Contents, error) {
 	var contentsList []*domain.Contents
 	for _, v := range m {
 		var user model.User
-		userDb := h.Conn.Where("id = ?", v.UserId).First(&user)
-		if userDb.Error != nil {
+		db := h.Conn.Where("id = ?", v.UserId).First(&user)
+		if db.Error != nil {
 			return []*domain.Contents{}, errors.New("cannot find user by id: " + db.Error.Error())
 		}
 		contents := domain.Contents{
 			ContentsId:  domain.ContentsId(v.Id),
 			Creator:     user.Name,
 			Title:       v.Title,
+			Scope:       v.Scope,
 			QuizList:    nil,
 			LastUpdated: v.LastUpdated,
 		}
@@ -35,8 +48,8 @@ func (h *SQLHandler) FindContentsList(limit int32, offset int32) ([]*domain.Cont
 }
 
 func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, error) {
-	var contents model.Contents
-	db := h.Conn.Where("id = ?", id).First(&contents)
+	var m model.Contents
+	db := h.Conn.Where("id = ?", id).First(&m)
 	if db.Error != nil {
 		return domain.Contents{}, errors.New("cannot find contents by id: " + db.Error.Error())
 	}
@@ -47,17 +60,19 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 	}
 
 	var user model.User
-	userDb := h.Conn.Where("id = ?", contents.UserId).First(&user)
+	userDb := h.Conn.Where("id = ?", m.UserId).First(&user)
 	if userDb.Error != nil {
 		return domain.Contents{}, errors.New("cannot find user by id: " + db.Error.Error())
 	}
-	return domain.Contents{
-		ContentsId:  domain.ContentsId(contents.Id),
+	contents := domain.Contents{
+		ContentsId:  domain.ContentsId(m.Id),
 		Creator:     user.Name,
-		Title:       contents.Title,
+		Title:       m.Title,
+		Scope:       m.Scope,
 		QuizList:    h.toQuizList(quiz),
-		LastUpdated: contents.LastUpdated,
-	}, nil
+		LastUpdated: m.LastUpdated,
+	}
+	return contents, nil
 }
 
 func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.UserId) (domain.Contents, error) {
