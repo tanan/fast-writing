@@ -3,12 +3,19 @@
     <v-container>
       <v-row>
         <v-col>
+          <h2>Title</h2>
           <v-text-field dense clearable class="title my-0 py-0" v-model="title" @blur="save" @keydown.enter="save" label="title" required></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <span>Quiz</span>
+          <h2>Description</h2>
+          <v-text-field dense clearable class="title my-0 py-0" v-model="description" @blur="save" @keydown.enter="save" label="description" required></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <h2>Quiz</h2>
           <div class="quiz" v-for="(quiz, i) in quizzes" :key="i">
             <div class="mb-4 question">
               <span class="index">{{ i+1 }}.</span>
@@ -22,9 +29,8 @@
         </v-col>
       </v-row>
       <v-btn @click="addQuiz" class="mx-2 append-btn" color="indigo">
-        <v-icon dark>mdi-plus</v-icon>
+        追加
       </v-btn>
-      <v-btn @click="save" color="success">SAVE</v-btn>
     </v-container>
   </v-form>
 </template>
@@ -34,6 +40,7 @@ import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { Contents, ContentsId, Quiz, QuizId } from "@/pb/models/contents_pb.js"
 import { CreateContentsRequest, CreateQuizRequest } from "@/pb/fast-writing_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
+import Store from '@/store/index.js'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
@@ -41,7 +48,9 @@ export default {
   name: 'ContentsCreator',
   data: () => ({
     title: "",
+    description: "",
     contentsId: null,
+    scope: "public",
     quizzes: [
       {"id": null, "question": "question1", "answer": "answer1"}
     ]
@@ -53,8 +62,10 @@ export default {
     },
     async save () {
       let req = this.createContentsRequest()
+      const token = Store.state.userToken
+      const metadata = { 'authorization': 'Bearer ' + token }
       let response = await new Promise((resolve, reject) => {
-        client.createUserContents( req, {}, ( err, resp ) => {
+        client.createUserContents( req, metadata, ( err, resp ) => {
           if ( err ) {
             reject(err)
           }
@@ -66,10 +77,12 @@ export default {
       this.setQuizList(await response.toObject().contents.quizlistList)
     },
     async saveQuiz () {
+      const token = Store.state.userToken
+      const metadata = { 'authorization': 'Bearer ' + token }
       for (const [index, quiz] of this.quizzes.entries()) {
         let quizReq = await this.createQuizRequest(quiz, this.contentsId)
         await new Promise((resolve, reject) => {
-          client.createUserQuiz(quizReq, {}, (err, resp) => {
+          client.createUserQuiz(quizReq, metadata, (err, resp) => {
             if (err != null) {
               reject(err)
             }
@@ -101,12 +114,14 @@ export default {
       for (const quiz of this.quizzes) {
         contents.addQuizlist(this.createQuiz(quiz))
       }
-      userId.setId("11eae085-55e6-e2ca-a15d-0242ac110002")
+      userId.setId(Store.state.userId)
       contents.setTitle(this.title)
+      contents.setDescription(this.description)
       if (this.contentsId) {
         contentsId.setId(this.contentsId)
       }
       contents.setId(contentsId)
+      contents.setScope(this.scope)
       req.setContents(contents)
       req.setUserid(userId)
       return req

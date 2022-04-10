@@ -8,6 +8,7 @@ type Contents struct {
 	ContentsId  ContentsId
 	Creator     string
 	Title       string
+	Description string
 	Scope       string
 	QuizList    []Quiz
 	LastUpdated time.Time

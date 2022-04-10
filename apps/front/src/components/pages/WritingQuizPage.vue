@@ -15,6 +15,11 @@ import { ContentsId } from "@/pb/models/contents_pb.js"
 import QuizHeader from '@/components/organisms/QuizHeader.vue'
 import QuizList from '@/components/organisms/QuizList.vue'
 import MainHeader from '@/components/organisms/MainHeader.vue'
+import Store from '@/store/index.js'
+
+const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
+const token = Store.state.userToken
+const metadata = { 'authorization': 'Bearer ' + token }
 
 export default defineComponent({
   name: 'WritingQuizPage',
@@ -35,10 +40,9 @@ export default defineComponent({
   },
   methods: {
     async getContentsById (id) {
-      const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
       let req = new ContentsId()
       req.setId(id)
-        await client.getContents(req, {}, (err, resp) => {
+        await client.getContents(req, metadata, (err, resp) => {
           if (err != null) {
             throw new Error("Could not receive the data from API!")
           }

@@ -12,10 +12,12 @@ message ContentsId {
 message Contents {
   ContentsId id = 1;
   string title = 2;
-  string creator = 3;
-  string scope = 4;
-  repeated Quiz quizList = 5;
-  google.protobuf.Timestamp last_updated = 6;
+  string description = 3;
+  string creator = 4;
+  string scope = 5;
+  repeated Quiz quizList = 6;
+  google.protobuf.Timestamp last_updated = 7;
+  
 }
 
 message ContentsList {

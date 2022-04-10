@@ -38,6 +38,7 @@ func (h *SQLHandler) toContentsList(m []model.Contents) ([]*domain.Contents, err
 			ContentsId:  domain.ContentsId(v.Id),
 			Creator:     user.Name,
 			Title:       v.Title,
+			Description: v.Description,
 			Scope:       v.Scope,
 			QuizList:    nil,
 			LastUpdated: v.LastUpdated,
@@ -68,6 +69,7 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 		ContentsId:  domain.ContentsId(m.Id),
 		Creator:     user.Name,
 		Title:       m.Title,
+		Description: m.Description,
 		Scope:       m.Scope,
 		QuizList:    h.toQuizList(quiz),
 		LastUpdated: m.LastUpdated,
@@ -80,11 +82,13 @@ func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.User
 		Id:          int64(contents.ContentsId),
 		UserId:      string(userId),
 		Title:       contents.Title,
+		Description: contents.Description,
+		Scope:       contents.Scope,
 		LastUpdated: time.Now(),
 	}
 	if db := h.Conn.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
-		DoUpdates: clause.Assignments(map[string]interface{}{"user_id": m.UserId, "title": m.Title, "last_updated": time.Now()}),
+		DoUpdates: clause.Assignments(map[string]interface{}{"user_id": m.UserId, "title": m.Title, "description": m.Description, "scope": m.Scope, "last_updated": time.Now()}),
 	}).Create(&m); db.Error != nil {
 		return domain.Contents{}, errors.New("cannot create contents: " + db.Error.Error())
 	}

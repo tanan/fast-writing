@@ -5,7 +5,7 @@
       <div class="creator">作成者: {{ contents.creator }}</div>
       <div class="last-updated">更新日時: {{ getUpdatedDate(contents.lastUpdated) }}</div>
     </v-card-subtitle>
-    <v-card-text class="description">買い物で使う英文を中心に練習します</v-card-text>
+    <v-card-text class="description">{{ contents.description }}</v-card-text>
     <v-card-actions>
       <v-btn color="blue" text>
         <a :href="`/contents/${contents.id}`" rel="noopener" class="link">Go to Lesson</a>

@@ -8,6 +8,7 @@ import (
 	"fast-writing/pkg/pb/models"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"log"
 )
 
 type WritingService struct {
@@ -30,6 +31,7 @@ func (s *WritingService) GetContents(ctx context.Context, req *models.ContentsId
 	return &models.Contents{
 		Id:          &models.ContentsId{Id: int64(contents.ContentsId)},
 		Title:       contents.Title,
+		Description: contents.Description,
 		Creator:     contents.Creator,
 		QuizList:    s.encodeQuizList(contents.QuizList),
 		LastUpdated: timestamppb.New(contents.LastUpdated),
@@ -65,13 +67,15 @@ func (s *WritingService) decodeQuizList(quiz []*models.Quiz, contentsId *models.
 func (s *WritingService) GetContentsList(ctx context.Context, req *models.ContentsQueryParams) (*models.ContentsList, error) {
 	contentsList, err := s.SQLHandler.FindContentsList(req.GetParams().GetLimit(), req.GetParams().GetOffset())
 	if err != nil {
-		return nil, errors.New("cannot find contents list: " + err.Error())
+		log.Printf("cannot find contents list: " + err.Error())
+		return &models.ContentsList{}, nil
 	}
 	var m []*models.Contents
 	for _, v := range contentsList {
 		m = append(m, &models.Contents{
 			Id:          &models.ContentsId{Id: int64(v.ContentsId)},
 			Title:       v.Title,
+			Description: v.Description,
 			Creator:     v.Creator,
 			Scope:       v.Scope,
 			LastUpdated: timestamppb.New(v.LastUpdated),
@@ -85,13 +89,15 @@ func (s *WritingService) GetContentsList(ctx context.Context, req *models.Conten
 func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.UserContentsQueryParams) (*models.ContentsList, error) {
 	contentsList, err := s.SQLHandler.FindContentsListByUserId(domain.UserId(req.GetId().Id), req.GetParams().GetLimit(), req.GetParams().GetOffset())
 	if err != nil {
-		return nil, errors.New("cannot find contents list: " + err.Error())
+		log.Printf("cannot find contents list: " + err.Error())
+		return &models.ContentsList{}, nil
 	}
 	var m []*models.Contents
 	for _, v := range contentsList {
 		m = append(m, &models.Contents{
 			Id:          &models.ContentsId{Id: int64(v.ContentsId)},
 			Title:       v.Title,
+			Description: v.Description,
 			Creator:     v.Creator,
 			Scope:       v.Scope,
 			LastUpdated: timestamppb.New(v.LastUpdated),
@@ -104,7 +110,9 @@ func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.Us
 
 func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateContentsRequest) (*pb.CreateContentsResponse, error) {
 	contents := domain.Contents{
-		Title: req.Contents.Title,
+		Title:       req.Contents.Title,
+		Description: req.Contents.Description,
+		Scope:       req.Contents.Scope,
 	}
 	if req.Contents.Id != nil {
 		contents.ContentsId = domain.ContentsId(req.Contents.Id.Id)
@@ -132,6 +140,7 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 				Id: int64(contents.ContentsId),
 			},
 			Title:       contents.Title,
+			Description: contents.Description,
 			Creator:     contents.Creator,
 			Scope:       contents.Scope,
 			QuizList:    s.encodeQuizList(contents.QuizList),
