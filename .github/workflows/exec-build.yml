@@ -82,16 +82,23 @@ jobs:
       # - name: Update Secret
       #   run: echo "test3" | gcloud secrets versions add $SAMPLE_SECRET_NAME --data-file=-
 
-      - name: Deploy
+      - name: Deploy Writing API
         run: |-
           gcloud run deploy $FAST_WRITING_API_SERVICE_NAME \
             --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag \
             --project $PROJECT_ID \
             --platform managed --region asia-northeast1
 
-      - name: Deploy
+      - name: Deploy Search API
         run: |-
           gcloud run deploy $SEARCH_API_SERVICE_NAME \
             --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag \
+            --project $PROJECT_ID \
+            --platform managed --region asia-northeast1
+
+      - name: Deploy Front
+        run: |-
+          gcloud run deploy $FRONT_SERVICE_NAME \
+            --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FRONT_SERVICE_NAME:$tag \
             --project $PROJECT_ID \
             --platform managed --region asia-northeast1
