@@ -4,7 +4,7 @@ insert into user values
 ;
 
 insert into writing_contents values
-(1, 'fast-writing-db', 'title1', "public", CURRENT_TIMESTAMP())
+(1, 'fast-writing-db', 'title1', 'これは説明です。', "public", CURRENT_TIMESTAMP())
 ;
 
 insert into quiz values
