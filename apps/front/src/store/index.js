@@ -21,6 +21,13 @@ const store = new Vuex.Store({
             let value = JSON.stringify(user)
             localStorage.setItem('user', value)
         },
+        signout(context) {
+            context.commit('updateUser', {
+                userId: "",
+                userToken: "",
+            })
+            localStorage.removeItem('user')
+        },
         loadState(context) {
             let item = localStorage.getItem('user')
             if (!item) {

@@ -1,58 +1,80 @@
 <template>
   <div>
-    <v-app-bar
-      color="deep-purple accent-4"
-      dense
-      dark
-    >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-toolbar-title>SokuTransfer</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-menu
-        left
-        bottom
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            icon
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
+    <div>
+      <Menubar :model="items">
+        <template #start>
+          <img alt="logo" src="https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png" height="40" class="mr-2">
         </template>
-
-        <v-list>
-          <v-list-item
-            v-for="n in 5"
-            :key="n"
-            @click="() => {}"
-          >
-            <v-list-item-title>Option {{ n }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-app-bar>
+        <template #end>
+          <Button icon="pi pi-user" class="p-button-secondary p-button-rounded" @click="toggleAccountMenu()" />
+        </template>
+      </Menubar>
+    </div>
+    <div v-show="isDisplay" class="absolute top-1 right-0">
+      <Menu :model="accountItems" />
+    </div>
   </div>
 </template>
 
 <script>
-// import MainLogo from '@/components/atoms/MainLogo.vue'
-// import HeaderForm from '@/components/molecules/HeaderForm.vue'
-
+import Menubar from 'primevue/menubar'
+import Menu from 'primevue/menu'
+import Button from 'primevue/button'
 export default {
   name: 'MainHeader',
+  components: {
+    Menubar,
+    Menu,
+    Button,
+  },
+  props: {
+    isLoggedIn: Boolean
+  },
+  methods: {
+    toggleAccountMenu() {
+      this.isDisplay = !this.isDisplay
+    },
+    signout() {
+      this.$store.dispatch('signout')
+      this.$router.push('/signin')
+    }
+  },
+  data() {
+    return {
+      isDisplay: false,
+      accountItems: [
+        {
+          label: 'Account',
+          icon: 'pi pi-fw pi-user',
+          items:[
+            {
+              label: 'Sign In',
+              visible: !this.isLoggedIn,
+              to: '/signin'
+            },
+            {
+              label: 'Sign Up',
+              visible: !this.isLoggedIn,
+              to: '/signup'
+            },
+            {
+              label: 'Sign Out',
+              visible: this.isLoggedIn,
+              command: () => {
+                this.signout()
+              }
+            }
+          ]
+        }
+      ],
+      items: [
+        {
+          label:'Contents',
+          icon:'pi pi-fw pi-file',
+        },
+      ]
+    }
+  }
 }
 </script>
 

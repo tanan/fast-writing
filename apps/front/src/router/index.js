@@ -43,7 +43,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth) && !Store.state.userToken) {
+  if (to.matched.some(record => record.meta.requiresAuth) && Store.state.userToken === "") {
     next({ path: '/signin', query: { redirect: to.fullPath } });
   } else {
     next();
