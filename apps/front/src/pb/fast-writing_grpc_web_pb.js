@@ -345,6 +345,7 @@ const methodDescriptor_WritingService_GetContentsList = new grpc.web.MethodDescr
  */
 proto.fastwriting.WritingServiceClient.prototype.getContentsList =
     function(request, metadata, callback) {
+      console.log("hostname:" + this.hostname_)
   return this.client_.rpcCall(this.hostname_ +
       '/fastwriting.WritingService/GetContentsList',
       request,
