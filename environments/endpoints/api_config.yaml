@@ -1,6 +1,6 @@
 type: google.api.Service
 config_version: 3
-name: fw-grpc-endpoint-cmfot4feta-uc.a.run.app
+name: fw-grpc-endpoint-cmfot4feta-an.a.run.app
 title: Cloud Endpoints + Cloud Run gRPC
 apis:
   - name: fastwriting.WritingService
