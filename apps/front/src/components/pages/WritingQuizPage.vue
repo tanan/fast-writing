@@ -2,7 +2,7 @@
   <div>
     <MainHeader />
     <div class="quiz-page">
-      <QuizHeader :contents="contents" :interval="interval" />
+      <QuizHeader :contents="contents" :interval="getInterval()" />
       <QuizList :indecies="indecies" :questions="questions" :answers="answers" />
     </div>
   </div>
@@ -33,12 +33,20 @@ export default defineComponent({
     indecies: [],
     questions: [],
     answers: [],
-    interval: 5
+    interval: Store.state.interval,
   }),
   async created() {
    this.getContentsById(this.$route.params.id)
   },
   methods: {
+    getInterval() {
+      let item = localStorage.getItem('interval')
+      if (!item) {
+          return
+      }
+      let interval = JSON.parse(item)
+      return interval.interval
+    },
     async getContentsById (id) {
       let req = new ContentsId()
       req.setId(id)
@@ -54,7 +62,7 @@ export default defineComponent({
       for(var i in quizList) {
         this.indecies.push(quizList[i].id)
         this.questions.push(quizList[i].question)
-        await new Promise((resolve) => setTimeout(resolve, this.interval*1000));
+        await new Promise((resolve) => setTimeout(resolve, this.getInterval()*1000));
         this.answers.push(quizList[i].answer)
         await new Promise((resolve) => setTimeout(resolve, 2000));
       }

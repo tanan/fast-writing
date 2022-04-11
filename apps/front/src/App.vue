@@ -16,6 +16,7 @@ export default {
   }),
   beforeCreate () {
     this.$store.dispatch('loadState')
+    this.$store.dispatch('loadInterval')
   }
 }
 </script>

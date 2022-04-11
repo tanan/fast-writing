@@ -67,7 +67,6 @@ export default {
       let response = await new Promise((resolve) => {
         client.getUserContentsList(req, metadata, (err, resp) => {
           if (err) {
-            console.log("test")
             // reject(err)
           }
           console.log(resp.toObject().contentslistList)

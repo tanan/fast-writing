@@ -40,7 +40,6 @@ export default {
   }),
   methods: {
     signin(email, password) {
-      console.log(email)
       const auth = getAuth(app);
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {

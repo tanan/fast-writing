@@ -23,7 +23,6 @@ export default {
       return parseInt(i) + 1
     },
     getAnswer(i) {
-      console.log(i)
       let answer = this.answers[i]
       if (!answer) {
         return ""
