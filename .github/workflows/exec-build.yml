@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      FAST_WRITING_API_ENDPOINT: https://fast-writing-api-cmfot4feta-an.a.run.app
+      FAST_WRITING_API_ENDPOINT: https://fw-grpc-endpoint-cmfot4feta-an.a.run.app
     
     permissions:
       contents: 'read'
@@ -41,7 +41,7 @@ jobs:
       - name: Build Image for front
         run: |-
           cd ./apps/front/
-          echo "VUE_APP_WRITING_API_HOST=$FAST_WRITING_API_ENDPOINT" >> .env
+          echo "VUE_APP_WRITING_API_ENDPOINT=$FAST_WRITING_API_ENDPOINT" >> .env
           docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FRONT_SERVICE_NAME:$tag .
       # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
