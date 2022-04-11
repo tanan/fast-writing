@@ -1,0 +1,14 @@
+type: google.api.Service
+config_version: 3
+name: fw-grpc-endpoint-cmfot4feta-uc.a.run.app
+title: Cloud Endpoints + Cloud Run gRPC
+apis:
+  - name: fastwriting.WritingService
+usage:
+  rules:
+  - selector: "*"
+    allow_unregistered_calls: true
+backend:
+  rules:
+    - selector: "*"
+      address: grpcs://fast-writing-api-cmfot4feta-an.a.run.app

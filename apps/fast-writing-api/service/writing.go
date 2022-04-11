@@ -6,7 +6,6 @@ import (
 	"fast-writing-api/domain"
 	"fast-writing/pkg/pb"
 	"fast-writing/pkg/pb/models"
-	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
 )
@@ -125,13 +124,13 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 			Message: "failed to create contents",
 		}, err
 	}
-	_, err = s.Client.SaveSearchContents(context.Background(), req.Contents, grpc.MaxCallRecvMsgSize(10240))
-	if err != nil {
-		return &pb.CreateContentsResponse{
-			Created: false,
-			Message: "failed to create contents",
-		}, errors.New("failed to create contents on search-api:" + err.Error())
-	}
+	//_, err = s.Client.SaveSearchContents(context.Background(), req.Contents, grpc.MaxCallRecvMsgSize(10240))
+	//if err != nil {
+	//	return &pb.CreateContentsResponse{
+	//		Created: false,
+	//		Message: "failed to create contents",
+	//	}, errors.New("failed to create contents on search-api:" + err.Error())
+	//}
 	return &pb.CreateContentsResponse{
 		Created: true,
 		Message: "success",
