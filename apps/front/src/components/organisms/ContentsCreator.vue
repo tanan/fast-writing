@@ -4,11 +4,11 @@
       <div class="mt-6 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3">
         <h2 class="pl-2 pb-2">レッスン名</h2>
         <span class="col-12">
-          <InputText class="col-12 p-inputtext-lg" type="text" v-model="title" @blur="save" @keydown.enter="save" placeholder="Title" />
+          <InputText class="col-12 p-inputtext-lg" type="text" v-model="title" @blur="save" placeholder="Title" />
         </span>
         <h2 class="pl-2 pt-4">説明</h2>
         <span class="col-12">
-          <InputText class="col-12 p-inputtext-lg" type="text" v-model="description" @blur="save" @keydown.enter="save" placeholder="Description" />
+          <InputText class="col-12 p-inputtext-lg" type="text" v-model="description" @blur="save" placeholder="Description" />
         </span>
       </div>
       <div class="col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3 p-0">
@@ -30,7 +30,6 @@
               type="text"
               v-model="quizzes[i].answer"
               @blur="saveQuiz"
-              @keydown.enter="saveQuiz"
               placeholder="Answer"
             />
           </div>
