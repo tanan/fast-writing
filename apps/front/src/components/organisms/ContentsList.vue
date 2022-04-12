@@ -1,18 +1,30 @@
 <template>
-  <v-container>
-    <div class="title"><h2>作成したコンテンツ</h2></div>
-    <v-row no-gutters>
-      <v-col v-for="contents in contentsList" :key="contents.id" cols="12" sm="4">
-        <ContentsCard :contents=contents />
-      </v-col>
-    </v-row>
-    <div class="title mt-6"><h2>公開コンテンツ</h2></div>
-    <v-row no-gutters>
-      <v-col v-for="contents in contentsList" :key="contents.id" cols="12" sm="4">
-        <ContentsCard :contents=contents />
-      </v-col>
-    </v-row>
-  </v-container>
+  <div>
+    <div class="grid">
+      <div class="title col-10 col-offset-1 lg:col-8 lg:col-offset-2">
+        <h2 class="mt-4 ml-2 lg:ml-4">作成したコンテンツ</h2>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="flex align-items-stretch flex-wrap col-10 col-offset-1 lg:col-8 lg:col-offset-2">
+        <div class="flex col-12 lg:col-4 lg:pl-4 lg:pr-4" v-for="contents in userContentsList" :key="contents.id">
+          <ContentsCard :contents=contents />
+        </div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="title col-10 col-offset-1 lg:col-8 lg:col-offset-2">
+        <h2 class="mt-4 ml-2 lg:ml-4">公開コンテンツ</h2>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="flex align-items-stretch flex-wrap col-10 col-offset-1 lg:col-8 lg:col-offset-2">
+        <div class="flex col-12 lg:col-4 lg:pl-4 lg:pr-4" v-for="contents in contentsList" :key="contents.id">
+          <ContentsCard :contents=contents />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -53,7 +65,7 @@ export default {
           resolve(resp)
         })
       })
-      this.toContentsList(response.toObject().contentslistList)
+      this.toContentsList('public', response.toObject().contentslistList)
     },
     async getUserContentsList () {
       let req = new UserContentsQueryParams()
@@ -73,16 +85,21 @@ export default {
           resolve(resp.toObject().contentslistList)
         })
       })
-      this.toContentsList(response)
+      this.toContentsList('user', response)
     },
-    toContentsList(list) {
+    toContentsList(type, list) {
       for(var contents of list) {
         let c = {}
         c.id = contents.id.id
         c.title = contents.title
         c.lastUpdated = contents.lastUpdated
+        c.description = contents.description
         c.creator = contents.creator
-        this.contentsList.push(c)
+        if (type === 'user') {
+          this.userContentsList.push(c)
+        } else {
+          this.contentsList.push(c)
+        }
       }
     }
   }

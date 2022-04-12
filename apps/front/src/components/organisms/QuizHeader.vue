@@ -1,7 +1,9 @@
 <template>
-  <v-container class="quiz-header">
-    <QuizInfo :contents="contents" :interval="interval" />
-  </v-container>    
+  <div class="grid">
+    <div class="mt-6 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3">
+      <QuizInfo :contents="contents" :interval="interval" />
+    </div>
+  </div>
 </template>
 
 <script>

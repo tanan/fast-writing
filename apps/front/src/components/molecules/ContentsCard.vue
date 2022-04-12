@@ -1,22 +1,38 @@
 <template>
-  <v-card class="contents-card" elevation="2">
-    <v-card-title>{{ contents.title }}</v-card-title>
-    <v-card-subtitle class="info">
-      <div class="creator">作成者: {{ contents.creator }}</div>
-      <div class="last-updated">更新日時: {{ getUpdatedDate(contents.lastUpdated) }}</div>
-    </v-card-subtitle>
-    <v-card-text class="description">{{ contents.description }}</v-card-text>
-    <v-card-actions>
-      <v-btn color="blue" text>
-        <a :href="`/contents/${contents.id}`" rel="noopener" class="link">Go to Lesson</a>
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+  <Card class="card">
+    <template #title>
+      {{ contents.title }}
+    </template>
+    <template #subtitle>
+      <div class="flex">
+        <div class="creator">作成者: {{ contents.creator }}</div>
+        <div class="last-updated ml-4">更新日時: {{ getUpdatedDate(contents.lastUpdated) }}</div>
+      </div>
+    </template>
+    <template #content>
+        <div class="description">{{ contents.description }}</div>
+    </template>
+    <template #footer>
+      <a :href="`/contents/${contents.id}`" rel="noopener" class="link">
+        <Button icon="pi pi-check" label="Start" to="`/contents/${contents.id}`" />
+      </a>
+      <a :href="`/contents/edit/${contents.id}`" rel="noopener" class="link">
+        <Button icon="pi pi-pencil" label="Edit" class="p-button-secondary" style="margin-left: .5em" />
+      </a>
+    </template>
+  </Card>
 </template>
 
 <script>
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+
 export default {
   name: 'ContentsCard',
+  components: {
+    Card,
+    Button,
+  },
   props: {
     contents: Object
   },
@@ -33,20 +49,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .contents-card {
-    margin: 8px 16px;
-
-    .info {
-      display: flex;
-      padding: 4px 16px;
-      font-weight: 0.8rem;
-      .last-updated {
-        padding-left: 24px;
-      }
-    }
-
-    .link {
-      text-decoration: none;
-    }
+  .link {
+    text-decoration: none;
+  }
+  .card {
+    width: 100%;
+  }
+  .description {
+    min-height: 3rem;
   }
 </style>

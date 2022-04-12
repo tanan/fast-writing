@@ -1,32 +1,33 @@
 <template>
-  <v-row>
-    <v-col>
-      <div class="text-h4">{{ contents.title }}</div>
-      <div class="quiz-info text-subtitle-2">
-        <div class="creator">作成者：{{ contents.creator }}</div>
-        <div class="last-updated">更新日時：{{ getUpdatedDate(contents.lastUpdated) }}</div>
-      </div>
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col cols="4" sm="2">
-      <div class="interval text-subtitle-1">回答時間：</div>
-    </v-col>
-    <v-col cols="4" sm="2">
-      <v-select v-model="select" :items="items" dense solo label="秒数"></v-select>
-    </v-col>
-  </v-row>
+  <div>
+    <div class="title">
+      <h2>{{ contents.title }}</h2>
+    </div>
+    <div class="quiz-info mt-2">
+      <p class="">作成者：{{ contents.creator }}</p>
+      <p class="ml-4">更新日時：{{ getUpdatedDate(contents.lastUpdated) }}</p>
+    </div>
+    <div class="flex mt-4">
+      <h3 class="mr-2 pt-2">回答時間:</h3>
+      <Dropdown v-model="select" :options="items" />
+      <p class="ml-2 pt-2">秒</p>
+    </div>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from "vue"
+import Dropdown from 'primevue/dropdown';
 
 export default defineComponent ({
   name: 'QuizInfo',
+  components: {
+    Dropdown,
+  },
   data () {
     return {
       select: this.interval,
-      items: [1,2,3,4,5],
+      items: [4,5,6,7,8,9,10],
     }
   },
   props: {
