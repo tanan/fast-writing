@@ -1,38 +1,46 @@
 <template>
-  <v-form class="contents-creator-form" ref="form">
-    <v-container>
-      <v-row>
-        <v-col>
-          <h2>Title</h2>
-          <v-text-field dense clearable class="title my-0 py-0" v-model="title" @blur="save" @keydown.enter="save" label="title" required></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <h2>Description</h2>
-          <v-text-field dense clearable class="title my-0 py-0" v-model="description" @blur="save" @keydown.enter="save" label="description" required></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <h2>Quiz</h2>
-          <div class="quiz" v-for="(quiz, i) in quizzes" :key="i">
-            <div class="mb-4 question">
-              <span class="index">{{ i+1 }}.</span>
-              <v-text-field dense hide-details v-model="quizzes[i].question" @blur="saveQuiz" @keydown.enter="saveQuiz" label="question"></v-text-field>
-            </div>
-            <div class="quiz-answer">
-              <span class="index"></span>
-              <v-text-field dense hide-details class="answer" v-model="quizzes[i].answer" @blur="saveQuiz" @keydown.enter="saveQuiz" label="answer"></v-text-field>
-            </div>
+  <div>
+    <div class="grid">
+      <div class="mt-6 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3">
+        <h2 class="pl-2 pb-2">レッスン名</h2>
+        <span class="col-12">
+          <InputText class="col-12 p-inputtext-lg" type="text" v-model="title" @blur="save" @keydown.enter="save" placeholder="Title" />
+        </span>
+        <h2 class="pl-2 pt-4">説明</h2>
+        <span class="col-12">
+          <InputText class="col-12 p-inputtext-lg" type="text" v-model="description" @blur="save" @keydown.enter="save" placeholder="Description" />
+        </span>
+      </div>
+      <div class="col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3 p-0">
+        <h2 class="pl-2 pt-4">クイズ</h2>
+        <div class="quiz mt-4" v-for="(quiz, i) in quizzes" :key="i">
+          <div class="flex question">
+            <h3 class="col-1 p-2 mr-4 lg:mr-0">Q{{ i+1 }}.</h3>
+            <InputText
+              class="col-10 lg:col-11 align-items-center p-inputtext-lg"
+              type="text"
+              v-model="quizzes[i].question"
+              placeholder="Question"
+            />
           </div>
-        </v-col>
-      </v-row>
-      <v-btn @click="addQuiz" class="mx-2 append-btn" color="indigo">
-        追加
-      </v-btn>
-    </v-container>
-  </v-form>
+          <div class="flex quiz-answer mt-2 p-0">
+            <h3 class="col-1 p-2 mr-4 lg:mr-0">A{{ i+1 }}.</h3>
+            <InputText
+              class="col-10 lg:col-11 align-items-center p-inputtext-lg"
+              type="text"
+              v-model="quizzes[i].answer"
+              @blur="saveQuiz"
+              @keydown.enter="saveQuiz"
+              placeholder="Answer"
+            />
+          </div>
+        </div>
+        <div class="col-offset-2 lg:col-offset-1">
+          <Button class="mt-2 lg:mt-4" label="追加" icon="pi pi-plus" @click="addQuiz" />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -41,11 +49,17 @@ import { Contents, ContentsId, Quiz, QuizId } from "@/pb/models/contents_pb.js"
 import { CreateContentsRequest, CreateQuizRequest } from "@/pb/fast-writing_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
 import Store from '@/store/index.js'
+import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
 export default {
   name: 'ContentsCreator',
+  components: {
+    InputText,
+    Button,
+  },
   data: () => ({
     title: "",
     description: "",
