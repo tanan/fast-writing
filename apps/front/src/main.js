@@ -7,6 +7,7 @@ import { loadFonts } from './plugins/webfontloader'
 import mdiVue from 'mdi-vue/v3'
 import * as mdiJs from '@mdi/js'
 import PrimeVue from 'primevue/config'
+import ToastService from 'primevue/toastservice';
 
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -20,5 +21,6 @@ createApp(App)
   .use(store)
   .use(vuetify)
   .use(PrimeVue)
+  .use(ToastService)
   .use(mdiVue, { icons: mdiJs })
   .mount('#app')

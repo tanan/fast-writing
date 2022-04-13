@@ -1,18 +1,19 @@
 <template>
   <div>
-    <MainHeader :isLoggedIn="this.isLoggedIn()" />
+    <Toast position="bottom-right" :breakpoints="{'920px': {width: '100%', top: '0', right: '0'}}" />
+    <MainHeader :isLoggedIn="isLoggedIn()" />
     <div class="col-10 col-offset-1 mt-6 lg:col-4 lg:col-offset-4">
       <Panel class="col-12 lg:col-9" header="Sign Up">
         <div class="mt-4">
           <i class="pi pi-user"></i>
-          <InputText class="col-10 col-offset-1" type="text" v-model="title" @blur="save" placeholder="Email" />
+          <InputText v-bind:class="{ 'p-invalid': error.email }" class="col-10 col-offset-1" type="text" v-model="email" @blur="validate('email', email)" placeholder="Email" />
         </div>
         <div class="mt-4">
           <i class="pi pi-lock"></i>
-          <InputText class="col-10 col-offset-1" type="password" v-model="title" @blur="save" placeholder="Password" />
+          <InputText v-bind:class="{ 'p-invalid': error.password }" class="col-10 col-offset-1" type="password" v-model="password" @blur="validate('password', password)" placeholder="Password" />
         </div>
         <div class="col-12 lg:pr-3">
-          <Button class="mt-2 col-4 col-offset-8 lg:mt-4 lg:col-3 lg:col-offset-9" label="Sign Up" @click="signup(this.email, this.password)" />
+          <Button class="mt-2 col-4 col-offset-8 lg:mt-4 lg:col-3 lg:col-offset-9" label="Sign Up" @click="signup(email, password)" />
         </div>
       </Panel>
     </div>
@@ -21,6 +22,8 @@
 
 
 <script>
+import { defineComponent, ref, reactive } from "vue"
+import { useRouter } from 'vue-router'
 import { UserServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { User, UserId } from "@/pb/models/user_pb.js"
 import app from "@/plugins/firebase.js"
@@ -29,42 +32,62 @@ import MainHeader from '@/components/organisms/MainHeader.vue'
 import Panel from 'primevue/panel'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import Toast from 'primevue/toast';
+import { useToast } from "primevue/usetoast"
 import Store from '@/store/index.js'
 
 const client = new UserServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
-export default {
-   name: 'SignupPage',
-   data: () => ({
-    email: "",
-    password: "",
-  }),
+export default defineComponent({
+  name: 'SignupPage',
   components: {
     MainHeader,
     Panel,
     InputText,
     Button,
+    Toast
   },
-  methods: {
-    isLoggedIn () {
+  setup() {
+    const email = ref('')
+    const password = ref('')
+    const error = reactive({
+      email: false,
+      password: false,
+    })
+    const toast = useToast()
+    const router = useRouter()
+
+    const isLoggedIn = () => {
       if (Store.state.userToken === "") {
         return false
       }
       return true
-    },
-    async signup(email, password) {
+    }
+
+    const validate = (k, v) => {
+      switch(k) {
+        case 'email':
+          error.email = v === "" ? true : false
+          break
+        case 'password':
+          error.password = v === "" ? true : false
+          break
+      }
+    }
+
+    const signup = (email, password) => {
       const auth = getAuth(app);
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          this.$store.dispatch("auth", {
+          Store.dispatch("auth", {
             userId: user.uid,
             userToken: user.accessToken
           })
           return user
         })
         .then(async (user) => {
-          let req = this.createUser(user.uid, "", this.email)
+          let req = createUser(user.uid, "", email)
           const token = user.accessToken
           const metadata = { 'authorization': 'Bearer ' + token }
           await new Promise((resolve, reject) => {
@@ -76,16 +99,19 @@ export default {
             })
           })
         })
-        .then(() => {
-          this.$router.push('/')
+        .then(async () => {
+          toast.add({severity:'success', summary: 'created', detail: 'success create user', life: 5000})
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+          router.push('/')
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log(errorCode)
-          console.log(errorMessage)
+          toast.add({severity:'error', summary: 'failed to create user', detail: `${errorCode}: ${errorMessage}`, life: 5000});
         })
-    }, createUser (id, name, email) {
+    }
+
+    const createUser = (id, name, email) => {
       let req = new User()
       let userId = new UserId()
       userId.setId(id)
@@ -94,8 +120,19 @@ export default {
       req.setEmail(email)
       return req
     }
+
+    return {
+      email,
+      password,
+      error,
+      toast,
+      isLoggedIn,
+      validate,
+      signup,
+      createUser,
+    }
   }
-};
+})
 </script>
 
 <style lang="scss">
