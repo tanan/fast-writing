@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MainHeader />
+    <MainHeader :isLoggedIn="this.isLoggedIn()" />
     <div class="quiz-page">
       <QuizHeader :contents="contents" :interval="getInterval()" />
       <QuizList :indecies="indecies" :questions="questions" :answers="answers" />
@@ -39,6 +39,12 @@ export default defineComponent({
    this.getContentsById(this.$route.params.id)
   },
   methods: {
+    isLoggedIn () {
+      if (Store.state.userToken === "") {
+        return false
+      }
+      return true
+    },
     getInterval() {
       let item = localStorage.getItem('interval')
       if (!item) {

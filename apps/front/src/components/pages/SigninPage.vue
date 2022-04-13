@@ -1,44 +1,52 @@
 <template>
-  <v-container class="signin" fluid fill-height>
-    <v-row justify="center">
-      <v-col cols="10" sm="4" md="3">
-        <v-card>
-          <v-toolbar dark color="primary">
-            <v-toolbar-title>Login form</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-form>
-              <div class="text-field">
-                <mdicon class="icon" name="account" :width="30" :height="30" />
-                <v-text-field name="email" v-model="email" label="Email" type="text"></v-text-field>
-              </div>
-              <div class="text-field">
-                <mdicon class="icon" name="lock" :width="30" :height="30" />
-                <v-text-field id="password" name="password" v-model="password" label="Password" type="password"></v-text-field>
-              </div>
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="signin(this.email, this.password)">Login</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div>
+    <MainHeader :isLoggedIn="this.isLoggedIn()" />
+    <div class="col-10 col-offset-1 mt-6 lg:col-4 lg:col-offset-4">
+      <Panel class="col-12 lg:col-9" header="Sign In">
+        <div class="mt-4">
+          <i class="pi pi-user"></i>
+          <InputText class="col-10 col-offset-1" type="text" v-model="title" @blur="save" placeholder="Email" />
+        </div>
+        <div class="mt-4">
+          <i class="pi pi-lock"></i>
+          <InputText class="col-10 col-offset-1" type="password" v-model="title" @blur="save" placeholder="Password" />
+        </div>
+        <div class="col-12 lg:pr-3">
+          <Button class="mt-2 col-4 col-offset-8 lg:mt-4 lg:col-3 lg:col-offset-9" label="Sign In" @click="signin(this.email, this.password)" />
+        </div>
+      </Panel>
+    </div>
+  </div>
 </template>
 
 <script>
 import app from "@/plugins/firebase"
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import MainHeader from '@/components/organisms/MainHeader.vue'
+import Panel from 'primevue/panel'
+import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
+import Store from '@/store/index.js'
 
 export default {
-   name: 'SigninPage',
-   data: () => ({
+  name: 'SigninPage',
+  data: () => ({
     email: "",
     password: "",
   }),
+  components: {
+    MainHeader,
+    Panel,
+    InputText,
+    Button,
+  },
   methods: {
+    isLoggedIn () {
+      if (Store.state.userToken === "") {
+        return false
+      }
+      return true
+    },
     signin(email, password) {
       const auth = getAuth(app);
       signInWithEmailAndPassword(auth, email, password)
