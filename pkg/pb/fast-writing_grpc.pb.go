@@ -147,7 +147,9 @@ type WritingServiceClient interface {
 	GetContentsList(ctx context.Context, in *models.ContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
 	GetUserContentsList(ctx context.Context, in *models.UserContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
 	CreateUserContents(ctx context.Context, in *CreateContentsRequest, opts ...grpc.CallOption) (*CreateContentsResponse, error)
+	DeleteUserContents(ctx context.Context, in *DeleteContentsRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 	CreateUserQuiz(ctx context.Context, in *CreateQuizRequest, opts ...grpc.CallOption) (*CreateQuizResponse, error)
+	DeleteUserQuiz(ctx context.Context, in *DeleteQuizRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 }
 
 type writingServiceClient struct {
@@ -194,9 +196,27 @@ func (c *writingServiceClient) CreateUserContents(ctx context.Context, in *Creat
 	return out, nil
 }
 
+func (c *writingServiceClient) DeleteUserContents(ctx context.Context, in *DeleteContentsRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+	out := new(DeleteResponse)
+	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/DeleteUserContents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *writingServiceClient) CreateUserQuiz(ctx context.Context, in *CreateQuizRequest, opts ...grpc.CallOption) (*CreateQuizResponse, error) {
 	out := new(CreateQuizResponse)
 	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/CreateUserQuiz", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *writingServiceClient) DeleteUserQuiz(ctx context.Context, in *DeleteQuizRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+	out := new(DeleteResponse)
+	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/DeleteUserQuiz", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +231,9 @@ type WritingServiceServer interface {
 	GetContentsList(context.Context, *models.ContentsQueryParams) (*models.ContentsList, error)
 	GetUserContentsList(context.Context, *models.UserContentsQueryParams) (*models.ContentsList, error)
 	CreateUserContents(context.Context, *CreateContentsRequest) (*CreateContentsResponse, error)
+	DeleteUserContents(context.Context, *DeleteContentsRequest) (*DeleteResponse, error)
 	CreateUserQuiz(context.Context, *CreateQuizRequest) (*CreateQuizResponse, error)
+	DeleteUserQuiz(context.Context, *DeleteQuizRequest) (*DeleteResponse, error)
 }
 
 // UnimplementedWritingServiceServer should be embedded to have forward compatible implementations.
@@ -230,8 +252,14 @@ func (UnimplementedWritingServiceServer) GetUserContentsList(context.Context, *m
 func (UnimplementedWritingServiceServer) CreateUserContents(context.Context, *CreateContentsRequest) (*CreateContentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUserContents not implemented")
 }
+func (UnimplementedWritingServiceServer) DeleteUserContents(context.Context, *DeleteContentsRequest) (*DeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserContents not implemented")
+}
 func (UnimplementedWritingServiceServer) CreateUserQuiz(context.Context, *CreateQuizRequest) (*CreateQuizResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUserQuiz not implemented")
+}
+func (UnimplementedWritingServiceServer) DeleteUserQuiz(context.Context, *DeleteQuizRequest) (*DeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserQuiz not implemented")
 }
 
 // UnsafeWritingServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -317,6 +345,24 @@ func _WritingService_CreateUserContents_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WritingService_DeleteUserContents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteContentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WritingServiceServer).DeleteUserContents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/fastwriting.WritingService/DeleteUserContents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WritingServiceServer).DeleteUserContents(ctx, req.(*DeleteContentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _WritingService_CreateUserQuiz_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateQuizRequest)
 	if err := dec(in); err != nil {
@@ -331,6 +377,24 @@ func _WritingService_CreateUserQuiz_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WritingServiceServer).CreateUserQuiz(ctx, req.(*CreateQuizRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WritingService_DeleteUserQuiz_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteQuizRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WritingServiceServer).DeleteUserQuiz(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/fastwriting.WritingService/DeleteUserQuiz",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WritingServiceServer).DeleteUserQuiz(ctx, req.(*DeleteQuizRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -359,8 +423,16 @@ var WritingService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _WritingService_CreateUserContents_Handler,
 		},
 		{
+			MethodName: "DeleteUserContents",
+			Handler:    _WritingService_DeleteUserContents_Handler,
+		},
+		{
 			MethodName: "CreateUserQuiz",
 			Handler:    _WritingService_CreateUserQuiz_Handler,
+		},
+		{
+			MethodName: "DeleteUserQuiz",
+			Handler:    _WritingService_DeleteUserQuiz_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

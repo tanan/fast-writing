@@ -497,6 +497,67 @@ proto.fastwriting.WritingServicePromiseClient.prototype.createUserContents =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.fastwriting.DeleteContentsRequest,
+ *   !proto.fastwriting.DeleteResponse>}
+ */
+const methodDescriptor_WritingService_DeleteUserContents = new grpc.web.MethodDescriptor(
+  '/fastwriting.WritingService/DeleteUserContents',
+  grpc.web.MethodType.UNARY,
+  proto.fastwriting.DeleteContentsRequest,
+  proto.fastwriting.DeleteResponse,
+  /**
+   * @param {!proto.fastwriting.DeleteContentsRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.fastwriting.DeleteResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.fastwriting.DeleteContentsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.fastwriting.DeleteResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.DeleteResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.fastwriting.WritingServiceClient.prototype.deleteUserContents =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/fastwriting.WritingService/DeleteUserContents',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_DeleteUserContents,
+      callback);
+};
+
+
+/**
+ * @param {!proto.fastwriting.DeleteContentsRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.fastwriting.DeleteResponse>}
+ *     Promise that resolves to the response
+ */
+proto.fastwriting.WritingServicePromiseClient.prototype.deleteUserContents =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/fastwriting.WritingService/DeleteUserContents',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_DeleteUserContents);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.fastwriting.CreateQuizRequest,
  *   !proto.fastwriting.CreateQuizResponse>}
  */
@@ -552,6 +613,67 @@ proto.fastwriting.WritingServicePromiseClient.prototype.createUserQuiz =
       request,
       metadata || {},
       methodDescriptor_WritingService_CreateUserQuiz);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.fastwriting.DeleteQuizRequest,
+ *   !proto.fastwriting.DeleteResponse>}
+ */
+const methodDescriptor_WritingService_DeleteUserQuiz = new grpc.web.MethodDescriptor(
+  '/fastwriting.WritingService/DeleteUserQuiz',
+  grpc.web.MethodType.UNARY,
+  proto.fastwriting.DeleteQuizRequest,
+  proto.fastwriting.DeleteResponse,
+  /**
+   * @param {!proto.fastwriting.DeleteQuizRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.fastwriting.DeleteResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.fastwriting.DeleteQuizRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.fastwriting.DeleteResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.fastwriting.DeleteResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.fastwriting.WritingServiceClient.prototype.deleteUserQuiz =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/fastwriting.WritingService/DeleteUserQuiz',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_DeleteUserQuiz,
+      callback);
+};
+
+
+/**
+ * @param {!proto.fastwriting.DeleteQuizRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.fastwriting.DeleteResponse>}
+ *     Promise that resolves to the response
+ */
+proto.fastwriting.WritingServicePromiseClient.prototype.deleteUserQuiz =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/fastwriting.WritingService/DeleteUserQuiz',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_DeleteUserQuiz);
 };
 
 
