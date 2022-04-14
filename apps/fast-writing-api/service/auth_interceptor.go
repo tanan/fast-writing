@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fast-writing-api/config"
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/option"
 	"strings"
@@ -12,10 +13,14 @@ import (
 	"log"
 )
 
-type AuthInterceptor struct{}
+type AuthInterceptor struct {
+	cfg *config.Config
+}
 
-func NewAuthInterceptor() *AuthInterceptor {
-	return &AuthInterceptor{}
+func NewAuthInterceptor(cfg *config.Config) *AuthInterceptor {
+	return &AuthInterceptor{
+		cfg: cfg,
+	}
 }
 
 func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
@@ -48,7 +53,10 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	if !ok {
 		return "", fmt.Errorf("error getting token from header\n")
 	}
-	opt := option.WithCredentialsFile("firebase-credentials.json")
+	var opt option.ClientOption
+	if !interceptor.cfg.Application.OnCloud {
+		opt = option.WithCredentialsFile("firebase-credentials.json")
+	}
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		return "", fmt.Errorf("error initializing app: %v", err)

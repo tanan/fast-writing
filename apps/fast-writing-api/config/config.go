@@ -15,7 +15,8 @@ type Config struct {
 }
 
 type Application struct {
-	Port int
+	Port    int
+	OnCloud bool
 }
 
 type Database struct {
@@ -58,7 +59,8 @@ func LoadConfig(path string) (*Config, error) {
 	fmt.Printf("search api: {host: %s, port: %v, usessl: %v, usetoken: %v}\n", cfg.Search.Host, cfg.Search.Port, cfg.Search.Ssl, cfg.Search.Token)
 	return &Config{
 		Application: Application{
-			Port: cfg.Application.Port,
+			Port:    cfg.Application.Port,
+			OnCloud: cfg.Application.OnCloud,
 		},
 		Database: Database{
 			Type:     cfg.Database.Type,

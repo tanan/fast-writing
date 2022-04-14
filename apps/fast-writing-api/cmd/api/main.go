@@ -22,12 +22,6 @@ var (
 func main() {
 	flag.Parse()
 
-	interceptor := service.NewAuthInterceptor()
-	// gRPCサーバーの生成
-	s := grpc.NewServer(
-		grpc.UnaryInterceptor(interceptor.Unary()),
-		grpc.StreamInterceptor(interceptor.Stream()),
-	)
 	// 自動生成された関数に、サーバと実際に処理を行うメソッドを実装したハンドラを設定します。
 	// protoファイルで定義した`RockPaperScissorsService`に対応しています。
 	c, err := config.LoadConfig(*path)
@@ -45,6 +39,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to client connection: %v", err)
 	}
+
+	interceptor := service.NewAuthInterceptor(c)
+	// gRPCサーバーの生成
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(interceptor.Unary()),
+		grpc.StreamInterceptor(interceptor.Stream()),
+	)
+
 	searchClient := pb.NewSearchServiceClient(cc)
 	pb.RegisterSearchServiceServer(s, service.NewSearchService(sqlHandler, searchClient))
 	pb.RegisterUserServiceServer(s, service.NewUserService(sqlHandler))
