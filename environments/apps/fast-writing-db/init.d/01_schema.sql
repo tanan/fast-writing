@@ -28,6 +28,7 @@ create table quiz
 (
   id bigint primary key AUTO_INCREMENT,
   contents_id bigint not null,
+  user_id varchar(32) not null,
   question varchar(256) not null,
   answer varchar(256) not null,
   last_updated datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP

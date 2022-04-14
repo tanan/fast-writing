@@ -9,5 +9,7 @@ type SQLHandler interface {
 	FindContentsList(limit int32, offset int32) ([]*domain.Contents, error)
 	FindContentsListByUserId(userId domain.UserId, limit int32, offset int32) ([]*domain.Contents, error)
 	CreateContents(contents domain.Contents, userId domain.UserId) (domain.Contents, error)
+	DeleteContents(userId domain.UserId, contentsId domain.ContentsId) (int64, error)
 	CreateQuiz(quiz domain.Quiz) (int64, error)
+	DeleteQuiz(userId domain.UserId, contentsId domain.ContentsId, quizId domain.QuizId) (int64, error)
 }

@@ -1,5 +1,6 @@
 application:
   port: 10001
+  onCloud: false
 
 search:
   host: "127.0.0.1"

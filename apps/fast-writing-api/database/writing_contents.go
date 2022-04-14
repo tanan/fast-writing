@@ -98,7 +98,7 @@ func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.User
 			return domain.Contents{}, err
 		} else {
 			contents.QuizList[i] = domain.Quiz{
-				Id:         quizId,
+				Id:         domain.QuizId(quizId),
 				Question:   v.Question,
 				Answer:     v.Answer,
 				ContentsId: v.ContentsId,
@@ -110,9 +110,17 @@ func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.User
 	return contents, nil
 }
 
+func (h *SQLHandler) DeleteContents(userId domain.UserId, contentsId domain.ContentsId) (int64, error) {
+	db := h.Conn.Where("user_id = ?", userId).Delete(&model.Contents{}, contentsId)
+	if db.Error != nil {
+		return 0, errors.New("cannot delete contents: " + db.Error.Error())
+	}
+	return 1, nil
+}
+
 func (h *SQLHandler) CreateQuiz(quiz domain.Quiz) (int64, error) {
 	m := model.Quiz{
-		Id:          quiz.Id,
+		Id:          int64(quiz.Id),
 		ContentsId:  int64(quiz.ContentsId),
 		Question:    quiz.Question,
 		Answer:      quiz.Answer,
@@ -132,11 +140,19 @@ func (h *SQLHandler) toQuizList(l []model.Quiz) []domain.Quiz {
 	var quizList []domain.Quiz
 	for _, v := range l {
 		quizList = append(quizList, domain.Quiz{
-			Id:         v.Id,
+			Id:         domain.QuizId(v.Id),
 			Question:   v.Question,
 			Answer:     v.Answer,
 			ContentsId: domain.ContentsId(v.ContentsId),
 		})
 	}
 	return quizList
+}
+
+func (h *SQLHandler) DeleteQuiz(userId domain.UserId, contentsId domain.ContentsId, quizId domain.QuizId) (int64, error) {
+	db := h.Conn.Where("user_id = ? and contents_id = ?", userId, contentsId).Delete(&model.Quiz{}, quizId)
+	if db.Error != nil {
+		return 0, errors.New("cannot delete quiz: " + db.Error.Error())
+	}
+	return 1, nil
 }

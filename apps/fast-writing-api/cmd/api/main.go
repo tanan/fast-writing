@@ -22,8 +22,6 @@ var (
 func main() {
 	flag.Parse()
 
-	// 自動生成された関数に、サーバと実際に処理を行うメソッドを実装したハンドラを設定します。
-	// protoファイルで定義した`RockPaperScissorsService`に対応しています。
 	c, err := config.LoadConfig(*path)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
@@ -41,7 +39,6 @@ func main() {
 	}
 
 	interceptor := service.NewAuthInterceptor(c)
-	// gRPCサーバーの生成
 	s := grpc.NewServer(
 		grpc.UnaryInterceptor(interceptor.Unary()),
 		grpc.StreamInterceptor(interceptor.Stream()),
@@ -52,8 +49,6 @@ func main() {
 	pb.RegisterUserServiceServer(s, service.NewUserService(sqlHandler))
 	pb.RegisterWritingServiceServer(s, service.NewWritingService(sqlHandler, searchClient))
 
-	// サーバーリフレクションを有効にしています。
-	// 有効にすることでシリアライズせずとも後述する`grpc_cli`で動作確認ができるようになります。
 	reflection.Register(s)
 
 	listenPort, err := net.Listen("tcp", fmt.Sprintf(":%d", c.Application.Port))

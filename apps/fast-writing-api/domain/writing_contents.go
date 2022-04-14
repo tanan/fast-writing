@@ -3,6 +3,7 @@ package domain
 import "time"
 
 type ContentsId int64
+type QuizId int64
 
 type Contents struct {
 	ContentsId  ContentsId
@@ -15,7 +16,7 @@ type Contents struct {
 }
 
 type Quiz struct {
-	Id         int64
+	Id         QuizId
 	Question   string
 	Answer     string
 	ContentsId ContentsId

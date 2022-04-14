@@ -35,7 +35,6 @@ message CreateContentsResponse {
 
 message DeleteContentsRequest {
   models.ContentsId contentsId = 1;
-  models.UserId userId = 2;
 }
 
 message DeleteResponse {

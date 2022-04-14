@@ -53,11 +53,14 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	if !ok {
 		return "", fmt.Errorf("error getting token from header\n")
 	}
-	var opt option.ClientOption
-	if !interceptor.cfg.Application.OnCloud {
-		opt = option.WithCredentialsFile("firebase-credentials.json")
+	var app *firebase.App
+	var err error
+	if interceptor.cfg.Application.OnCloud {
+		app, err = firebase.NewApp(context.Background(), nil)
+	} else {
+		opt := option.WithCredentialsFile("firebase-credentials.json")
+		app, err = firebase.NewApp(context.Background(), nil, opt)
 	}
-	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		return "", fmt.Errorf("error initializing app: %v", err)
 	}

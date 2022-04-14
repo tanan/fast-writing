@@ -42,7 +42,7 @@ func (s *WritingService) encodeQuizList(l []domain.Quiz) []*models.Quiz {
 	for _, v := range l {
 		quizList = append(quizList, &models.Quiz{
 			Id: &models.QuizId{
-				Id: v.Id,
+				Id: int64(v.Id),
 			},
 			Question: v.Question,
 			Answer:   v.Answer,
@@ -155,7 +155,7 @@ func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizR
 		ContentsId: domain.ContentsId(req.ContentsId.Id),
 	}
 	if req.Quiz.Id != nil {
-		quiz.Id = req.Quiz.Id.Id
+		quiz.Id = domain.QuizId(req.Quiz.Id.Id)
 	}
 	quizId, err := s.SQLHandler.CreateQuiz(quiz)
 	if err != nil {
@@ -170,5 +170,46 @@ func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizR
 		QuizId: &models.QuizId{
 			Id: quizId,
 		},
+	}, nil
+}
+
+func (s *WritingService) DeleteUserContents(ctx context.Context, req *pb.DeleteContentsRequest) (*pb.DeleteResponse, error) {
+	userId := ctx.Value("user_id")
+	if userId == nil {
+		return &pb.DeleteResponse{
+			Deleted: false,
+			Message: "failed to delete quiz",
+		}, errors.New("failed to get user_id. please check authentication")
+	}
+	count, err := s.SQLHandler.DeleteContents(domain.UserId(userId.(string)), domain.ContentsId(req.ContentsId.Id))
+	if count == 0 || err != nil {
+		return &pb.DeleteResponse{
+			Deleted: false,
+			Message: "failed to delete contents",
+		}, err
+	}
+	return &pb.DeleteResponse{
+		Deleted: true,
+		Message: "success",
+	}, nil
+}
+func (s *WritingService) DeleteUserQuiz(ctx context.Context, req *pb.DeleteQuizRequest) (*pb.DeleteResponse, error) {
+	userId := ctx.Value("user_id")
+	if userId == nil {
+		return &pb.DeleteResponse{
+			Deleted: false,
+			Message: "failed to delete quiz",
+		}, errors.New("failed to get user_id. please check authentication")
+	}
+	count, err := s.SQLHandler.DeleteQuiz(domain.UserId(userId.(string)), domain.ContentsId(req.ContentsId.Id), domain.QuizId(req.QuizId.Id))
+	if count == 0 || err != nil {
+		return &pb.DeleteResponse{
+			Deleted: false,
+			Message: "failed to delete quiz",
+		}, err
+	}
+	return &pb.DeleteResponse{
+		Deleted: true,
+		Message: "success",
 	}, nil
 }

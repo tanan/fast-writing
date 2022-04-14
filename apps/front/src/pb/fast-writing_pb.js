@@ -626,8 +626,7 @@ proto.fastwriting.DeleteContentsRequest.prototype.toObject = function(opt_includ
  */
 proto.fastwriting.DeleteContentsRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    contentsid: (f = msg.getContentsid()) && models_contents_pb.ContentsId.toObject(includeInstance, f),
-    userid: (f = msg.getUserid()) && models_user_pb.UserId.toObject(includeInstance, f)
+    contentsid: (f = msg.getContentsid()) && models_contents_pb.ContentsId.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -669,11 +668,6 @@ proto.fastwriting.DeleteContentsRequest.deserializeBinaryFromReader = function(m
       reader.readMessage(value,models_contents_pb.ContentsId.deserializeBinaryFromReader);
       msg.setContentsid(value);
       break;
-    case 2:
-      var value = new models_user_pb.UserId;
-      reader.readMessage(value,models_user_pb.UserId.deserializeBinaryFromReader);
-      msg.setUserid(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -709,14 +703,6 @@ proto.fastwriting.DeleteContentsRequest.serializeBinaryToWriter = function(messa
       1,
       f,
       models_contents_pb.ContentsId.serializeBinaryToWriter
-    );
-  }
-  f = message.getUserid();
-  if (f != null) {
-    writer.writeMessage(
-      2,
-      f,
-      models_user_pb.UserId.serializeBinaryToWriter
     );
   }
 };
@@ -756,43 +742,6 @@ proto.fastwriting.DeleteContentsRequest.prototype.clearContentsid = function() {
  */
 proto.fastwriting.DeleteContentsRequest.prototype.hasContentsid = function() {
   return jspb.Message.getField(this, 1) != null;
-};
-
-
-/**
- * optional models.UserId userId = 2;
- * @return {?proto.models.UserId}
- */
-proto.fastwriting.DeleteContentsRequest.prototype.getUserid = function() {
-  return /** @type{?proto.models.UserId} */ (
-    jspb.Message.getWrapperField(this, models_user_pb.UserId, 2));
-};
-
-
-/**
- * @param {?proto.models.UserId|undefined} value
- * @return {!proto.fastwriting.DeleteContentsRequest} returns this
-*/
-proto.fastwriting.DeleteContentsRequest.prototype.setUserid = function(value) {
-  return jspb.Message.setWrapperField(this, 2, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.fastwriting.DeleteContentsRequest} returns this
- */
-proto.fastwriting.DeleteContentsRequest.prototype.clearUserid = function() {
-  return this.setUserid(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.fastwriting.DeleteContentsRequest.prototype.hasUserid = function() {
-  return jspb.Message.getField(this, 2) != null;
 };
 
 
