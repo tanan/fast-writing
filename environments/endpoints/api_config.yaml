@@ -4,6 +4,7 @@ name: fw-grpc-endpoint-cmfot4feta-an.a.run.app
 title: Cloud Endpoints + Cloud Run gRPC
 apis:
   - name: fastwriting.WritingService
+  - name: fastwriting.UserService
 usage:
   rules:
   - selector: "*"
