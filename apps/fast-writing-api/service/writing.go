@@ -55,6 +55,7 @@ func (s *WritingService) decodeQuizList(quiz []*models.Quiz, contentsId *models.
 	var list []domain.Quiz
 	for _, v := range quiz {
 		list = append(list, domain.Quiz{
+			Id:         domain.QuizId(v.Id.Id),
 			Question:   v.Question,
 			Answer:     v.Answer,
 			ContentsId: domain.ContentsId(contentsId.Id),
