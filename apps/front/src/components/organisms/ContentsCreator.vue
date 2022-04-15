@@ -53,6 +53,8 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
+const token = Store.state.userToken
+const metadata = { 'authorization': 'Bearer ' + token }
 
 export default defineComponent ({
   name: 'ContentsCreator',
@@ -68,9 +70,35 @@ export default defineComponent ({
       id: props.id,
       title: '',
       description: '',
+      creator: '',
       scope: 'public',
       quizzes: [{"id": null, "question": "question1", "answer": "answer1"}]
     })
+
+    if (contents.id) {
+      let req = new ContentsId()
+      req.setId(props.id)
+      client.getContents(req, metadata, (err, resp) => {
+        if (err != null) {
+          throw new Error("Could not receive the data from API!")
+        }
+        let c = resp.toObject()
+        contents.title = c.title
+        contents.description = c.description
+        contents.creator = c.creator
+        // contents.scope = c.scope
+        let list = []
+        for(var v of c.quizlistList) {
+          list.push({
+            id: v.id.id,
+            question: v.question,
+            answer: v.answer,
+            order: v.order,
+          })
+        }
+        contents.quizzes = list
+      })
+    }
 
     const addQuiz = () => {
       let quiz = {"question": "", "answer": ""}

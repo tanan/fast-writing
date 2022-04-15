@@ -20,7 +20,7 @@ export default defineComponent({
   },
   setup () {
     const route = useRoute()
-    const id = route.params.id
+    const id = parseInt(route.params.id)
     const isLoggedIn = Store.getters.isLoggedIn
     return {
       isLoggedIn,
