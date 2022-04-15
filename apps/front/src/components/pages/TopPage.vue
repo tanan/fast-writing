@@ -18,19 +18,10 @@ export default defineComponent({
     MainHeader,
     ContentsList,
   },
-  data () {
+  setup () {
+    const isLoggedIn = Store.getters.isLoggedIn()
     return {
-      state: {
-        count: 0
-      }
-    }
-  },
-  methods: {
-    isLoggedIn () {
-      if (Store.state.userToken === "") {
-        return false
-      }
-      return true
+      isLoggedIn
     }
   }
 });

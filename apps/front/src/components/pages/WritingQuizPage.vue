@@ -38,13 +38,13 @@ export default defineComponent({
   async created() {
    this.getContentsById(this.$route.params.id)
   },
+  setup () {
+    const isLoggedIn = Store.getters.isLoggedIn()
+    return {
+      isLoggedIn
+    }
+  },
   methods: {
-    isLoggedIn () {
-      if (Store.state.userToken === "") {
-        return false
-      }
-      return true
-    },
     getInterval() {
       let item = localStorage.getItem('interval')
       if (!item) {

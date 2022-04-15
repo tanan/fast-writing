@@ -54,12 +54,7 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     
-    const isLoggedIn = () => {
-      if (Store.state.userToken === "") {
-        return false
-      }
-      return true
-    }
+    const isLoggedIn = Store.getters.isLoggedIn()
 
     const validate = (k, v) => {
       switch(k) {

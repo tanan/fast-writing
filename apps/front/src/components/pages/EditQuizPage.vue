@@ -1,6 +1,6 @@
 <template>
   <MainHeader :isLoggedIn="isLoggedIn" />
-  <div class="create-quiz-page">
+  <div class="edit-quiz-page">
     <ContentsCreator />
   </div>
 </template>
@@ -12,14 +12,13 @@ import ContentsCreator from '@/components/organisms/ContentsCreator.vue'
 import Store from '@/store/index.js'
 
 export default defineComponent({
-  name: 'CreateQuizPage',
-
+  name: 'EditQuizPage',
   components: {
     MainHeader,
     ContentsCreator,
   },
   setup () {
-    const isLoggedIn = Store.getters.isLoggedIn
+    const isLoggedIn = Store.getters.isLoggedIn()
     return {
       isLoggedIn
     }
