@@ -4,11 +4,11 @@
       <div class="mt-6 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3">
         <h2 class="pl-2 pb-2">レッスン名</h2>
         <span class="col-12">
-          <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.title" @blur="save" placeholder="Title" />
+          <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.title" v-on:keyup="save" placeholder="Title" />
         </span>
         <h2 class="pl-2 pt-4">説明</h2>
         <span class="col-12">
-          <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.description" @blur="save" placeholder="Description" />
+          <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.description" v-on:keyup="save" placeholder="Description" />
         </span>
       </div>
       <div class="col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3 p-0">
@@ -20,6 +20,7 @@
               class="col-10 lg:col-11 align-items-center p-inputtext-lg"
               type="text"
               v-model="contents.quizzes[i].question"
+              v-on:keyup="save"
               placeholder="Question"
             />
           </div>
@@ -29,7 +30,7 @@
               class="col-10 lg:col-11 align-items-center p-inputtext-lg"
               type="text"
               v-model="contents.quizzes[i].answer"
-              @blur="saveQuiz"
+              v-on:keyup="save"
               placeholder="Answer"
             />
           </div>
@@ -46,11 +47,12 @@
 import { defineComponent, reactive } from "vue"
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { Contents, ContentsId, Quiz, QuizId } from "@/pb/models/contents_pb.js"
-import { CreateContentsRequest, CreateQuizRequest } from "@/pb/fast-writing_pb.js"
+import { CreateContentsRequest } from "@/pb/fast-writing_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
 import Store from '@/store/index.js'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import { debounce } from 'lodash'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 const token = Store.state.userToken
@@ -72,7 +74,7 @@ export default defineComponent ({
       description: '',
       creator: '',
       scope: 'public',
-      quizzes: [{"id": null, "question": "question1", "answer": "answer1"}]
+      quizzes: []
     })
 
     if (contents.id) {
@@ -86,7 +88,6 @@ export default defineComponent ({
         contents.title = c.title
         contents.description = c.description
         contents.creator = c.creator
-        // contents.scope = c.scope
         let list = []
         for(var v of c.quizlistList) {
           list.push({
@@ -105,7 +106,7 @@ export default defineComponent ({
       contents.quizzes.push(quiz)
     }
 
-    const save = async () => {
+    const save = debounce(async () => {
       let req = createContentsRequest(contents)
       const token = Store.state.userToken
       const metadata = { 'authorization': 'Bearer ' + token }
@@ -119,28 +120,10 @@ export default defineComponent ({
         })
       })
       contents.id = await response.toObject().contents.id.id
-      setQuizList(contents, await response.toObject().contents.quizlistList)
-    }
+      setQuizList(await response.toObject().contents.quizlistList)
+    }, 2000)
 
-    const saveQuiz = async () => {
-      const token = Store.state.userToken
-      const metadata = { 'authorization': 'Bearer ' + token }
-      for (const [index, quiz] of contents.quizzes.entries()) {
-        let quizReq = await createQuizRequest(quiz, contents.id)
-        await new Promise((resolve, reject) => {
-          client.createUserQuiz(quizReq, metadata, (err, resp) => {
-            if (err != null) {
-              reject(err)
-            }
-            contents.quizzes[index].id = resp.toObject().quizid.id
-            console.log("quiz was created")
-            resolve(resp)
-          })
-        })
-      }
-    }
-
-    const setQuizList = (contents, quizList) => {
+    const setQuizList = (quizList) => {
       let list = []
       for (const q of quizList) {
         let quiz = {
@@ -183,27 +166,11 @@ export default defineComponent ({
       quiz.setAnswer(q.answer)
       return quiz
     }
-    const createQuizRequest = (q, cid) => {
-      let req = new CreateQuizRequest()
-      let contentsId = new ContentsId()
-      contentsId.setId(cid)
-      let quiz = new Quiz()
-      let quizId = new QuizId()
-      quizId.setId(q.id)
-      quiz.setId(quizId)
-      quiz.setQuestion(q.question)
-      quiz.setAnswer(q.answer)
-      req.setContentsid(contentsId)
-      req.setQuiz(quiz)
-      return req
-    }
     
     return {
       contents,
       save,
-      saveQuiz,
       addQuiz,
-      createQuizRequest,
       createQuiz,
       createContentsRequest,
     }
