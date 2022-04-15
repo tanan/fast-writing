@@ -26,6 +26,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+	fmt.Println(c.Application.OnCloud)
 	sqlHandler, err := database.NewSQLHandler(c.GetSQLConnection(), c.Database.Debug)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

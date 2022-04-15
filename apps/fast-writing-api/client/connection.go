@@ -27,8 +27,6 @@ func NewClientConn(hostname string, port string, useSSL bool, useToken bool) (*g
 		if err != nil {
 			return nil, errors.New("cannot get idTokenSource:" + err.Error())
 		}
-		token, _ := idTokenSource.Token()
-		fmt.Printf("access_token: %v", token.AccessToken)
 		dialOptions = append(dialOptions, grpc.WithPerRPCCredentials(oauth.TokenSource{
 			TokenSource: idTokenSource,
 		}))
