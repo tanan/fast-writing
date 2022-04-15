@@ -4,6 +4,7 @@ import SigninPage from '../components/pages/SigninPage.vue'
 import SignupPage from '../components/pages/SignupPage.vue'
 import WritingQuizPage from '../components/pages/WritingQuizPage.vue'
 import CreateQuizPage from '../components/pages/CreateQuizPage.vue'
+import EditQuizPage from '../components/pages/EditQuizPage.vue'
 import Store from '@/store/index.js'
 
 const routes = [
@@ -33,6 +34,12 @@ const routes = [
     path: '/contents/create',
     name: 'CreateQuizPage',
     component: CreateQuizPage,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/contents/edit/:id',
+    name: 'EditQuizPage',
+    component: EditQuizPage,
     meta: { requiresAuth: true }
   },
 ]

@@ -1,7 +1,7 @@
 <template>
   <MainHeader :isLoggedIn="isLoggedIn" />
   <div class="create-quiz-page">
-    <ContentsCreator />
+    <ContentsCreator :id="undefined" />
   </div>
 </template>
 

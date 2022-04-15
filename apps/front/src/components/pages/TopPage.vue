@@ -1,5 +1,5 @@
 <template>
-  <MainHeader :isLoggedIn="this.isLoggedIn()" />
+  <MainHeader :isLoggedIn="isLoggedIn" />
   <div class="top-page">
     <ContentsList />
   </div>
@@ -19,7 +19,7 @@ export default defineComponent({
     ContentsList,
   },
   setup () {
-    const isLoggedIn = Store.getters.isLoggedIn()
+    const isLoggedIn = Store.getters.isLoggedIn
     return {
       isLoggedIn
     }

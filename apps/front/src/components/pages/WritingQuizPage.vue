@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MainHeader :isLoggedIn="this.isLoggedIn()" />
+    <MainHeader :isLoggedIn="isLoggedIn" />
     <div class="quiz-page">
       <QuizHeader :contents="contents" :interval="getInterval()" />
       <QuizList :indecies="indecies" :questions="questions" :answers="answers" />
@@ -39,7 +39,7 @@ export default defineComponent({
    this.getContentsById(this.$route.params.id)
   },
   setup () {
-    const isLoggedIn = Store.getters.isLoggedIn()
+    const isLoggedIn = Store.getters.isLoggedIn
     return {
       isLoggedIn
     }
