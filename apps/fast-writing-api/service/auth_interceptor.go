@@ -33,7 +33,12 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			}
 			return handler(ctx, req)
 		}
-		return handler(metadata.AppendToOutgoingContext(ctx, "user_id", userId), req)
+		md, ok := metadata.FromIncomingContext(ctx)
+		if !ok {
+			return handler(ctx, req)
+		}
+		md.Set("user-id", userId)
+		return handler(metadata.NewIncomingContext(context.Background(), md), req)
 	}
 }
 

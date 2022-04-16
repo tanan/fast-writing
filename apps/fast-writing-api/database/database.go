@@ -4,6 +4,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	_ "gorm.io/gorm/clause"
+	"gorm.io/gorm/logger"
 )
 
 type SQLHandler struct {
@@ -11,13 +12,12 @@ type SQLHandler struct {
 }
 
 func NewSQLHandler(connInfo string, verbose bool) (*SQLHandler, error) {
-	db, err := gorm.Open(mysql.Open(connInfo), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(connInfo), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		return nil, err
 	}
-	//if verbose {
-	//	db.LogMode(true)
-	//}
 
 	//db.DB().SetConnMaxLifetime(time.Minute * 3)
 	//db.DB().SetMaxOpenConns(10)

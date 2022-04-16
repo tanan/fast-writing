@@ -23,6 +23,7 @@
               v-on:keyup="save"
               placeholder="Question"
             />
+            <i class="icon pi pi-trash" @click="removeQuiz(contents.quizzes[i].id)"></i>
           </div>
           <div class="flex quiz-answer mt-2 p-0">
             <h3 class="col-1 p-2 mr-4 lg:mr-0">A{{ i+1 }}.</h3>
@@ -47,7 +48,7 @@
 import { defineComponent, reactive } from "vue"
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { Contents, ContentsId, Quiz, QuizId } from "@/pb/models/contents_pb.js"
-import { CreateContentsRequest } from "@/pb/fast-writing_pb.js"
+import { CreateContentsRequest, DeleteQuizRequest } from "@/pb/fast-writing_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
 import Store from '@/store/index.js'
 import InputText from 'primevue/inputtext'
@@ -55,8 +56,6 @@ import Button from 'primevue/button'
 import { debounce } from 'lodash'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
-const token = Store.state.userToken
-const metadata = { 'authorization': 'Bearer ' + token }
 
 export default defineComponent ({
   name: 'ContentsCreator',
@@ -80,6 +79,7 @@ export default defineComponent ({
     if (contents.id) {
       let req = new ContentsId()
       req.setId(props.id)
+      const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
       client.getContents(req, metadata, (err, resp) => {
         if (err != null) {
           throw new Error("Could not receive the data from API!")
@@ -106,10 +106,27 @@ export default defineComponent ({
       contents.quizzes.push(quiz)
     }
 
+    const removeQuiz = async (qid) => {
+      let req = deleteQuizRequest(qid)
+      const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
+      let response = await new Promise((resolve, reject) => {
+        client.deleteUserQuiz( req, metadata, ( err, resp ) => {
+          if ( err ) {
+            reject(err)
+          }
+          console.log("quiz was deleted: " + qid)
+          resolve(resp)
+        })
+      })
+      console.log(response.toObject())
+      contents.quizzes = contents.quizzes.filter(v => {
+        return v.id != qid
+      })
+    }
+
     const save = debounce(async () => {
       let req = createContentsRequest(contents)
-      const token = Store.state.userToken
-      const metadata = { 'authorization': 'Bearer ' + token }
+      const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
       let response = await new Promise((resolve, reject) => {
         client.createUserContents( req, metadata, ( err, resp ) => {
           if ( err ) {
@@ -137,7 +154,6 @@ export default defineComponent ({
       contents.quizzes = list
     }
     const createContentsRequest = (contents) => {
-      console.log(contents)
       let req = new CreateContentsRequest()
       let cid = new ContentsId()
       let c = new Contents()
@@ -157,6 +173,18 @@ export default defineComponent ({
       req.setUserid(userId)
       return req
     }
+
+    const deleteQuizRequest = (quizId) => {
+      let req = new DeleteQuizRequest()
+      let qid = new QuizId()
+      let cid = new ContentsId()
+      qid.setId(quizId)
+      cid.setId(contents.id)
+      req.setContentsid(cid)
+      req.setQuizid(qid)
+      return req
+    }
+
     const createQuiz = (q) => {
       let quiz = new Quiz()
       let quizId = new QuizId()
@@ -171,6 +199,7 @@ export default defineComponent ({
       contents,
       save,
       addQuiz,
+      removeQuiz,
       createQuiz,
       createContentsRequest,
     }
@@ -179,27 +208,10 @@ export default defineComponent ({
 </script>
 
 <style lang="scss" scoped>
-  .contents-creator-form {
-    margin: 0 8%;
-    margin-top: 2%;
-
-    .quiz {
-      .index {
-        font-size: 1.2em;
-        vertical-align: bottom;
-        min-width: 4%;
-        margin-right: 2%;
-      }
-
-      .question {
-        display: flex;
-        align-items: center;
-      }
-
-      .quiz-answer {
-        display: flex;
-        align-items: center;
-      }
-    }
+  .icon {
+    font-size: 1.4rem;
+    color: gray;
+    padding-top: 16px;
+    padding-left: 8px;
   }
 </style>

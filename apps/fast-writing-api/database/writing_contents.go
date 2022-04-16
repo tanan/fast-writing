@@ -94,7 +94,7 @@ func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.User
 	}
 
 	for i, v := range contents.QuizList {
-		if quizId, err := h.CreateQuiz(v); err != nil {
+		if quizId, err := h.CreateQuiz(userId, v); err != nil {
 			return domain.Contents{}, err
 		} else {
 			contents.QuizList[i] = domain.Quiz{
@@ -118,17 +118,18 @@ func (h *SQLHandler) DeleteContents(userId domain.UserId, contentsId domain.Cont
 	return 1, nil
 }
 
-func (h *SQLHandler) CreateQuiz(quiz domain.Quiz) (int64, error) {
+func (h *SQLHandler) CreateQuiz(userId domain.UserId, quiz domain.Quiz) (int64, error) {
 	m := model.Quiz{
 		Id:          int64(quiz.Id),
 		ContentsId:  int64(quiz.ContentsId),
+		UserId:      string(userId),
 		Question:    quiz.Question,
 		Answer:      quiz.Answer,
 		LastUpdated: time.Now(),
 	}
 	db := h.Conn.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
-		DoUpdates: clause.Assignments(map[string]interface{}{"contents_id": m.ContentsId, "question": m.Question, "answer": m.Answer, "last_updated": time.Now()}),
+		DoUpdates: clause.Assignments(map[string]interface{}{"contents_id": m.ContentsId, "user_id": m.UserId, "question": m.Question, "answer": m.Answer, "last_updated": time.Now()}),
 	}).Create(&m)
 	if db.Error != nil {
 		return 0, errors.New("cannot create quiz: " + db.Error.Error())

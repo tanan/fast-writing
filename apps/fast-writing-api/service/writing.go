@@ -6,6 +6,7 @@ import (
 	"fast-writing-api/domain"
 	"fast-writing/pkg/pb"
 	"fast-writing/pkg/pb/models"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
 )
@@ -20,21 +21,6 @@ func NewWritingService(s SQLHandler, serviceClient pb.SearchServiceClient) *Writ
 		SQLHandler: s,
 		Client:     serviceClient,
 	}
-}
-
-func (s *WritingService) GetContents(ctx context.Context, req *models.ContentsId) (*models.Contents, error) {
-	contents, err := s.SQLHandler.FindContentsById(domain.ContentsId(req.Id))
-	if err != nil {
-		return nil, errors.New("cannot find user: " + err.Error())
-	}
-	return &models.Contents{
-		Id:          &models.ContentsId{Id: int64(contents.ContentsId)},
-		Title:       contents.Title,
-		Description: contents.Description,
-		Creator:     contents.Creator,
-		QuizList:    s.encodeQuizList(contents.QuizList),
-		LastUpdated: timestamppb.New(contents.LastUpdated),
-	}, nil
 }
 
 func (s *WritingService) encodeQuizList(l []domain.Quiz) []*models.Quiz {
@@ -64,6 +50,30 @@ func (s *WritingService) decodeQuizList(quiz []*models.Quiz, contentsId *models.
 	return list
 }
 
+func (s *WritingService) getUserId(ctx context.Context) (string, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	userId := md.Get("user-id")
+	if !ok || len(userId) == 0 {
+		return "", errors.New("failed to get user-id on metadata")
+	}
+	return userId[0], nil
+}
+
+func (s *WritingService) GetContents(ctx context.Context, req *models.ContentsId) (*models.Contents, error) {
+	contents, err := s.SQLHandler.FindContentsById(domain.ContentsId(req.Id))
+	if err != nil {
+		return nil, errors.New("cannot find user: " + err.Error())
+	}
+	return &models.Contents{
+		Id:          &models.ContentsId{Id: int64(contents.ContentsId)},
+		Title:       contents.Title,
+		Description: contents.Description,
+		Creator:     contents.Creator,
+		QuizList:    s.encodeQuizList(contents.QuizList),
+		LastUpdated: timestamppb.New(contents.LastUpdated),
+	}, nil
+}
+
 func (s *WritingService) GetContentsList(ctx context.Context, req *models.ContentsQueryParams) (*models.ContentsList, error) {
 	contentsList, err := s.SQLHandler.FindContentsList(req.GetParams().GetLimit(), req.GetParams().GetOffset())
 	if err != nil {
@@ -87,7 +97,11 @@ func (s *WritingService) GetContentsList(ctx context.Context, req *models.Conten
 }
 
 func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.UserContentsQueryParams) (*models.ContentsList, error) {
-	contentsList, err := s.SQLHandler.FindContentsListByUserId(domain.UserId(req.GetId().Id), req.GetParams().GetLimit(), req.GetParams().GetOffset())
+	userId, err := s.getUserId(ctx)
+	if err != nil {
+		return &models.ContentsList{}, err
+	}
+	contentsList, err := s.SQLHandler.FindContentsListByUserId(domain.UserId(userId), req.GetParams().GetLimit(), req.GetParams().GetOffset())
 	if err != nil {
 		log.Printf("cannot find contents list: " + err.Error())
 		return &models.ContentsList{}, nil
@@ -150,6 +164,13 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 }
 
 func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizRequest) (*pb.CreateQuizResponse, error) {
+	userId, err := s.getUserId(ctx)
+	if err != nil {
+		return &pb.CreateQuizResponse{
+			Created: false,
+			Message: "failed to create quiz",
+		}, err
+	}
 	quiz := domain.Quiz{
 		Question:   req.Quiz.Question,
 		Answer:     req.Quiz.Answer,
@@ -158,7 +179,7 @@ func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizR
 	if req.Quiz.Id != nil {
 		quiz.Id = domain.QuizId(req.Quiz.Id.Id)
 	}
-	quizId, err := s.SQLHandler.CreateQuiz(quiz)
+	quizId, err := s.SQLHandler.CreateQuiz(domain.UserId(userId), quiz)
 	if err != nil {
 		return &pb.CreateQuizResponse{
 			Created: false,
@@ -175,14 +196,14 @@ func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizR
 }
 
 func (s *WritingService) DeleteUserContents(ctx context.Context, req *pb.DeleteContentsRequest) (*pb.DeleteResponse, error) {
-	userId := ctx.Value("user_id")
-	if userId == nil {
+	userId, err := s.getUserId(ctx)
+	if err != nil {
 		return &pb.DeleteResponse{
 			Deleted: false,
 			Message: "failed to delete quiz",
-		}, errors.New("failed to get user_id. please check authentication")
+		}, err
 	}
-	count, err := s.SQLHandler.DeleteContents(domain.UserId(userId.(string)), domain.ContentsId(req.ContentsId.Id))
+	count, err := s.SQLHandler.DeleteContents(domain.UserId(userId), domain.ContentsId(req.ContentsId.Id))
 	if count == 0 || err != nil {
 		return &pb.DeleteResponse{
 			Deleted: false,
@@ -195,14 +216,14 @@ func (s *WritingService) DeleteUserContents(ctx context.Context, req *pb.DeleteC
 	}, nil
 }
 func (s *WritingService) DeleteUserQuiz(ctx context.Context, req *pb.DeleteQuizRequest) (*pb.DeleteResponse, error) {
-	userId := ctx.Value("user_id")
-	if userId == nil {
+	userId, err := s.getUserId(ctx)
+	if err != nil {
 		return &pb.DeleteResponse{
 			Deleted: false,
 			Message: "failed to delete quiz",
-		}, errors.New("failed to get user_id. please check authentication")
+		}, err
 	}
-	count, err := s.SQLHandler.DeleteQuiz(domain.UserId(userId.(string)), domain.ContentsId(req.ContentsId.Id), domain.QuizId(req.QuizId.Id))
+	count, err := s.SQLHandler.DeleteQuiz(domain.UserId(userId), domain.ContentsId(req.ContentsId.Id), domain.QuizId(req.QuizId.Id))
 	if count == 0 || err != nil {
 		return &pb.DeleteResponse{
 			Deleted: false,
