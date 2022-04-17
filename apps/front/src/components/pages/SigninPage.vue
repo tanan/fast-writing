@@ -13,7 +13,12 @@
           <InputText v-bind:class="{ 'p-invalid': error.password }" class="col-10 col-offset-1" type="password" v-model="password" @blur="validate('password', password)" placeholder="Password" />
         </div>
         <div class="col-12 lg:pr-3">
-          <Button class="mt-2 col-4 col-offset-8 lg:mt-4 lg:col-3 lg:col-offset-9" label="Sign In" @click="signin(email, password)" />
+          <Button class="mt-2 col-6 col-offset-3 lg:mt-4 lg:col-6 lg:col-offset-3" label="ログイン" @click="signin(email, password)" />
+        </div>
+        <hr class="col-offset-1 col-10 mt-4 p-0">
+        <div class="mt-2">
+          <p class="col-10 col-offset-1" style="text-align: center">他のアカウントでログイン</p>
+          <Button class="col-12 lg:col-8 lg:col-offset-2" label="Google アカウントでログイン" @click="signinWithGoogle()" />
         </div>
       </Panel>
     </div>
@@ -24,7 +29,7 @@
 import { defineComponent, ref, reactive } from "vue"
 import { useRoute, useRouter } from 'vue-router'
 import app from "@/plugins/firebase"
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import MainHeader from '@/components/organisms/MainHeader.vue'
 import Panel from 'primevue/panel'
 import InputText from 'primevue/inputtext'
@@ -53,6 +58,9 @@ export default defineComponent({
     const toast = useToast()
     const route = useRoute()
     const router = useRouter()
+
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
     
     const isLoggedIn = Store.getters.isLoggedIn
 
@@ -67,8 +75,26 @@ export default defineComponent({
       }
     }
 
+    const signinWithGoogle = () => {
+      signInWithPopup(auth, provider)
+        .then(async (result) => {
+          const credential = GoogleAuthProvider.credentialFromResult(result)
+          const user = result.user
+          Store.dispatch("auth", {
+            userId: user.uid,
+            userToken: credential.accessToken
+          })
+          toast.add({severity:'success', summary: 'success', detail: 'login succeeded', life: 5000})
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+          if (router.query) {
+            router.push(route.query.redirect)
+          }
+          router.push('/')
+        }).catch((error) => {
+          toast.add({severity:'error', summary: 'failed to login', detail: `${error.code}: ${error.message}`, life: 5000});
+        })
+    }
     const signin = (email, password) => {
-      const auth = getAuth(app);
       signInWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
           const user = userCredential.user;
@@ -98,6 +124,7 @@ export default defineComponent({
       isLoggedIn,
       validate,
       signin,
+      signinWithGoogle,
     }
   },
   methods: {
