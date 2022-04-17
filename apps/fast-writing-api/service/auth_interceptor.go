@@ -62,13 +62,18 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	}
 	var app *firebase.App
 	var err error
+	var idToken string
 	if interceptor.cfg.Application.OnCloud {
 		app, err = firebase.NewApp(context.Background(), &firebase.Config{
 			ProjectID: "anan-project",
 		})
+		idToken = strings.Replace(md.Get("x-forwarded-authorization")[0], "Bearer ", "", 1)
+		log.Println("x-forwarded-authorization:", idToken)
 	} else {
 		opt := option.WithCredentialsFile("firebase-credentials.json")
 		app, err = firebase.NewApp(context.Background(), nil, opt)
+		idToken = strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1)
+		log.Println("authorization:", idToken)
 	}
 	if err != nil {
 		return "", fmt.Errorf("error initializing app: %v", err)
@@ -77,8 +82,7 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	if err != nil {
 		return "", fmt.Errorf("error getting Auth client: %v\n", err)
 	}
-	log.Println(strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1))
-	token, err := client.VerifyIDToken(context.Background(), strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1))
+	token, err := client.VerifyIDToken(context.Background(), idToken)
 	if err != nil {
 		return "", err
 	}
