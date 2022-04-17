@@ -63,7 +63,9 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	var app *firebase.App
 	var err error
 	if interceptor.cfg.Application.OnCloud {
-		app, err = firebase.NewApp(context.Background(), nil)
+		app, err = firebase.NewApp(context.Background(), &firebase.Config{
+			ProjectID: "anan-project",
+		})
 	} else {
 		opt := option.WithCredentialsFile("firebase-credentials.json")
 		app, err = firebase.NewApp(context.Background(), nil, opt)
