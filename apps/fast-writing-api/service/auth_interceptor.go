@@ -2,17 +2,18 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fast-writing-api/config"
 	firebase "firebase.google.com/go"
-	"google.golang.org/api/option"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"strings"
-
 	"fmt"
+	"google.golang.org/api/option"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 	"log"
+	"regexp"
+	"strings"
 )
 
 type AuthInterceptor struct {
@@ -26,7 +27,7 @@ func NewAuthInterceptor(cfg *config.Config) *AuthInterceptor {
 }
 
 const (
-	MissingAuthorizationHeader = "error getting token from header\n"
+	MissingAuthorizationHeaderError = "failed to get (authorization|x-forwarded-authorization) on metadata"
 )
 
 func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
@@ -34,7 +35,8 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		log.Println("--> unary interceptor: ", info.FullMethod)
 		userId, err := interceptor.Authorize(ctx, info.FullMethod)
 		if err != nil {
-			if err.Error() == MissingAuthorizationHeader {
+			r := regexp.MustCompile(MissingAuthorizationHeaderError)
+			if r.MatchString(err.Error()) {
 				return handler(ctx, req)
 			}
 			log.Println("auth error: ", err.Error())
@@ -60,11 +62,16 @@ func (interceptor *AuthInterceptor) Stream() grpc.StreamServerInterceptor {
 	}
 }
 
-func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string) (string, error) {
+func (interceptor *AuthInterceptor) getAuthorizationToken(ctx context.Context, key string) (string, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return "", fmt.Errorf("error getting token from header\n")
+	value := md.Get(key)
+	if !ok || len(value) == 0 {
+		return "", errors.New(fmt.Sprintf("failed to get %v on metadata", key))
 	}
+	return value[0], nil
+}
+
+func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string) (string, error) {
 	var app *firebase.App
 	var err error
 	var idToken string
@@ -72,13 +79,19 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 		app, err = firebase.NewApp(context.Background(), &firebase.Config{
 			ProjectID: "anan-project",
 		})
-		idToken = strings.Replace(md.Get("x-forwarded-authorization")[0], "Bearer ", "", 1)
-		log.Println("x-forwarded-authorization:", idToken)
+		if token, err := interceptor.getAuthorizationToken(ctx, "x-forwarded-authorization"); err != nil {
+			return "", err
+		} else {
+			idToken = strings.Replace(token, "Bearer ", "", 1)
+		}
 	} else {
 		opt := option.WithCredentialsFile("firebase-credentials.json")
 		app, err = firebase.NewApp(context.Background(), nil, opt)
-		idToken = strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1)
-		log.Println("authorization:", idToken)
+		if token, err := interceptor.getAuthorizationToken(ctx, "authorization"); err != nil {
+			return "", err
+		} else {
+			idToken = strings.Replace(token, "Bearer ", "", 1)
+		}
 	}
 	if err != nil {
 		return "", fmt.Errorf("error initializing app: %v", err)
