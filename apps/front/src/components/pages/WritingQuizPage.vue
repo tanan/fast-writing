@@ -18,8 +18,6 @@ import MainHeader from '@/components/organisms/MainHeader.vue'
 import Store from '@/store/index.js'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
-const token = Store.state.userToken
-const metadata = { 'authorization': 'Bearer ' + token }
 
 export default defineComponent({
   name: 'WritingQuizPage',
@@ -56,13 +54,14 @@ export default defineComponent({
     async getContentsById (id) {
       let req = new ContentsId()
       req.setId(id)
-        await client.getContents(req, metadata, (err, resp) => {
-          if (err != null) {
-            throw new Error("Could not receive the data from API!")
-          }
-          this.contents = resp.toObject()
-          this.createQuizList(resp.toObject().quizlistList)
-        })
+      const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
+      await client.getContents(req, metadata, (err, resp) => {
+        if (err) {
+          throw new Error(err)
+        }
+        this.contents = resp.toObject()
+        this.createQuizList(resp.toObject().quizlistList)
+      })
     },
     async createQuizList(quizList) {
       for(var i in quizList) {
