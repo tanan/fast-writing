@@ -86,7 +86,7 @@ export default defineComponent({
             console.log(err)
             reject(err)
           }
-          console.log(resp.toObject())
+          console.log(resp)
           resolve(resp.toObject().contentslistList)
         })
       })
