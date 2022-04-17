@@ -83,6 +83,7 @@ export default defineComponent({
       let response = await new Promise((resolve, reject) => {
         client.getContentsList(req, metadata, (err, resp) => {
           if (err) {
+            console.log(err)
             reject(err)
           }
           resolve(resp.toObject().contentslistList)
@@ -106,6 +107,7 @@ export default defineComponent({
               this.$store.dispatch('signout')
               router.push(`/signin?redirect=${route.fullPath}`)
             }
+            console.log(err)
           }
           resolve(resp.toObject().contentslistList)
         })
