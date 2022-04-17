@@ -76,7 +76,7 @@ export default defineComponent({
             userId: user.uid,
             userToken: user.accessToken
           });
-          toast.add({severity:'success', summary: 'created', detail: 'success create user', life: 5000})
+          toast.add({severity:'success', summary: 'success', detail: 'login succeeded', life: 5000})
           await new Promise((resolve) => setTimeout(resolve, 1000))
           if (router.query) {
             router.push(route.query.redirect)

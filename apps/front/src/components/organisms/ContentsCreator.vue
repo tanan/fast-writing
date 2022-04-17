@@ -132,7 +132,6 @@ export default defineComponent ({
           if ( err ) {
             reject(err)
           }
-          console.log("contents was created")
           resolve(resp)
         })
       })
