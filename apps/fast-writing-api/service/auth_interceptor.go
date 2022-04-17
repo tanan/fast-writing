@@ -77,6 +77,7 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	if err != nil {
 		return "", fmt.Errorf("error getting Auth client: %v\n", err)
 	}
+	log.Println(strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1))
 	token, err := client.VerifyIDToken(context.Background(), strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1))
 	if err != nil {
 		return "", err
