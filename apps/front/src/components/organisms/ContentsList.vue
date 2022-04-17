@@ -86,7 +86,6 @@ export default defineComponent({
             console.log(err)
             reject(err)
           }
-          console.log(resp)
           resolve(resp.toObject().contentslistList)
         })
       })
@@ -105,7 +104,8 @@ export default defineComponent({
         client.getUserContentsList(req, metadata, (err, resp) => {
           if (err) {
             if (err.message.indexOf("ID token has expired at") > -1) {
-              this.$store.dispatch('signout')
+              console.log("test")
+              Store.dispatch('signout')
               router.push(`/signin?redirect=${route.fullPath}`)
             }
             console.log(err)
