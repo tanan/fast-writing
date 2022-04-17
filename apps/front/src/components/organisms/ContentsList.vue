@@ -80,12 +80,11 @@ export default defineComponent({
       let req = new ContentsQueryParams()
       let queryParams = new QueryParams()
       req.setParams(queryParams)
-      const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
-      let response = await new Promise((resolve, reject) => {
-        client.getContentsList(req, metadata, (err, resp) => {
+      let response = await new Promise((resolve) => {
+        client.getContentsList(req, {}, (err, resp) => {
           if (err) {
             console.log(err)
-            reject(err)
+            throw new Error(err.message)
           }
           resolve(resp.toObject().contentslistList)
         })
@@ -104,7 +103,7 @@ export default defineComponent({
       let response = await new Promise((resolve) => {
         client.getUserContentsList(req, metadata, (err, resp) => {
           if (err) {
-            if (err.code === 16) {
+            if (err.code === 2) {
               Store.dispatch('signout')
               router.push(`/signin?redirect=${route.fullPath}`)
             }
