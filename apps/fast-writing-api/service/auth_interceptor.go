@@ -5,6 +5,8 @@ import (
 	"fast-writing-api/config"
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/option"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"strings"
 
 	"fmt"
@@ -23,17 +25,20 @@ func NewAuthInterceptor(cfg *config.Config) *AuthInterceptor {
 	}
 }
 
+const (
+	MissingAuthorizationHeader = "error getting token from header\n"
+)
+
 func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		log.Println("--> unary interceptor: ", info.FullMethod)
 		userId, err := interceptor.Authorize(ctx, info.FullMethod)
 		if err != nil {
-			if err.Error() == "error getting token from header\n" {
+			if err.Error() == MissingAuthorizationHeader {
 				return handler(ctx, req)
 			}
 			log.Println("auth error: ", err.Error())
-			return nil, err
-
+			return nil, status.Error(codes.Unauthenticated, codes.Unauthenticated.String())
 		}
 		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
