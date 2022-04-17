@@ -78,7 +78,7 @@ func (s *WritingService) GetContentsList(ctx context.Context, req *models.Conten
 	contentsList, err := s.SQLHandler.FindContentsList(req.GetParams().GetLimit(), req.GetParams().GetOffset())
 	if err != nil {
 		log.Printf("cannot find contents list: " + err.Error())
-		return &models.ContentsList{}, nil
+		return &models.ContentsList{}, err
 	}
 	var m []*models.Contents
 	for _, v := range contentsList {
@@ -104,7 +104,7 @@ func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.Us
 	contentsList, err := s.SQLHandler.FindContentsListByUserId(domain.UserId(userId), req.GetParams().GetLimit(), req.GetParams().GetOffset())
 	if err != nil {
 		log.Printf("cannot find contents list: " + err.Error())
-		return &models.ContentsList{}, nil
+		return &models.ContentsList{}, err
 	}
 	var m []*models.Contents
 	for _, v := range contentsList {
@@ -139,13 +139,6 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 			Message: "failed to create contents",
 		}, err
 	}
-	//_, err = s.Client.SaveSearchContents(context.Background(), req.Contents, grpc.MaxCallRecvMsgSize(10240))
-	//if err != nil {
-	//	return &pb.CreateContentsResponse{
-	//		Created: false,
-	//		Message: "failed to create contents",
-	//	}, errors.New("failed to create contents on search-api:" + err.Error())
-	//}
 	return &pb.CreateContentsResponse{
 		Created: true,
 		Message: "success",

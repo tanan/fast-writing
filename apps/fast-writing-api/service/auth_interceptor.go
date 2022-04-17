@@ -31,6 +31,7 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			if err.Error() == "error getting token from header\n" {
 				return handler(ctx, req)
 			}
+			log.Println("auth error: ", err.Error())
 			return nil, err
 
 		}
