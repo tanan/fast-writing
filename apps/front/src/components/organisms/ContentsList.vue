@@ -35,6 +35,7 @@ import { QueryParams, ContentsQueryParams, UserContentsQueryParams } from "@/pb/
 import { UserId } from "@/pb/models/user_pb.js"
 import ContentsCard from "@/components/molecules/ContentsCard.vue"
 import Store from '@/store/index.js'
+import { reject } from 'lodash'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
@@ -103,12 +104,12 @@ export default defineComponent({
       let response = await new Promise((resolve) => {
         client.getUserContentsList(req, metadata, (err, resp) => {
           if (err) {
-            if (err.message.indexOf("ID token has expired at") > -1) {
-              console.log("test")
+            if (err.code === 16) {
               Store.dispatch('signout')
               router.push(`/signin?redirect=${route.fullPath}`)
             }
             console.log(err)
+            reject(err)
           }
           resolve(resp.toObject().contentslistList)
         })
