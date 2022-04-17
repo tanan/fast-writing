@@ -28,10 +28,11 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		log.Println("--> unary interceptor: ", info.FullMethod)
 		userId, err := interceptor.Authorize(ctx, info.FullMethod)
 		if err != nil {
-			if err.Error() != "error getting token from header\n" {
-				log.Println(err.Error())
+			if err.Error() == "error getting token from header\n" {
+				return handler(ctx, req)
 			}
-			return handler(ctx, req)
+			return nil, err
+
 		}
 		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
@@ -75,7 +76,7 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	}
 	token, err := client.VerifyIDToken(context.Background(), strings.Replace(md.Get("authorization")[0], "Bearer ", "", 1))
 	if err != nil {
-		return "", fmt.Errorf("error verifying ID token: %v\n", err)
+		return "", err
 	}
 	return token.UID, nil
 }
