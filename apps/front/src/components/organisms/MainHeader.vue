@@ -17,10 +17,14 @@
 </template>
 
 <script>
+import { defineComponent, ref } from "vue"
+import { useRouter } from 'vue-router'
+import Store from '@/store/index.js'
 import Menubar from 'primevue/menubar'
 import Menu from 'primevue/menu'
 import Button from 'primevue/button'
-export default {
+
+export default defineComponent ({
   name: 'MainHeader',
   components: {
     Menubar,
@@ -30,52 +34,72 @@ export default {
   props: {
     isLoggedIn: Boolean
   },
-  methods: {
-    toggleAccountMenu() {
-      this.isDisplay = !this.isDisplay
-    },
-    signout() {
-      this.$store.dispatch('signout')
-      this.$router.push('/signin')
-    }
-  },
-  data() {
-    return {
-      isDisplay: false,
-      accountItems: [
-        {
-          label: 'Account',
-          icon: 'pi pi-fw pi-user',
-          items:[
-            {
-              label: 'Sign In',
-              visible: !this.isLoggedIn,
-              to: '/signin'
-            },
-            {
-              label: 'Sign Up',
-              visible: !this.isLoggedIn,
-              to: '/signup'
-            },
-            {
-              label: 'Sign Out',
-              visible: this.isLoggedIn,
-              command: () => {
-                this.signout()
-              }
+  setup (props) {
+    const router = useRouter()
+
+    const isDisplay = ref(false)
+    const items = ref([
+      {
+        label:'Contents',
+        icon:'pi pi-fw pi-file',
+        items: [
+          {
+            label:'List',
+            icon:'pi pi-fw pi-align-justify',
+            to: '/',
+          },
+          {
+            label:'Create',
+            icon:'pi pi-fw pi-plus',
+            to: '/contents/create',
+          }
+        ]
+      },
+    ])
+    const accountItems = [
+      {
+        label: 'Account',
+        icon: 'pi pi-fw pi-user',
+        items:[
+          {
+            label: 'Sign In',
+            visible: !props.isLoggedIn,
+            to: '/signin'
+          },
+          {
+            label: 'Sign Up',
+            visible: !props.isLoggedIn,
+            to: '/signup'
+          },
+          {
+            label: 'Sign Out',
+            visible: props.isLoggedIn,
+            command: () => {
+              signout()
             }
-          ]
-        }
-      ],
-      items: [
-        {
-          label:'Contents',
-          icon:'pi pi-fw pi-file',
-        },
-      ]
+          }
+        ]
+      }
+    ]
+
+    const toggleAccountMenu = () => {
+      isDisplay.value = !isDisplay.value
+    }
+
+    const signout = () => {
+      Store.dispatch('signout')
+      router.push('/signin')
+    }
+
+    return {
+      isDisplay,
+      items,
+      accountItems,
+      toggleAccountMenu,
+      signout,
     }
   }
-}
+})
 </script>
 
 <style lang="scss">
