@@ -35,7 +35,6 @@ import { QueryParams, ContentsQueryParams, UserContentsQueryParams } from "@/pb/
 import { UserId } from "@/pb/models/user_pb.js"
 import ContentsCard from "@/components/molecules/ContentsCard.vue"
 import Store from '@/store/index.js'
-import { reject } from 'lodash'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
@@ -80,16 +79,15 @@ export default defineComponent({
       let req = new ContentsQueryParams()
       let queryParams = new QueryParams()
       req.setParams(queryParams)
-      let response = await new Promise((resolve) => {
-        client.getContentsList(req, {}, (err, resp) => {
-          if (err) {
-            console.log(err)
-            throw new Error(err.message)
-          }
-          resolve(resp.toObject().contentslistList)
-        })
+      client.getContentsList(req, {}, (err, resp) => {
+        if (err) {
+          console.log(err)
+          throw new Error(err.message)
+        }
+        if (resp) {
+          toContentsList('public', resp.toObject().contentslistList)
+        }
       })
-      toContentsList('public', response)
     }
 
     const getUserContentsList = async () => {
@@ -100,20 +98,23 @@ export default defineComponent({
       userId.setId(Store.state.userId)
       req.setId(userId)
       const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
-      let response = await new Promise((resolve) => {
-        client.getUserContentsList(req, metadata, (err, resp) => {
-          if (err) {
-            if (err.code === 2) {
-              Store.dispatch('signout')
-              router.push(`/signin?redirect=${route.fullPath}`)
-            }
-            console.log(err)
-            reject(err)
+      
+      client.getUserContentsList(req, metadata, (err, resp) => {
+        if (err) {
+          console.log(err)
+          if (err.code === 2) {
+            Store.dispatch('signout')
+            router.push(`/signin?redirect=${route.fullPath}`)
           }
-          resolve(resp.toObject().contentslistList)
-        })
+          if (err.code === 16) {
+            Store.dispatch('signout')
+            router.push(`/signin?redirect=${route.fullPath}`)
+          }
+        }
+        if (resp) {
+          toContentsList('user', resp.toObject().contentslistList)
+        }
       })
-      toContentsList('user', response)
     }
 
     getUserContentsList()
@@ -123,11 +124,6 @@ export default defineComponent({
       contents,
       hasUserContents,
     }
-  },
-  async created() {
-  },
-  methods: {
-    
   }
 })
 </script>

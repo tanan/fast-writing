@@ -6,14 +6,14 @@
       <Panel class="col-12 lg:col-9" header="Sign Up">
         <div class="mt-4">
           <i class="pi pi-user"></i>
-          <InputText v-bind:class="{ 'p-invalid': error.email }" class="col-10 col-offset-1" type="text" v-model="email" @blur="validate('email', email)" placeholder="Email" />
+          <InputText v-bind:class="{ 'p-invalid': error.email }" class="col-10 col-offset-1" type="text" v-model="email" @blur="validate('email', email)" @keydown.enter="signup($event, email, password)" placeholder="Email" />
         </div>
         <div class="mt-4">
           <i class="pi pi-lock"></i>
-          <InputText v-bind:class="{ 'p-invalid': error.password }" class="col-10 col-offset-1" type="password" v-model="password" @blur="validate('password', password)" placeholder="Password" />
+          <InputText v-bind:class="{ 'p-invalid': error.password }" class="col-10 col-offset-1" type="password" v-model="password" @blur="validate('password', password)" @keydown.enter="signup($event, email, password)" placeholder="Password" />
         </div>
         <div class="col-12 lg:pr-3">
-          <Button class="mt-2 col-4 col-offset-8 lg:mt-4 lg:col-3 lg:col-offset-9" label="Sign Up" @click="signup(email, password)" />
+          <Button class="mt-2 col-4 col-offset-8 lg:mt-4 lg:col-3 lg:col-offset-9" label="Sign Up" @click="signup($event, email, password)" />
         </div>
       </Panel>
     </div>
@@ -70,7 +70,20 @@ export default defineComponent({
       }
     }
 
-    const signup = (email, password) => {
+    const hasInputError = () => {
+      error.email = email.value === "" ? true : false
+      error.password = password.value === "" ? true : false
+      if (error.email || error.password) {
+        return true
+      }
+      return false
+    }
+
+    const signup = (event, email, password) => {
+      if (event.key == "Enter" && event.keyCode !== 13) return
+      if (hasInputError()) {
+        return
+      }
       const auth = getAuth(app);
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
