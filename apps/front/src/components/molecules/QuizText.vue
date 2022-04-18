@@ -1,36 +1,42 @@
 <template>
-  <div>
-    <v-row no-gutters class="question">
-    {{ index }}. {{ question }}
-    </v-row>
-    <v-row no-gutters class="answer">
-      {{ getAnswer() }}
-    </v-row>
+  <div class="quiz-text">
+    <div class="question">{{ index }}. {{ question }}</div>
+    <div class="answer mt-2">{{ getAnswer() }}</div>
   </div>
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue"
+export default defineComponent ({
   name: 'QuizText',
   props: {
     index: Number,
     question: String,
     answer: String,
   },
-  methods: {
-    getAnswer() {
-      if (this.answer === "") {
+  setup (props) {
+    const getAnswer = () => {
+      if (props.answer === "") {
         return ""
       }
-      return "A. " + this.answer
+      return "A. " + props.answer
+    }
+
+    return {
+      getAnswer,
     }
   }
-}
+})
 </script>
 
 <style lang="scss">
-  .answer {
-    color: red;
-    // padding-left: 4%;
+  .quiz-text {
+    font-size: 1.2rem;
+    .answer {
+      color: red;
+      icon: {
+        padding-left: 0.6rem;
+      }
+    }
   }
 </style>

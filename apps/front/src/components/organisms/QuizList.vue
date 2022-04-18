@@ -1,14 +1,15 @@
 <template>
-  <v-container>
-    <div class="quiz" v-for="(question, index) in questions" :key="index">
+  <div class="grid">
+    <div class="mt-4 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3" v-for="(question, index) in questions" :key="index">
       <QuizText :index="getIndex(index)" :question="question" :answer="getAnswer(index)" />
     </div>
-  </v-container>
+  </div>
 </template>
 
 <script>
+import { defineComponent } from "vue"
 import QuizText from '@/components/molecules/QuizText.vue'
-export default {
+export default defineComponent ({
   name: 'QuizList',
   components: {
     QuizText
@@ -18,25 +19,23 @@ export default {
     questions: Array,
     answers: Array,
   },
-  methods: {
-    getIndex(i) {
+  setup (props) {
+    const getIndex = (i) => {
       return parseInt(i) + 1
-    },
-    getAnswer(i) {
-      let answer = this.answers[i]
+    }
+    const getAnswer = (i) => {
+      let answer = props.answers[i]
       if (!answer) {
         return ""
       } else {
         return answer
       }
     }
+
+    return {
+      getIndex,
+      getAnswer,
+    }
   }
-}
+})
 </script>
-
-<style lang="scss">
-  .quiz {
-    margin: 16px 0;
-  }
-</style>
-

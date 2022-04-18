@@ -1,9 +1,10 @@
 <template>
   <div>
     <div class="title">
-      <h2>{{ contents.title }}</h2>
+      <h2 class="main">{{ contents.title }}</h2>
+      <p class="sub">{{ contents.description }}</p>
     </div>
-    <div class="quiz-info mt-2">
+    <div class="quiz-info mt-3">
       <p class="">作成者：{{ contents.creator }}</p>
       <p class="ml-4">更新日時：{{ getUpdatedDate(contents.lastUpdated) }}</p>
     </div>
