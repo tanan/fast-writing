@@ -16,7 +16,7 @@
       <a :href="`/contents/${contents.id}`" rel="noopener" class="link">
         <Button icon="pi pi-check" label="Start" to="`/contents/${contents.id}`" />
       </a>
-      <a :href="`/contents/edit/${contents.id}`" rel="noopener" class="link">
+      <a v-show="isPrivate()" :href="`/contents/edit/${contents.id}`" rel="noopener" class="link">
         <Button icon="pi pi-pencil" label="Edit" class="p-button-secondary" style="margin-left: .5em" />
       </a>
     </template>
@@ -24,10 +24,11 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 
-export default {
+export default defineComponent({
   name: 'ContentsCard',
   components: {
     Card,
@@ -35,6 +36,19 @@ export default {
   },
   props: {
     contents: Object
+  },
+  setup (props) {
+    const isPrivate = () => {
+      console.log(props.contents.scope)
+      if (props.contents.scope === "private") {
+        return true
+      }
+      return false
+    }
+
+    return {
+      isPrivate,
+    }
   },
   methods: {
     getUpdatedDate(v) {
@@ -45,7 +59,7 @@ export default {
       return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate()
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

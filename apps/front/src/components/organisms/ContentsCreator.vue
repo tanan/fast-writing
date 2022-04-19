@@ -72,7 +72,7 @@ export default defineComponent ({
       title: '',
       description: '',
       creator: '',
-      scope: 'public',
+      scope: 'private',
       quizzes: []
     })
 
@@ -136,22 +136,15 @@ export default defineComponent ({
         })
       })
       contents.id = await response.toObject().contents.id.id
-      setQuizList(await response.toObject().contents.quizlistList)
+      setQuizIds(await response.toObject().contents.quizlistList)
     }, 2000)
 
-    const setQuizList = (quizList) => {
-      let list = []
-      for (const q of quizList) {
-        let quiz = {
-          id: q.id.id,
-          answer: q.answer,
-          question: q.question,
-          order: q.order
-        }
-        list.push(quiz)
+    const setQuizIds = (quizList) => {
+      for (const [i, q] of quizList.entries()) {
+        contents.quizzes[i].id = q.id.id
       }
-      contents.quizzes = list
     }
+
     const createContentsRequest = (contents) => {
       let req = new CreateContentsRequest()
       let cid = new ContentsId()

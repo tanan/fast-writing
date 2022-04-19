@@ -67,11 +67,13 @@ export default defineComponent({
           lastUpdated: v.lastUpdated,
           description: v.description,
           creator: v.creator,
+          scope: v.scope,
         }
         if (type === "user") {
-          contents.userContentsList.push(c)  
+          contents.userContentsList.push(c)
+        } else {
+          contents.contentsList.push(c)
         }
-        contents.contentsList.push(c)
       }
     }
 
