@@ -1,8 +1,9 @@
 <template>
-  <div class="grid">
-    <div class="mt-4 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3" v-for="(question, index) in questions" :key="index">
+  <div class="flex flex-column">
+    <div class="flex mt-4 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3" v-for="(question, index) in questions" :key="index">
       <QuizText :index="getIndex(index)" :question="question" :answer="getAnswer(index)" />
     </div>
+    <div class="flex h-30rem"></div>
   </div>
 </template>
 

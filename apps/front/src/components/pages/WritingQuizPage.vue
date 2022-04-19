@@ -1,21 +1,21 @@
 <template>
-  <div>
+  <div class="writing-quiz-page">
     <MainHeader :isLoggedIn="isLoggedIn" />
     <div class="quiz-page">
-      <QuizHeader :contents="contents" :interval="getInterval()" />
-      <QuizList :indecies="indecies" :questions="questions" :answers="answers" />
+      <QuizHeader class="quiz-header" :contents="contents" :interval="getInterval()" />
+      <QuizList class="quiz-list" :indecies="indecies" :questions="questions" :answers="answers" />
     </div>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
+import Store from '@/store/index.js'
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { ContentsId } from "@/pb/models/contents_pb.js"
 import QuizHeader from '@/components/organisms/QuizHeader.vue'
 import QuizList from '@/components/organisms/QuizList.vue'
 import MainHeader from '@/components/organisms/MainHeader.vue'
-import Store from '@/store/index.js'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
@@ -24,7 +24,7 @@ export default defineComponent({
   components: {
     MainHeader,
     QuizList,
-    QuizHeader
+    QuizHeader,
   },
   data: () => ({
     contents: {},
@@ -75,3 +75,6 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss">
+</style>
