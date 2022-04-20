@@ -1,7 +1,6 @@
 <template>
   <div>
     <Toast position="bottom-right" :breakpoints="{'920px': {width: '100%', top: '0', right: '0'}}" />
-    <MainHeader :isLoggedIn="isLoggedIn" />
     <div class="col-10 col-offset-1 mt-6 lg:col-4 lg:col-offset-4">
       <Panel class="col-12 lg:col-9" header="Sign in">
         <div class="mt-4">
@@ -30,7 +29,6 @@ import { defineComponent, ref, reactive } from "vue"
 import { useRoute, useRouter } from 'vue-router'
 import app from "@/plugins/firebase"
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import MainHeader from '@/components/organisms/MainHeader.vue'
 import Panel from 'primevue/panel'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
@@ -42,7 +40,6 @@ import Store from '@/store/index.js'
 export default defineComponent({
   name: 'SigninPage',
   components: {
-    MainHeader,
     Panel,
     InputText,
     Button,
@@ -62,8 +59,6 @@ export default defineComponent({
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
     
-    const isLoggedIn = Store.getters.isLoggedIn
-
     const validate = (k, v) => {
       switch(k) {
         case 'email':
@@ -136,7 +131,6 @@ export default defineComponent({
       password,
       error,
       toast,
-      isLoggedIn,
       validate,
       signin,
       signinWithGoogle,

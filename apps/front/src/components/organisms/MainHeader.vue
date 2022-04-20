@@ -72,6 +72,11 @@ export default defineComponent ({
             to: '/signup'
           },
           {
+            label: 'Profile',
+            visible: props.isLoggedIn,
+            to: '/account'
+          },
+          {
             label: 'Sign Out',
             visible: props.isLoggedIn,
             command: () => {

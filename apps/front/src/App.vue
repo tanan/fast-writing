@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <MainHeader :isLoggedIn="isLoggedIn" />
     <router-view/>
     <footer>
       <MainFooter />
@@ -9,17 +10,28 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue';
+import Store from '@/store/index.js'
 import MainFooter from '@/components/organisms/MainFooter.vue'
-export default {
+import MainHeader from '@/components/organisms/MainHeader.vue'
+
+export default defineComponent({
   name: 'App',
   components: {
     MainFooter,
+    MainHeader,
+  },
+  setup () {
+    const isLoggedIn = Store.getters.isLoggedIn
+    return {
+      isLoggedIn
+    }
   },
   beforeCreate () {
     this.$store.dispatch('loadState')
     this.$store.dispatch('loadInterval')
   }
-}
+})
 </script>
 
 <style lang="scss">

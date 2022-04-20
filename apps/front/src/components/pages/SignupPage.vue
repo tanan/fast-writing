@@ -1,7 +1,6 @@
 <template>
   <div>
     <Toast position="bottom-right" :breakpoints="{'920px': {width: '100%', top: '0', right: '0'}}" />
-    <MainHeader :isLoggedIn="isLoggedIn" />
     <div class="col-10 col-offset-1 mt-6 lg:col-4 lg:col-offset-4">
       <Panel class="col-12 lg:col-9" header="Sign Up">
         <div class="mt-4">
@@ -28,7 +27,6 @@ import { UserServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { User, UserId } from "@/pb/models/user_pb.js"
 import app from "@/plugins/firebase.js"
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
-import MainHeader from '@/components/organisms/MainHeader.vue'
 import Panel from 'primevue/panel'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
@@ -41,7 +39,6 @@ const client = new UserServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT
 export default defineComponent({
   name: 'SignupPage',
   components: {
-    MainHeader,
     Panel,
     InputText,
     Button,
@@ -56,8 +53,6 @@ export default defineComponent({
     })
     const toast = useToast()
     const router = useRouter()
-
-    const isLoggedIn = Store.getters.isLoggedIn
 
     const validate = (k, v) => {
       switch(k) {
@@ -134,7 +129,6 @@ export default defineComponent({
       password,
       error,
       toast,
-      isLoggedIn,
       validate,
       signup,
       createUser,
