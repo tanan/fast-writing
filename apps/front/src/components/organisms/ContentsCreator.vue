@@ -4,11 +4,11 @@
       <div class="mt-6 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3">
         <h2 class="pl-2 pb-2">レッスン名</h2>
         <span class="col-12">
-          <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.title" v-on:keyup="save" placeholder="Title" />
+          <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.title" v-on:keyup="save()" placeholder="Title" />
         </span>
         <h2 class="pl-2 pt-4">説明</h2>
         <span class="col-12">
-          <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.description" v-on:keyup="save" placeholder="Description" />
+          <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.description" v-on:keyup="save()" placeholder="Description" />
         </span>
       </div>
       <div class="col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3 p-0">
@@ -23,7 +23,7 @@
               v-on:keyup="save"
               placeholder="Question"
             />
-            <i class="icon pi pi-trash" @click="removeQuiz(contents.quizzes[i].id)"></i>
+            <i class="icon pi pi-trash" @click="removeQuiz(i)"></i>
           </div>
           <div class="flex quiz-answer mt-2 p-0">
             <h3 class="col-1 p-2 mr-4 lg:mr-0">A{{ i+1 }}.</h3>
@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="col-offset-2">
-          <Button class="mt-2 mb-4 lg:mt-4" label="追加" icon="pi pi-plus" @click="addQuiz" />
+          <Button class="mt-2 mb-4 lg:mt-4" label="追加" icon="pi pi-plus" @click="addQuiz()" />
         </div>
       </div>
     </div>
@@ -147,6 +147,11 @@ export default defineComponent ({
       quiz.setOrder(i+1)
       return quiz
     }
+
+    const removeQuiz = (i) => {
+      contents.quizzes.splice(i, 1)
+      save()
+    }
     
     return {
       contents,
@@ -154,6 +159,7 @@ export default defineComponent ({
       addQuiz,
       createQuiz,
       createContentsRequest,
+      removeQuiz,
     }
   }
 })
