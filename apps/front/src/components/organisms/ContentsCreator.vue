@@ -36,8 +36,8 @@
             />
           </div>
         </div>
-        <div class="col-offset-2 lg:col-offset-1">
-          <Button class="mt-2 lg:mt-4" label="追加" icon="pi pi-plus" @click="addQuiz" />
+        <div class="col-offset-2">
+          <Button class="mt-2 mb-4 lg:mt-4" label="追加" icon="pi pi-plus" @click="addQuiz" />
         </div>
       </div>
     </div>
@@ -47,8 +47,8 @@
 <script>
 import { defineComponent, reactive } from "vue"
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
-import { Contents, ContentsId, Quiz, QuizId } from "@/pb/models/contents_pb.js"
-import { CreateContentsRequest, DeleteQuizRequest } from "@/pb/fast-writing_pb.js"
+import { Contents, ContentsId, Quiz } from "@/pb/models/contents_pb.js"
+import { CreateContentsRequest } from "@/pb/fast-writing_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
 import Store from '@/store/index.js'
 import InputText from 'primevue/inputtext'
@@ -91,7 +91,6 @@ export default defineComponent ({
         let list = []
         for(var v of c.quizlistList) {
           list.push({
-            id: v.id.id,
             question: v.question,
             answer: v.answer,
             order: v.order,
@@ -106,24 +105,6 @@ export default defineComponent ({
       contents.quizzes.push(quiz)
     }
 
-    const removeQuiz = async (qid) => {
-      let req = deleteQuizRequest(qid)
-      const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
-      let response = await new Promise((resolve, reject) => {
-        client.deleteUserQuiz( req, metadata, ( err, resp ) => {
-          if ( err ) {
-            reject(err)
-          }
-          console.log("quiz was deleted: " + qid)
-          resolve(resp)
-        })
-      })
-      console.log(response.toObject())
-      contents.quizzes = contents.quizzes.filter(v => {
-        return v.id != qid
-      })
-    }
-
     const save = debounce(async () => {
       let req = createContentsRequest(contents)
       const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
@@ -136,22 +117,15 @@ export default defineComponent ({
         })
       })
       contents.id = await response.toObject().contents.id.id
-      setQuizIds(await response.toObject().contents.quizlistList)
     }, 2000)
-
-    const setQuizIds = (quizList) => {
-      for (const [i, q] of quizList.entries()) {
-        contents.quizzes[i].id = q.id.id
-      }
-    }
 
     const createContentsRequest = (contents) => {
       let req = new CreateContentsRequest()
       let cid = new ContentsId()
       let c = new Contents()
       let userId = new UserId()
-      for (const quiz of contents.quizzes) {
-        c.addQuizlist(createQuiz(quiz))
+      for (const [index, quiz] of contents.quizzes.entries()) {
+        c.addQuizlist(createQuiz(index, quiz))
       }
       userId.setId(Store.state.userId)
       if (contents.id) {
@@ -166,24 +140,11 @@ export default defineComponent ({
       return req
     }
 
-    const deleteQuizRequest = (quizId) => {
-      let req = new DeleteQuizRequest()
-      let qid = new QuizId()
-      let cid = new ContentsId()
-      qid.setId(quizId)
-      cid.setId(contents.id)
-      req.setContentsid(cid)
-      req.setQuizid(qid)
-      return req
-    }
-
-    const createQuiz = (q) => {
+    const createQuiz = (i, q) => {
       let quiz = new Quiz()
-      let quizId = new QuizId()
-      quizId.setId(q.id)
-      quiz.setId(quizId)
       quiz.setQuestion(q.question)
       quiz.setAnswer(q.answer)
+      quiz.setOrder(i+1)
       return quiz
     }
     
@@ -191,7 +152,6 @@ export default defineComponent ({
       contents,
       save,
       addQuiz,
-      removeQuiz,
       createQuiz,
       createContentsRequest,
     }

@@ -18,8 +18,6 @@ service WritingService {
   rpc GetUserContentsList (models.UserContentsQueryParams) returns (models.ContentsList) {}
   rpc CreateUserContents (CreateContentsRequest) returns (CreateContentsResponse) {}
   rpc DeleteUserContents (DeleteContentsRequest) returns (DeleteResponse) {}
-  rpc CreateUserQuiz (CreateQuizRequest) returns (CreateQuizResponse) {}
-  rpc DeleteUserQuiz (DeleteQuizRequest) returns (DeleteResponse) {}
 }
 
 message CreateContentsRequest {
@@ -40,20 +38,4 @@ message DeleteContentsRequest {
 message DeleteResponse {
   bool deleted  = 1;
   string message = 2;
-}
-
-message CreateQuizRequest {
-  models.Quiz quiz = 1;
-  models.ContentsId contentsId = 2;
-}
-
-message CreateQuizResponse {
-  bool created  = 1;
-  string message = 2;
-  models.QuizId quizId = 3;
-}
-
-message DeleteQuizRequest {
-  models.QuizId quizId = 1;
-  models.ContentsId contentsId = 2;
 }

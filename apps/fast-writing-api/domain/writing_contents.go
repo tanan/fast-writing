@@ -3,7 +3,6 @@ package domain
 import "time"
 
 type ContentsId int64
-type QuizId int64
 
 type Contents struct {
 	ContentsId  ContentsId
@@ -11,13 +10,12 @@ type Contents struct {
 	Title       string
 	Description string
 	Scope       string
-	QuizList    []Quiz
+	QuizList    []Quiz `json:"quizlist"`
 	LastUpdated time.Time
 }
 
 type Quiz struct {
-	Id         QuizId
-	Question   string
-	Answer     string
-	ContentsId ContentsId
+	Question string `json:"question"`
+	Answer   string `json:"answer"`
+	Order    string `json:"order"`
 }

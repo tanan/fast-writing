@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <Menubar :model="items">
+      <Menubar class="menu" :model="items">
         <template #start>
           <img alt="logo" src="https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png" height="40" class="mr-2">
         </template>
@@ -103,5 +103,7 @@ export default defineComponent ({
 </script>
 
 <style lang="scss">
-
+  .menu {
+    outline: none;
+  }
 </style>

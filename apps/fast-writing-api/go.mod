@@ -47,6 +47,7 @@ require (
 	google.golang.org/genproto v0.0.0-20220310185008-1973136f34c6 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gorm.io/datatypes v1.0.6 // indirect
 )
 
 replace fast-writing/pkg/pb => ../../pkg/pb

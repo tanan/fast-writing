@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
+	"strconv"
 )
 
 type WritingService struct {
@@ -26,25 +27,23 @@ func NewWritingService(s SQLHandler, serviceClient pb.SearchServiceClient) *Writ
 func (s *WritingService) encodeQuizList(l []domain.Quiz) []*models.Quiz {
 	var quizList []*models.Quiz
 	for _, v := range l {
+		order, _ := strconv.Atoi(v.Order)
 		quizList = append(quizList, &models.Quiz{
-			Id: &models.QuizId{
-				Id: int64(v.Id),
-			},
 			Question: v.Question,
 			Answer:   v.Answer,
+			Order:    int64(order),
 		})
 	}
 	return quizList
 }
 
-func (s *WritingService) decodeQuizList(quiz []*models.Quiz, contentsId *models.ContentsId) []domain.Quiz {
+func (s *WritingService) decodeQuizList(quiz []*models.Quiz) []domain.Quiz {
 	var list []domain.Quiz
 	for _, v := range quiz {
 		list = append(list, domain.Quiz{
-			Id:         domain.QuizId(v.Id.Id),
-			Question:   v.Question,
-			Answer:     v.Answer,
-			ContentsId: domain.ContentsId(contentsId.Id),
+			Question: v.Question,
+			Answer:   v.Answer,
+			Order:    strconv.Itoa(int(v.Order)),
 		})
 	}
 	return list
@@ -130,7 +129,7 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 	}
 	if req.Contents.Id != nil {
 		contents.ContentsId = domain.ContentsId(req.Contents.Id.Id)
-		contents.QuizList = s.decodeQuizList(req.Contents.QuizList, req.Contents.Id)
+		contents.QuizList = s.decodeQuizList(req.Contents.QuizList)
 	}
 	contents, err := s.SQLHandler.CreateContents(contents, domain.UserId(req.UserId.Id))
 	if err != nil {
@@ -156,38 +155,6 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 	}, nil
 }
 
-func (s *WritingService) CreateUserQuiz(ctx context.Context, req *pb.CreateQuizRequest) (*pb.CreateQuizResponse, error) {
-	userId, err := s.getUserId(ctx)
-	if err != nil {
-		return &pb.CreateQuizResponse{
-			Created: false,
-			Message: "failed to create quiz",
-		}, err
-	}
-	quiz := domain.Quiz{
-		Question:   req.Quiz.Question,
-		Answer:     req.Quiz.Answer,
-		ContentsId: domain.ContentsId(req.ContentsId.Id),
-	}
-	if req.Quiz.Id != nil {
-		quiz.Id = domain.QuizId(req.Quiz.Id.Id)
-	}
-	quizId, err := s.SQLHandler.CreateQuiz(domain.UserId(userId), quiz)
-	if err != nil {
-		return &pb.CreateQuizResponse{
-			Created: false,
-			Message: "failed to create contents",
-		}, err
-	}
-	return &pb.CreateQuizResponse{
-		Created: true,
-		Message: "success",
-		QuizId: &models.QuizId{
-			Id: quizId,
-		},
-	}, nil
-}
-
 func (s *WritingService) DeleteUserContents(ctx context.Context, req *pb.DeleteContentsRequest) (*pb.DeleteResponse, error) {
 	userId, err := s.getUserId(ctx)
 	if err != nil {
@@ -201,26 +168,6 @@ func (s *WritingService) DeleteUserContents(ctx context.Context, req *pb.DeleteC
 		return &pb.DeleteResponse{
 			Deleted: false,
 			Message: "failed to delete contents",
-		}, err
-	}
-	return &pb.DeleteResponse{
-		Deleted: true,
-		Message: "success",
-	}, nil
-}
-func (s *WritingService) DeleteUserQuiz(ctx context.Context, req *pb.DeleteQuizRequest) (*pb.DeleteResponse, error) {
-	userId, err := s.getUserId(ctx)
-	if err != nil {
-		return &pb.DeleteResponse{
-			Deleted: false,
-			Message: "failed to delete quiz",
-		}, err
-	}
-	count, err := s.SQLHandler.DeleteQuiz(domain.UserId(userId), domain.ContentsId(req.ContentsId.Id), domain.QuizId(req.QuizId.Id))
-	if count == 0 || err != nil {
-		return &pb.DeleteResponse{
-			Deleted: false,
-			Message: "failed to delete quiz",
 		}, err
 	}
 	return &pb.DeleteResponse{

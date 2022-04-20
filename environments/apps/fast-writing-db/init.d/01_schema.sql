@@ -20,17 +20,7 @@ create table writing_contents
   title varchar(256) not null,
   description varchar(256) not null,
   scope varchar(16) not null,
-  last_updated datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
-)
-charset=utf8mb4;
-
-create table quiz
-(
-  id bigint primary key AUTO_INCREMENT,
-  contents_id bigint not null,
-  user_id varchar(32) not null,
-  question varchar(256) not null,
-  answer varchar(256) not null,
-  last_updated datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+  last_updated datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  quiz json
 )
 charset=utf8mb4;

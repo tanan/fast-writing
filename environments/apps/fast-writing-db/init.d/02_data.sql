@@ -4,11 +4,5 @@ insert into user values
 ;
 
 insert into writing_contents values
-(1, 'fast-writing-db', 'title1', 'これは説明です。', "public", CURRENT_TIMESTAMP())
-;
-
-insert into quiz values
-(1, 1, 'fast-writing-db', "私は誰ですか？", "Who am I?", CURRENT_TIMESTAMP()),
-(2, 1, 'fast-writing-db', "今日は晴れています。", "It is fine today.", CURRENT_TIMESTAMP()),
-(3, 1, 'fast-writing-db', "今朝ロンドンは雨が降っています。", "It is rainy in London in the morning today.", CURRENT_TIMESTAMP())
+(1, 'fast-writing-db', 'title1', 'これは説明です。', 'public', CURRENT_TIMESTAMP(), '[{"question" : "私は誰ですか？", "answer" : "Who am I?"}, {"question" : "今朝ロンドンは雨が降っています。", "answer" : "It is rainy in London this morning."}]')
 ;
