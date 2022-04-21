@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper">
-    <MainHeader :isLoggedIn="isLoggedIn" />
+    <MainHeader />
     <router-view/>
     <footer>
       <MainFooter />
@@ -22,14 +22,8 @@ export default defineComponent({
     MainHeader,
   },
   setup () {
-    const isLoggedIn = Store.getters.isLoggedIn
-    return {
-      isLoggedIn
-    }
-  },
-  beforeCreate () {
-    this.$store.dispatch('loadState')
-    this.$store.dispatch('loadInterval')
+    Store.dispatch('loadState')
+    Store.dispatch('loadInterval')
   }
 })
 </script>

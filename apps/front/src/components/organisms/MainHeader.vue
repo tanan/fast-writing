@@ -31,12 +31,10 @@ export default defineComponent ({
     Menu,
     Button,
   },
-  props: {
-    isLoggedIn: Boolean
-  },
-  setup (props) {
+  setup () {
     const router = useRouter()
 
+    const isLoggedIn = Store.getters.isLoggedIn
     const isDisplay = ref(false)
     const items = ref([
       {
@@ -63,22 +61,22 @@ export default defineComponent ({
         items:[
           {
             label: 'Sign In',
-            visible: !props.isLoggedIn,
+            visible: !isLoggedIn,
             to: '/signin'
           },
           {
             label: 'Sign Up',
-            visible: !props.isLoggedIn,
+            visible: !isLoggedIn,
             to: '/signup'
           },
           {
             label: 'Profile',
-            visible: props.isLoggedIn,
+            visible: isLoggedIn,
             to: '/account'
           },
           {
             label: 'Sign Out',
-            visible: props.isLoggedIn,
+            visible: isLoggedIn,
             command: () => {
               signout()
             }

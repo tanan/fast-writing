@@ -27,6 +27,7 @@
 <script>
 import { defineComponent, ref, reactive } from "vue"
 import { useRoute, useRouter } from 'vue-router'
+import Store from '@/store/index.js'
 import app from "@/plugins/firebase"
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import Panel from 'primevue/panel'
@@ -34,8 +35,6 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Toast from 'primevue/toast';
 import { useToast } from "primevue/usetoast"
-
-import Store from '@/store/index.js'
 
 export default defineComponent({
   name: 'SigninPage',
