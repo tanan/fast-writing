@@ -10,6 +10,7 @@ option go_package = "fast-writing/pkg/pb/";
 service UserService {
   rpc GetUser (models.UserId) returns (models.User) {}
   rpc CreateUser (models.User) returns (models.UserId) {}
+  rpc UpdateUser (models.User) returns (models.UserId) {}
 }
 
 service WritingService {

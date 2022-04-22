@@ -199,6 +199,67 @@ proto.fastwriting.UserServicePromiseClient.prototype.createUser =
 
 
 /**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.models.User,
+ *   !proto.models.UserId>}
+ */
+const methodDescriptor_UserService_UpdateUser = new grpc.web.MethodDescriptor(
+  '/fastwriting.UserService/UpdateUser',
+  grpc.web.MethodType.UNARY,
+  models_user_pb.User,
+  models_user_pb.UserId,
+  /**
+   * @param {!proto.models.User} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  models_user_pb.UserId.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.models.User} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.models.UserId)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.models.UserId>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.fastwriting.UserServiceClient.prototype.updateUser =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/fastwriting.UserService/UpdateUser',
+      request,
+      metadata || {},
+      methodDescriptor_UserService_UpdateUser,
+      callback);
+};
+
+
+/**
+ * @param {!proto.models.User} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.models.UserId>}
+ *     Promise that resolves to the response
+ */
+proto.fastwriting.UserServicePromiseClient.prototype.updateUser =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/fastwriting.UserService/UpdateUser',
+      request,
+      metadata || {},
+      methodDescriptor_UserService_UpdateUser);
+};
+
+
+/**
  * @param {string} hostname
  * @param {?Object} credentials
  * @param {?grpc.web.ClientOptions} options

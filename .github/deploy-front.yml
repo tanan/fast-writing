@@ -2,6 +2,7 @@ name: build and deploy for front
 on: [push]
   paths:
     - 'apps/front/**'
+    - 'pkg/pb/**'
 env:
   PROJECT_ID: anan-project
   PRODUCT_NAME: fast-writing
