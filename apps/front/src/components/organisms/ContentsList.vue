@@ -107,10 +107,12 @@ export default defineComponent({
           if (err.code === 2) {
             Store.dispatch('signout')
             router.push(`/signin?redirect=${route.fullPath}`)
+            return
           }
           if (err.code === 16) {
             Store.dispatch('signout')
             router.push(`/signin?redirect=${route.fullPath}`)
+            return
           }
         }
         if (resp) {

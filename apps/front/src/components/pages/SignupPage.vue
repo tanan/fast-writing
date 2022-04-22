@@ -30,7 +30,7 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
 import Panel from 'primevue/panel'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
-import Toast from 'primevue/toast';
+import Toast from 'primevue/toast'
 import { useToast } from "primevue/usetoast"
 import Store from '@/store/index.js'
 

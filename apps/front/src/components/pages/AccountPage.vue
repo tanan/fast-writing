@@ -1,5 +1,6 @@
 <template>
   <div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+    <Toast position="bottom-right" :breakpoints="{'920px': {width: '100%', top: '0', right: '0'}}" />
     <div class="grid">
         <div class="col-12 lg:col-2">
             <div class="text-900 font-medium text-xl mb-3">Profile</div>
@@ -13,23 +14,24 @@
                 </div>
                 <div class="field mb-4 col-12">
                     <label for="icon" class="font-medium text-900">Icon</label>
-                    <div class="flex align-items-center">
-                        <!-- <img src="images/blocks/avatars/circle/avatar-f-4.png" class="mr-4" /> -->
-                        <FileUpload name="Upload Icon" :customUpload="true" @uploader="uploadIcon">
+                    <div class="flex align-items-center mt-2">
+                        <div class="profile-icon mr-4">
+                          <img v-show="profile.hasIcon" :src="profile.image" class="pl-4" style="max-width: 64px; max-height: 64px" />
+                          <Button v-show="!profile.hasIcon" icon="pi pi-user" class="p-button-rounded p-button-secondary" style="width: 48px; height: 48px;" />
+                        </div>
+                        <FileUpload mode="basic" name="Upload Icon" :customUpload="true" @uploader="uploadIcon">
                           <template #empty>
                             <p>Drag and drop files to here to upload.</p>
                           </template>
                         </FileUpload>
-                        <!-- <Button label="Upload Icon" icon="pi pi-plus" class="w-auto mt-2" @click="uploadIcon"></Button> -->
-                        <!-- <FileUpload mode="basic" name="avatar" url="./upload.php" accept="image/*" :maxFileSize="1000000" class="p-button-outlined p-button-plain" chooseLabel="Upload Image"></FileUpload> -->
                     </div>
                 </div>
                 <div class="field mb-4 col-12 md:col-6">
-                    <label for="email" class="font-medium text-900">Email</label>
-                    <InputText id="email" type="text" v-model="profile.email" />
+                  <label for="email" class="font-medium text-900">Email</label>
+                  <InputText id="email" type="text" readonly v-model="profile.email" />
                 </div>
                 <div class="col-12">
-                    <Button label="Save Changes" class="w-auto mt-3" @click="save()"></Button>
+                  <Button label="Save Changes" class="w-auto mt-3" @click="save()"></Button>
                 </div>
             </div>
         </div>
@@ -39,14 +41,17 @@
 
 <script>
 import { defineComponent, reactive } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import Store from '@/store/index.js'
 import app from "@/plugins/firebase"
 import { UserServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
-import { getStorage, ref, uploadBytes } from "firebase/storage"
-import { UserId } from "@/pb/models/user_pb.js"
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { User, UserId } from "@/pb/models/user_pb.js"
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import FileUpload from 'primevue/fileupload'
+import Toast from 'primevue/toast'
+import { useToast } from "primevue/usetoast"
 
 const client = new UserServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
@@ -56,26 +61,49 @@ export default defineComponent({
     InputText,
     Button,
     FileUpload,
+    Toast,
   },
   setup () {
-    const storage = getStorage(app);
-    const storageRef = ref(storage, `users/${Store.state.userId}/profilePicture.png`);
+    const route = useRoute()
+    const router = useRouter()
+    const storage = getStorage(app)
+    const storageRef = ref(storage, `users/${Store.state.userId}/profilePicture.png`)
+
+    const toast = useToast()
 
     const profile = reactive({
       name: '',
-      email: ''
+      email: '',
+      image: '',
+      hasIcon: false,
     })
 
     const setProfile = (user) => {
       profile.name = user.name
       profile.email = user.email
+      profile.image = downloadIcon()
     }
 
     const uploadIcon = (e) => {
-      uploadBytes(storageRef, e.file).then((snapshot) => {
+      console.log(e.files[0])
+      uploadBytes(storageRef, e.files[0], {contentType: 'image/png'}).then((snapshot) => {
         console.log(snapshot)
         console.log('Uploaded a blob or file!')
       })
+    }
+
+    const downloadIcon = () => {
+      getDownloadURL(storageRef)
+        .then((url) => {
+          profile.image = url
+          // profile.hasIcon = true
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case 'storage/object-not-found':
+              break;
+          }
+        })
     }
 
     // init data
@@ -84,13 +112,31 @@ export default defineComponent({
     req.setId(Store.state.userId)
     client.getUser(req, metadata, (err, resp) => {
       if (err) {
+        if (err.message === "Unauthenticated") {
+          router.push(`/signin?redirect=${route.fullPath}`)
+          return
+        }
         console.log("cannot find user: ", err)
       }
       setProfile(resp.toObject())
     })
 
     const save = () => {
-
+      const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
+      let req = new User()
+      let userId = new UserId()
+      userId.setId(Store.state.userId)
+      req.setId(userId)
+      req.setName(profile.name)
+      req.setEmail(profile.email)
+      client.updateUser(req, metadata, async (err) => {
+      if (err) {
+        console.log("failed to update user: ", err)
+      }
+      toast.add({severity:'success', summary: 'updated', detail: 'success to update user', life: 3000})
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      router.push('/')
+    })
     }
 
     return {

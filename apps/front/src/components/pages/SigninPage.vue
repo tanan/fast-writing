@@ -89,8 +89,9 @@ export default defineComponent({
           })
           toast.add({severity:'success', summary: 'success', detail: 'login succeeded', life: 5000})
           await new Promise((resolve) => setTimeout(resolve, 1000))
-          if (router.query) {
+          if (route.query) {
             router.push(route.query.redirect)
+            return
           }
           router.push('/')
         }).catch((error) => {
@@ -113,8 +114,9 @@ export default defineComponent({
         })
         .then(async () => {
           await new Promise((resolve) => setTimeout(resolve, 1000))
-          if (router.query) {
+          if (route.query) {
             router.push(route.query.redirect)
+            return
           }
           router.push('/')
         })
