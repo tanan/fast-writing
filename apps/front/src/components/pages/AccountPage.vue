@@ -96,7 +96,7 @@ export default defineComponent({
       getDownloadURL(storageRef)
         .then((url) => {
           profile.image = url
-          // profile.hasIcon = true
+          profile.hasIcon = true
         })
         .catch((error) => {
           switch (error.code) {
