@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fast-writing-api/domain"
+	"fast-writing-api/util"
 	"fast-writing/pkg/pb"
 	"fast-writing/pkg/pb/models"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
 	"strconv"
@@ -49,15 +49,6 @@ func (s *WritingService) decodeQuizList(quiz []*models.Quiz) []domain.Quiz {
 	return list
 }
 
-func (s *WritingService) getUserId(ctx context.Context) (string, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	userId := md.Get("user-id")
-	if !ok || len(userId) == 0 {
-		return "", errors.New("failed to get user-id on metadata")
-	}
-	return userId[0], nil
-}
-
 func (s *WritingService) GetContents(ctx context.Context, req *models.ContentsId) (*models.Contents, error) {
 	contents, err := s.SQLHandler.FindContentsById(domain.ContentsId(req.Id))
 	if err != nil {
@@ -96,7 +87,7 @@ func (s *WritingService) GetContentsList(ctx context.Context, req *models.Conten
 }
 
 func (s *WritingService) GetUserContentsList(ctx context.Context, req *models.UserContentsQueryParams) (*models.ContentsList, error) {
-	userId, err := s.getUserId(ctx)
+	userId, err := util.GetUserId(ctx)
 	if err != nil {
 		return &models.ContentsList{}, err
 	}
@@ -156,7 +147,7 @@ func (s *WritingService) CreateUserContents(ctx context.Context, req *pb.CreateC
 }
 
 func (s *WritingService) DeleteUserContents(ctx context.Context, req *pb.DeleteContentsRequest) (*pb.DeleteResponse, error) {
-	userId, err := s.getUserId(ctx)
+	userId, err := util.GetUserId(ctx)
 	if err != nil {
 		return &pb.DeleteResponse{
 			Deleted: false,

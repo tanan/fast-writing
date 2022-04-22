@@ -21,6 +21,20 @@ func (h *SQLHandler) FindUserById(id domain.UserId) (domain.User, error) {
 	}, nil
 }
 
+func (h *SQLHandler) UpdateUser(user domain.User) (domain.UserId, error) {
+	model := model.User{
+		Id:          string(user.Id),
+		Name:        user.Name,
+		Email:       user.Email,
+		LastUpdated: time.Now(),
+	}
+	db := h.Conn.Save(&model)
+	if db.Error != nil {
+		return "", errors.New("failed to update user:" + db.Error.Error())
+	}
+	return user.Id, nil
+}
+
 func (h *SQLHandler) CreateUser(user domain.User) (domain.UserId, error) {
 	model := model.User{
 		Id:          string(user.Id),

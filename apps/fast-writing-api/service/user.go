@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fast-writing-api/domain"
+	"fast-writing-api/util"
 	"fast-writing/pkg/pb/models"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -18,9 +19,30 @@ func NewUserService(s SQLHandler) *UserService {
 	}
 }
 
-func (s *UserService) CreateUser(ctx context.Context, req *models.User) (*models.UserId, error) {
+func (s *UserService) UpdateUser(ctx context.Context, req *models.User) (*models.UserId, error) {
+	userId, err := util.GetUserId(ctx)
+	if err != nil {
+		return &models.UserId{}, err
+	}
 	user := domain.User{
-		Id:    domain.UserId(req.Id.Id),
+		Id:    domain.UserId(userId),
+		Name:  req.Name,
+		Email: req.Email,
+	}
+	id, err := s.SQLHandler.UpdateUser(user)
+	if err != nil {
+		return &models.UserId{}, err
+	}
+	return &models.UserId{Id: string(id)}, nil
+}
+
+func (s *UserService) CreateUser(ctx context.Context, req *models.User) (*models.UserId, error) {
+	userId, err := util.GetUserId(ctx)
+	if err != nil {
+		return &models.UserId{}, err
+	}
+	user := domain.User{
+		Id:    domain.UserId(userId),
 		Name:  req.Name,
 		Email: req.Email,
 	}

@@ -1,8 +1,8 @@
 name: build and deploy for fast-writing
 on: [push]
-  paths:
-    - 'apps/fast-writing-api/**'
-    - 'pkg/pb/**'
+  # paths:
+  #   - 'apps/fast-writing-api/**'
+  #   - 'pkg/pb/**'
 env:
   PROJECT_ID: anan-project
   PRODUCT_NAME: fast-writing
