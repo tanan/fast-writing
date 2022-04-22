@@ -1,8 +1,9 @@
 name: build and deploy for fast-writing api
-on: [push]
-  paths:
-    - 'apps/fast-writing-api/**'
-    - 'pkg/pb/**'
+on:
+  push:
+    paths:
+      - 'apps/fast-writing-api/**'
+      - 'pkg/pb/**'
 env:
   PROJECT_ID: anan-project
   PRODUCT_NAME: fast-writing
@@ -61,9 +62,6 @@ jobs:
 
       - name: Set Env
         run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      # - name: Update Secret
-      #   run: echo "test3" | gcloud secrets versions add $SAMPLE_SECRET_NAME --data-file=-
 
       - name: Deploy Writing API
         run: |-
