@@ -1,12 +1,12 @@
-name: build and deploy for fast-writing
+name: build and deploy for front
 on: [push]
+  paths:
+    - 'apps/front/**'
+    - 'pkg/pb/**'
 env:
   PROJECT_ID: anan-project
   PRODUCT_NAME: fast-writing
-  FAST_WRITING_API_SERVICE_NAME: fast-writing-api
-  SEARCH_API_SERVICE_NAME: search-api
   FRONT_SERVICE_NAME: front
-  SAMPLE_SECRET_NAME: anan-test
 jobs:
   build:
     name: Build image
@@ -32,12 +32,6 @@ jobs:
       # Build docker image
       - name: Set Env
         run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-      - name: Build Image for Fast Writing
-        run: |-
-          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag -f apps/$FAST_WRITING_API_SERVICE_NAME/Dockerfile .
-      - name: Build Image for Search
-        run: |-
-          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag -f apps/$SEARCH_API_SERVICE_NAME/Dockerfile .
       - name: Build Image for front
         run: |-
           cd ./apps/front/
@@ -47,12 +41,6 @@ jobs:
       - run: |
           gcloud auth configure-docker asia-northeast1-docker.pkg.dev
       # Push image to Google Container Registry
-      - name: Push Writing API
-        run: |-
-          docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag
-      - name: Push Search API
-        run: |-
-          docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag
       - name: Push Front
         run: |-
           docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FRONT_SERVICE_NAME:$tag
@@ -78,23 +66,6 @@ jobs:
 
       - name: Set Env
         run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      # - name: Update Secret
-      #   run: echo "test3" | gcloud secrets versions add $SAMPLE_SECRET_NAME --data-file=-
-
-      - name: Deploy Writing API
-        run: |-
-          gcloud run deploy $FAST_WRITING_API_SERVICE_NAME \
-            --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag \
-            --project $PROJECT_ID \
-            --platform managed --region asia-northeast1
-
-      - name: Deploy Search API
-        run: |-
-          gcloud run deploy $SEARCH_API_SERVICE_NAME \
-            --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag \
-            --project $PROJECT_ID \
-            --platform managed --region asia-northeast1
 
       - name: Deploy Front
         run: |-
