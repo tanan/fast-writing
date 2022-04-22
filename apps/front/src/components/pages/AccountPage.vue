@@ -117,6 +117,8 @@ export default defineComponent({
           return
         }
         console.log("cannot find user: ", err)
+        toast.add({severity:'error', summary: 'user not found', detail: `再ログインしてください。${err.message}`, life: 5000})
+        return
       }
       setProfile(resp.toObject())
     })
