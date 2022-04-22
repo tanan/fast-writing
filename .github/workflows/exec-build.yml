@@ -1,17 +1,20 @@
-name: build and deploy for fast-writing api
+name: build and deploy for fast-writing
 on: [push]
-  # paths:
-  #   - 'apps/fast-writing-api/**'
-  #   - 'pkg/pb/**'
 env:
   PROJECT_ID: anan-project
   PRODUCT_NAME: fast-writing
   FAST_WRITING_API_SERVICE_NAME: fast-writing-api
+  SEARCH_API_SERVICE_NAME: search-api
+  FRONT_SERVICE_NAME: front
+  SAMPLE_SECRET_NAME: anan-test
 jobs:
   build:
     name: Build image
     runs-on: ubuntu-latest
 
+    env:
+      FAST_WRITING_API_ENDPOINT: https://fw-grpc-endpoint-cmfot4feta-an.a.run.app
+    
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -32,6 +35,14 @@ jobs:
       - name: Build Image for Fast Writing
         run: |-
           docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag -f apps/$FAST_WRITING_API_SERVICE_NAME/Dockerfile .
+      - name: Build Image for Search
+        run: |-
+          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag -f apps/$SEARCH_API_SERVICE_NAME/Dockerfile .
+      - name: Build Image for front
+        run: |-
+          cd ./apps/front/
+          echo "VUE_APP_WRITING_API_ENDPOINT=$FAST_WRITING_API_ENDPOINT" >> .env
+          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FRONT_SERVICE_NAME:$tag .
       # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
           gcloud auth configure-docker asia-northeast1-docker.pkg.dev
@@ -39,6 +50,12 @@ jobs:
       - name: Push Writing API
         run: |-
           docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag
+      - name: Push Search API
+        run: |-
+          docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag
+      - name: Push Front
+        run: |-
+          docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FRONT_SERVICE_NAME:$tag
 
   deploy:
     needs: [build]
@@ -69,5 +86,19 @@ jobs:
         run: |-
           gcloud run deploy $FAST_WRITING_API_SERVICE_NAME \
             --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_API_SERVICE_NAME:$tag \
+            --project $PROJECT_ID \
+            --platform managed --region asia-northeast1
+
+      - name: Deploy Search API
+        run: |-
+          gcloud run deploy $SEARCH_API_SERVICE_NAME \
+            --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$SEARCH_API_SERVICE_NAME:$tag \
+            --project $PROJECT_ID \
+            --platform managed --region asia-northeast1
+
+      - name: Deploy Front
+        run: |-
+          gcloud run deploy $FRONT_SERVICE_NAME \
+            --image asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FRONT_SERVICE_NAME:$tag \
             --project $PROJECT_ID \
             --platform managed --region asia-northeast1
