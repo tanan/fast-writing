@@ -9,7 +9,8 @@ import * as mdiJs from '@mdi/js'
 import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice';
 
-import 'primevue/resources/themes/saga-blue/theme.css'
+// import 'primevue/resources/themes/saga-blue/theme.css'
+import './styles/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import "primeflex/primeflex.css"

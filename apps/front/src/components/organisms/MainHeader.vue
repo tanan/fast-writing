@@ -6,12 +6,12 @@
           <img alt="logo" src="https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png" height="40" class="mr-2">
         </template>
         <template #end>
-          <Button icon="pi pi-user" class="p-button-secondary p-button-rounded" @click="toggleAccountMenu()" />
+          <Button icon="pi pi-user" class="p-button-rounded p-button-secondary mr-2" @click="toggleAccountMenu()" />
         </template>
       </Menubar>
     </div>
     <div v-show="isDisplay" class="absolute top-1 right-0">
-      <Menu :model="accountItems" />
+      <Menu :model="accountItems" @click="disableAccountMenu()" />
     </div>
   </div>
 </template>
@@ -85,6 +85,10 @@ export default defineComponent ({
       }
     ]
 
+    const disableAccountMenu = () => {
+      isDisplay.value = false
+    }
+
     const toggleAccountMenu = () => {
       isDisplay.value = !isDisplay.value
     }
@@ -98,6 +102,7 @@ export default defineComponent ({
       isDisplay,
       items,
       accountItems,
+      disableAccountMenu,
       toggleAccountMenu,
       signout,
     }
