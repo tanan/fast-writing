@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue"
+import { defineComponent, ref, watch } from "vue"
 import { useRouter } from 'vue-router'
 import Store from '@/store/index.js'
 import Menubar from 'primevue/menubar'
@@ -34,7 +34,10 @@ export default defineComponent ({
   setup () {
     const router = useRouter()
 
-    const isLoggedIn = Store.getters.isLoggedIn
+    const isLoggedIn = ref(Store.getters.isLoggedIn)
+    watch([isLoggedIn], () => {
+      console.log(isLoggedIn.value)
+    })
     const isDisplay = ref(false)
     const items = ref([
       {
@@ -61,22 +64,22 @@ export default defineComponent ({
         items:[
           {
             label: 'Sign In',
-            visible: !isLoggedIn,
+            visible: !isLoggedIn.value,
             to: '/signin'
           },
           {
             label: 'Sign Up',
-            visible: !isLoggedIn,
+            visible: !isLoggedIn.value,
             to: '/signup'
           },
           {
             label: 'Profile',
-            visible: isLoggedIn,
+            visible: isLoggedIn.value,
             to: '/account'
           },
           {
             label: 'Sign Out',
-            visible: isLoggedIn,
+            visible: isLoggedIn.value,
             command: () => {
               signout()
             }
