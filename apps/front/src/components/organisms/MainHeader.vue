@@ -75,7 +75,7 @@ export default defineComponent ({
           {
             label: 'Profile',
             visible: isLoggedIn.value,
-            to: '/account'
+            to: '/profile'
           },
           {
             label: 'Sign Out',

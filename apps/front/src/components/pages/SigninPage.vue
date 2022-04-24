@@ -1,5 +1,5 @@
 <template>
-  <div style="background: url('images/signup/signup-bg.jpg') no-repeat; background-size: cover" class="px-4 py-8 md:px-6 lg:px-8">
+  <div style="background: url('images/signin/signin-bg.jpg') no-repeat; background-size: cover" class="px-4 py-8 md:px-6 lg:px-8">
     <Toast position="bottom-right" :breakpoints="{'920px': {width: '100%', top: '0', right: '0'}}" />
     <div class="flex flex-wrap">
       <div class="w-full lg:w-6 p-4 lg:p-7" style="background-color: rgba(255,255,255,.7)">

@@ -55,7 +55,7 @@
                 <Checkbox id="rememberme3" :binary="true" v-model="checked3" class="mr-2"></Checkbox>
                 <label for="rememberme3">Remember me</label>
             </div> -->
-          <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
+          <a href="/signin" class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">アカウントをお持ちの方</a>
         </div>
     
         <Button label="Sign Up" icon="pi pi-user" class="w-full p-button-help" @click="signup($event, email, password)"></Button>
@@ -164,7 +164,7 @@ export default defineComponent({
         .then(async () => {
           toast.add({severity:'success', summary: 'created', detail: 'success create user', life: 5000})
           await new Promise((resolve) => setTimeout(resolve, 1000))
-          router.push('/')
+          router.push('/profile')
         })
         .catch((error) => {
           const errorCode = error.code;

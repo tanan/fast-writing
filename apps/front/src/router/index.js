@@ -15,7 +15,7 @@ const routes = [
     component: TopPage,
   },
   {
-    path: '/account',
+    path: '/profile',
     name: 'AccountPage',
     component: AccountPage
   },
