@@ -17,7 +17,7 @@
           <div class="flex question">
             <h3 class="col-1 p-2 mr-4 lg:mr-0">Q{{ i+1 }}.</h3>
             <InputText
-              class="col-10 lg:col-11 align-items-center p-inputtext-lg"
+              class="col-10 lg:col-11 align-items-center p-inputtext"
               type="text"
               v-model="contents.quizzes[i].question"
               v-on:keyup="save"
@@ -28,7 +28,7 @@
           <div class="flex quiz-answer mt-2 p-0">
             <h3 class="col-1 p-2 mr-4 lg:mr-0">A{{ i+1 }}.</h3>
             <InputText
-              class="col-10 lg:col-11 align-items-center p-inputtext-lg"
+              class="col-10 lg:col-11 align-items-center p-inputtext"
               type="text"
               v-model="contents.quizzes[i].answer"
               v-on:keyup="save"
@@ -36,8 +36,8 @@
             />
           </div>
         </div>
-        <div class="col-offset-2">
-          <Button class="mt-2 mb-4 lg:mt-4" label="追加" icon="pi pi-plus" @click="addQuiz()" />
+        <div class="pr-2">
+          <Button class="mt-2 mb-4 lg:mt-4 p-button-rounded" icon="pi pi-plus" @click="addQuiz()" />
         </div>
       </div>
     </div>
@@ -73,7 +73,7 @@ export default defineComponent ({
       description: '',
       creator: '',
       scope: 'private',
-      quizzes: []
+      quizzes: [{"question": "", "answer": ""}]
     })
 
     if (contents.id) {

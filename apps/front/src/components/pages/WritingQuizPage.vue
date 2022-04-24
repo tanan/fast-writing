@@ -2,13 +2,13 @@
   <div class="writing-quiz-page">
     <div class="quiz-page">
       <QuizHeader class="quiz-header" :contents="contents" :interval="getInterval()" />
-      <QuizList class="quiz-list" :indecies="contents.indecies" :questions="contents.questions" :answers="contents.answers" />
+      <QuizList class="quiz-list" :indecies="contents.indecies" :questions="contents.questions" :answers="contents.answers" :timerId="timerId" />
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import Store from '@/store/index.js'
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
@@ -35,6 +35,8 @@ export default defineComponent({
       answers: []
     })
 
+    const timerId = ref(0)
+
     const route = useRoute()
 
     const getInterval = () => {
@@ -50,9 +52,9 @@ export default defineComponent({
       for(var i in quizList) {
         contents.indecies.push(i)
         contents.questions.push(quizList[i].question)
-        await new Promise((resolve) => setTimeout(resolve, getInterval()*1000));
+        await new Promise((resolve) => timerId.value = setTimeout(resolve, getInterval()*1000))
         contents.answers.push(quizList[i].answer)
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000))
       }
     }
 
@@ -73,6 +75,7 @@ export default defineComponent({
 
     return {
       contents,
+      timerId,
       getInterval,
     }
   }

@@ -1,10 +1,6 @@
 <template>
   <div id="wrapper">
-    <MainHeader />
     <router-view/>
-    <footer>
-      <MainFooter />
-    </footer>
   </div>
 
 </template>
@@ -12,15 +8,9 @@
 <script>
 import { defineComponent } from 'vue';
 import Store from '@/store/index.js'
-import MainFooter from '@/components/organisms/MainFooter.vue'
-import MainHeader from '@/components/organisms/MainHeader.vue'
 
 export default defineComponent({
   name: 'App',
-  components: {
-    MainFooter,
-    MainHeader,
-  },
   setup () {
     Store.dispatch('loadState')
     Store.dispatch('loadInterval')

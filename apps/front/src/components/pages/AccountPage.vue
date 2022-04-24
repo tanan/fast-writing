@@ -1,4 +1,5 @@
 <template>
+  <MainHeader />
   <div class="surface-section px-4 py-8 md:px-6 lg:px-8">
     <Toast position="bottom-right" :breakpoints="{'920px': {width: '100%', top: '0', right: '0'}}" />
     <div class="grid">
@@ -37,6 +38,7 @@
         </div>
     </div>
   </div>
+  <MainFooter />
 </template>
 
 <script>
@@ -47,6 +49,8 @@ import app from "@/plugins/firebase"
 import { UserServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { User, UserId } from "@/pb/models/user_pb.js"
+import MainHeader from '@/components/organisms/MainHeader.vue'
+import MainFooter from '@/components/organisms/MainFooter.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import FileUpload from 'primevue/fileupload'
@@ -58,6 +62,8 @@ const client = new UserServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT
 export default defineComponent({
   name: 'AccountPage',
   components: {
+    MainHeader,
+    MainFooter,
     InputText,
     Button,
     FileUpload,
