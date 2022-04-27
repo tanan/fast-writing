@@ -10,6 +10,10 @@
         <span class="col-12">
           <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.description" v-on:keyup="save()" placeholder="Description" />
         </span>
+        <h2 class="pl-2 pt-4">公開設定</h2>
+        <span class="col-2">
+          <SelectButton v-model="contents.scope" :options="scopes" @click="save()" />
+        </span>
       </div>
       <div class="col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3 p-0">
         <h2 class="pl-2 pt-4">クイズ</h2>
@@ -53,6 +57,7 @@ import { UserId } from "@/pb/models/user_pb.js"
 import Store from '@/store/index.js'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import SelectButton from 'primevue/selectbutton'
 import { debounce } from 'lodash'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
@@ -62,11 +67,14 @@ export default defineComponent ({
   components: {
     InputText,
     Button,
+    SelectButton,
   },
   props: {
     id: Number
   },
   setup (props) {
+    const scopes = ['private', 'public']
+
     const contents = reactive({
       id: props.id,
       title: '',
@@ -107,6 +115,7 @@ export default defineComponent ({
 
     const save = debounce(async () => {
       let req = createContentsRequest(contents)
+      console.log(req)
       const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
       let response = await new Promise((resolve, reject) => {
         client.createUserContents( req, metadata, ( err, resp ) => {
@@ -154,6 +163,7 @@ export default defineComponent ({
     }
     
     return {
+      scopes,
       contents,
       save,
       addQuiz,

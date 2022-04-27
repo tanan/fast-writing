@@ -16,7 +16,7 @@
       <a :href="`/contents/${contents.id}`" rel="noopener" class="link">
         <Button icon="pi pi-check" label="Start" to="`/contents/${contents.id}`" />
       </a>
-      <a v-show="isPrivate()" :href="`/contents/edit/${contents.id}`" rel="noopener" class="link">
+      <a v-show="editable" :href="`/contents/edit/${contents.id}`" rel="noopener" class="link">
         <Button icon="pi pi-pencil" label="Edit" class="p-button-secondary" style="margin-left: .5em" />
       </a>
     </template>
@@ -35,30 +35,22 @@ export default defineComponent({
     Button,
   },
   props: {
-    contents: Object
+    contents: Object,
+    editable: Boolean
   },
-  setup (props) {
-    const isPrivate = () => {
-      console.log(props.contents.scope)
-      if (props.contents.scope === "private") {
-        return true
-      }
-      return false
-    }
-
-    return {
-      isPrivate,
-    }
-  },
-  methods: {
-    getUpdatedDate(v) {
+  setup () {
+    const getUpdatedDate = (v) => {
       if (!v) {
         return
       }
       let date = new Date(v.seconds*1000)
       return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate()
     }
-  }
+
+    return {
+      getUpdatedDate,
+    }
+  },
 })
 </script>
 

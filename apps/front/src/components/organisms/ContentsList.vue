@@ -8,7 +8,7 @@
     <div class="grid">
       <div class="flex align-items-stretch flex-wrap col-10 col-offset-1 lg:col-8 lg:col-offset-2">
         <div class="flex col-12 lg:col-4 lg:pl-4 lg:pr-4" v-for="c in contents.userContentsList" :key="c.id">
-          <ContentsCard :contents="c" />
+          <ContentsCard :contents="c" :editable="true" />
         </div>
       </div>
     </div>
@@ -20,7 +20,7 @@
     <div class="grid">
       <div class="flex align-items-stretch flex-wrap col-10 col-offset-1 lg:col-8 lg:col-offset-2">
         <div class="flex col-12 lg:col-4 lg:pl-4 lg:pr-4" v-for="c in contents.contentsList" :key="c.id">
-          <ContentsCard :contents="c" />
+          <ContentsCard :contents="c" :editable="false" />
         </div>
       </div>
     </div>
