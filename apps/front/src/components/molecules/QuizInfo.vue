@@ -8,22 +8,22 @@
       <p class="">作成者：{{ contents.creator }}</p>
       <p class="ml-4">更新日時：{{ getUpdatedDate(contents.lastUpdated) }}</p>
     </div>
-    <div class="flex mt-4">
+    <!-- <div class="flex mt-4">
       <h3 class="mr-2 pt-2">回答時間:</h3>
       <Dropdown v-model="select" :options="items" />
       <p class="ml-2 pt-2">秒</p>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue"
-import Dropdown from 'primevue/dropdown';
+// import Dropdown from 'primevue/dropdown';
 
 export default defineComponent ({
   name: 'QuizInfo',
   components: {
-    Dropdown,
+    // Dropdown,
   },
   data () {
     return {

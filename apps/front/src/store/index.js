@@ -6,7 +6,8 @@ const store = new Vuex.Store({
   state: {
     userId: "",
     userToken: "",
-    interval: init_interval
+    interval: init_interval,
+    quizList: []
   },
   mutations: {
     updateUser(state, user) {
@@ -15,6 +16,12 @@ const store = new Vuex.Store({
     },
     updateInterval(state, interval) {
       state.interval = interval
+    },
+    updateQuizList(state, quizList) {
+      state.quizList = quizList
+    },
+    shiftQuizList(state) {
+      state.quizList.shift()
     }
   },
   actions: {
@@ -52,6 +59,12 @@ const store = new Vuex.Store({
       }
       let interval = JSON.parse(item)
       context.commit('updateInterval', interval)
+    },
+    updateQuizList(context, quizList) {
+      context.commit('updateQuizList', quizList)
+    },
+    shiftQuizList(context) {
+      context.commit('shiftQuizList')
     }
   },
   getters: {
@@ -63,6 +76,12 @@ const store = new Vuex.Store({
         return false
       }
         return true
+    },
+    getNextQuiz(state) {
+      return state.quizList[0]
+    },
+    hasQuizElement(state) {
+      return state.quizList.length > 0 ? true : false
     }
   },
   modules: {},

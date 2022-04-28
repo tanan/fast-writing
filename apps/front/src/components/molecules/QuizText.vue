@@ -1,20 +1,27 @@
 <template>
   <div class="quiz-text">
-    <div class="question">{{ index }}. {{ question }}</div>
-    <div class="answer mt-2">{{ getAnswer() }}</div>
+    <div class="question">{{ getIndex(quiz.index) }}. {{ quiz.question }}</div>
+    <div class="answer mt-2">A. 
+      <Button v-if="!isDisplayAnswer" label="解答を表示" icon="pi pi-plus" @click="click()" />
+      <span v-if="isDisplayAnswer">{{ quiz.answer }}</span>
+    </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from "vue"
+import { defineComponent, ref } from "vue"
+import Button   from 'primevue/button'
+
 export default defineComponent ({
   name: 'QuizText',
   props: {
-    index: Number,
-    question: String,
-    answer: String,
+    quiz: Object
+  },
+  components: {
+    Button
   },
   setup (props) {
+    const isDisplayAnswer = ref(props.isDisplayAnswer)
     const getAnswer = () => {
       if (props.answer === "") {
         return ""
@@ -22,7 +29,24 @@ export default defineComponent ({
       return "A. " + props.answer
     }
 
+    const showButton = () => {
+      return !isDisplayAnswer.value
+    }
+
+    const click = () => {
+      isDisplayAnswer.value = true
+    }
+
+    const getIndex = (i) => {
+      return parseInt(i) + 1
+    }
+
+
     return {
+      isDisplayAnswer,
+      showButton,
+      click,
+      getIndex,
       getAnswer,
     }
   }
