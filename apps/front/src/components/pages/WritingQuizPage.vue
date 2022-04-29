@@ -1,6 +1,7 @@
 <template>
   <div class="writing-quiz-page">
     <div class="quiz-page">
+      <MainHeader />
       <QuizHeader class="quiz-header" :contents="contents" :interval="getInterval()" />
       <QuizList class="quiz-list" />
     </div>
@@ -13,6 +14,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Store from '@/store/index.js'
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { ContentsId } from "@/pb/models/contents_pb.js"
+import MainHeader from '@/components/organisms/MainHeader.vue'
 import QuizHeader from '@/components/organisms/QuizHeader.vue'
 import QuizList from '@/components/organisms/QuizList.vue'
 
@@ -21,6 +23,7 @@ const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPO
 export default defineComponent({
   name: 'WritingQuizPage',
   components: {
+    MainHeader,
     QuizList,
     QuizHeader,
   },

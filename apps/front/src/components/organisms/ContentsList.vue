@@ -1,8 +1,16 @@
 <template>
   <div>
+    <div class="mt-6 p-0 col-10 col-offset-1 lg:col-8 lg:col-offset-2">
+      <h2 class="ml-2 lg:ml-4 text-700">クイズ一覧</h2>
+    </div>
+    <div class="pt-4 pb-0 col-10 col-offset-1 lg:col-8 lg:col-offset-2">
+      <div class="mb-2 lg:m-3">
+        <hr class="border-50" />
+      </div>
+    </div>
     <div class="grid" v-show="hasUserContents()">
       <div class="title col-10 col-offset-1 lg:col-8 lg:col-offset-2">
-        <h2 class="mt-4 ml-2 lg:ml-4">作成したクイズ</h2>
+        <h3 class="ml-2 lg:ml-4 text-700">作成したクイズ</h3>
       </div>
     </div>
     <div class="grid">
@@ -12,9 +20,14 @@
         </div>
       </div>
     </div>
+    <div class="pt-4 pb-0 col-10 col-offset-1 lg:col-8 lg:col-offset-2">
+      <div class="mb-2 lg:m-3">
+        <hr class="border-50" />
+      </div>
+    </div>
     <div class="grid">
       <div class="title col-10 col-offset-1 lg:col-8 lg:col-offset-2">
-        <h2 class="mt-4 ml-2 lg:ml-4">公開クイズ</h2>
+        <h3 class="ml-2 lg:ml-4 text-700">公開クイズ</h3>
       </div>
     </div>
     <div class="grid">
@@ -35,7 +48,6 @@ import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { QueryParams, ContentsQueryParams, UserContentsQueryParams } from "@/pb/models/query_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
 import ContentsCard from "@/components/molecules/ContentsCard.vue"
-
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
