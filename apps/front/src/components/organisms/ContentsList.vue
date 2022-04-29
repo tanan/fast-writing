@@ -2,7 +2,7 @@
   <div>
     <div class="grid" v-show="hasUserContents()">
       <div class="title col-10 col-offset-1 lg:col-8 lg:col-offset-2">
-        <h2 class="mt-4 ml-2 lg:ml-4">作成したコンテンツ</h2>
+        <h2 class="mt-4 ml-2 lg:ml-4">作成したクイズ</h2>
       </div>
     </div>
     <div class="grid">
@@ -14,7 +14,7 @@
     </div>
     <div class="grid">
       <div class="title col-10 col-offset-1 lg:col-8 lg:col-offset-2">
-        <h2 class="mt-4 ml-2 lg:ml-4">公開コンテンツ</h2>
+        <h2 class="mt-4 ml-2 lg:ml-4">公開クイズ</h2>
       </div>
     </div>
     <div class="grid">

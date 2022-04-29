@@ -6,7 +6,7 @@
           <img alt="logo" src="https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png" height="40" class="mr-2">
         </template>
         <template #end>
-          <Button icon="pi pi-user" class="p-button-rounded p-button-secondary mr-2" @click="toggleAccountMenu()" />
+          <Button icon="pi pi-user" class="p-button-rounded bg-white border-0 mr-2" @click="toggleAccountMenu()" />
         </template>
       </Menubar>
     </div>
@@ -41,20 +41,14 @@ export default defineComponent ({
     const isDisplay = ref(false)
     const items = ref([
       {
-        label:'Contents',
-        icon:'pi pi-fw pi-file',
-        items: [
-          {
-            label:'List',
-            icon:'pi pi-fw pi-align-justify',
-            to: '/',
-          },
-          {
-            label:'Create',
-            icon:'pi pi-fw pi-plus',
-            to: '/contents/create',
-          }
-        ]
+        label:'クイズを見る',
+        icon:'pi pi-fw pi-search',
+        to: '/',
+      },
+      {
+        label: 'クイズを作る',
+        icon:'pi pi-fw pi-pencil',
+        to: '/contents/create',
       },
     ])
     const accountItems = [
@@ -65,21 +59,25 @@ export default defineComponent ({
           {
             label: 'Sign In',
             visible: !isLoggedIn.value,
+            icon: 'pi pi-fw pi-sign-in',
             to: '/signin'
           },
           {
             label: 'Sign Up',
             visible: !isLoggedIn.value,
+            icon: 'pi pi-fw pi-sign-in',
             to: '/signup'
           },
           {
             label: 'Profile',
             visible: isLoggedIn.value,
+            icon: 'pi pi-fw pi-user-edit',
             to: '/profile'
           },
           {
             label: 'Sign Out',
             visible: isLoggedIn.value,
+            icon: 'pi pi-fw pi-sign-out',
             command: () => {
               signout()
             }
