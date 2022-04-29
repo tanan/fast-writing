@@ -5,8 +5,14 @@
     </template>
     <template #subtitle>
       <div class="flex">
-        <div class="creator">作成者: {{ contents.creator }}</div>
-        <div class="last-updated ml-4">更新日時: {{ getUpdatedDate(contents.lastUpdated) }}</div>
+        <img v-if="hasIcon" src="http://localhost:8888/images/blocks/avatars/circle/avatar-f-1.png" alt="user-icon" class="icon align-items-center">
+        <div v-if="!hasIcon" class="icon flex align-items-center justify-content-center bg-gray-200 border-circle">
+          <i class="pi pi-user text-gray-500 text-xl"></i>
+        </div>
+        <div class="flex flex-column align-items-start">
+          <div class="creator align-items-center ml-2">{{ contents.creator }}</div>
+          <div class="last-updated align-items-center ml-2">{{ getUpdatedDate(contents.lastUpdated) }}</div>
+        </div>
       </div>
     </template>
     <template #content>
@@ -39,6 +45,7 @@ export default defineComponent({
     editable: Boolean
   },
   setup () {
+    const hasIcon = false
     const getUpdatedDate = (v) => {
       if (!v) {
         return
@@ -48,6 +55,7 @@ export default defineComponent({
     }
 
     return {
+      hasIcon,
       getUpdatedDate,
     }
   },
@@ -63,5 +71,9 @@ export default defineComponent({
   }
   .description {
     min-height: 3rem;
+  }
+  .icon {
+    width: 3rem;
+    height: 3rem;
   }
 </style>

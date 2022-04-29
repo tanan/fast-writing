@@ -46,8 +46,8 @@ import { defineComponent, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Store from '@/store/index.js'
 import app from "@/plugins/firebase"
-import { UserServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { UserServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { User, UserId } from "@/pb/models/user_pb.js"
 import MainHeader from '@/components/organisms/MainHeader.vue'
 import MainFooter from '@/components/organisms/MainFooter.vue'

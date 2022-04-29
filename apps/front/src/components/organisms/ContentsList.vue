@@ -30,18 +30,19 @@
 <script>
 import { defineComponent, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import Store from '@/store/index.js'
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { QueryParams, ContentsQueryParams, UserContentsQueryParams } from "@/pb/models/query_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
 import ContentsCard from "@/components/molecules/ContentsCard.vue"
-import Store from '@/store/index.js'
+
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
 
 export default defineComponent({
   name: 'ContentsList',
   components: {
-    ContentsCard
+    ContentsCard,
   },
   setup () {
     const route = useRoute()

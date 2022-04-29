@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Toast position="bottom-right" :breakpoints="{'920px': {width: '100%', top: '0', right: '0'}}" />
     <div class="grid">
       <div class="mt-6 col-offset-1 col-10 md:col-10 lg:col-6 lg:col-offset-3">
         <h2 class="pl-2 pb-2">レッスン名</h2>
@@ -58,6 +59,8 @@ import Store from '@/store/index.js'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import SelectButton from 'primevue/selectbutton'
+import Toast from 'primevue/toast'
+import { useToast } from "primevue/usetoast"
 import { debounce } from 'lodash'
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
@@ -68,11 +71,13 @@ export default defineComponent ({
     InputText,
     Button,
     SelectButton,
+    Toast,
   },
   props: {
     id: Number
   },
   setup (props) {
+    const toast = useToast()
     const scopes = ['private', 'public']
 
     const contents = reactive({
@@ -125,6 +130,7 @@ export default defineComponent ({
           resolve(resp)
         })
       })
+      toast.add({severity:'success', summary: 'updated', detail: 'クイズが更新されました。', life: 2000})
       contents.id = await response.toObject().contents.id.id
     }, 2000)
 
