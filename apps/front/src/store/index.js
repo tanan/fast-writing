@@ -7,7 +7,8 @@ const store = new Vuex.Store({
     userId: "",
     userToken: "",
     interval: init_interval,
-    quizList: []
+    quizList: [],
+    isDisplayAnswer: true,
   },
   mutations: {
     updateUser(state, user) {
@@ -22,6 +23,9 @@ const store = new Vuex.Store({
     },
     shiftQuizList(state) {
       state.quizList.shift()
+    },
+    updateDispalyAnswer(state, isDisplayAnswer) {
+      state.isDisplayAnswer = isDisplayAnswer
     }
   },
   actions: {
@@ -65,6 +69,9 @@ const store = new Vuex.Store({
     },
     shiftQuizList(context) {
       context.commit('shiftQuizList')
+    },
+    updateDispalyAnswer(context, isDisplayAnswer) {
+      context.commit('updateDispalyAnswer', isDisplayAnswer)
     }
   },
   getters: {

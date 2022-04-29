@@ -1,15 +1,18 @@
 <template>
-  <div class="quiz-text">
+  <div class="quiz-text fadein animation-duration-500">
     <div class="question">{{ getIndex(quiz.index) }}. {{ quiz.question }}</div>
     <div class="answer mt-2">A. 
-      <Button v-if="!isDisplayAnswer" label="解答を表示" icon="pi pi-plus" @click="click()" />
-      <span v-if="isDisplayAnswer">{{ quiz.answer }}</span>
+      <Button v-if="!isDisplayAnswer" label="解答を表示" icon="pi pi-plus" class="button p-button-sm p-button-danger ml-2" @click="click()" />
+      <transition name="answer">
+        <span v-if="isDisplayAnswer" class="answer-text">{{ quiz.answer }}</span>
+      </transition>
     </div>
   </div>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue"
+import Store from '@/store/index.js'
 import Button   from 'primevue/button'
 
 export default defineComponent ({
@@ -33,8 +36,10 @@ export default defineComponent ({
       return !isDisplayAnswer.value
     }
 
-    const click = () => {
+    const click = async () => {
       isDisplayAnswer.value = true
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      Store.dispatch('updateDispalyAnswer', true)
     }
 
     const getIndex = (i) => {
@@ -62,5 +67,13 @@ export default defineComponent ({
         padding-left: 0.6rem;
       }
     }
+  }
+
+  .answer-enter-active, .answer-leave-active {
+    transition: opacity .8s ease;
+  }
+
+  .answer-enter-from, .answer-leave-to {
+    opacity: 0;
   }
 </style>
