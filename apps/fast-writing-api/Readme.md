@@ -18,3 +18,4 @@
 ```
 % grpc_cli call localhost:10001 fastwriting.UserService.GetUser 'id: "test"'
 ```
+
