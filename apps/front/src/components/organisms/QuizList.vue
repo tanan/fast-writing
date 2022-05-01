@@ -4,7 +4,7 @@
       <QuizText :quiz="quiz" />
     </div>
     <div v-if="showAddButton()"
-      class="fadein animation-duration-400 bg-orange-500 text-white
+      class="fadein animation-duration-300 bg-orange-500 text-white
         mt-2 mb-4 col-offset-1 col-4 lg:col-offset-3 lg:col-1 lg:mt-4
         flex align-items-center justify-content-center font-bold border-round cursor-pointer"
       @click="addNewQuiz()">{{ getLabel() }}</div>
