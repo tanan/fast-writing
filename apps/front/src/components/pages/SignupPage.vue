@@ -64,7 +64,7 @@
           <span class="text-600 font-normal text-sm">OR</span>
         </Divider>
 
-        <Button label="Sign Up with Google" icon="pi pi-google" class="w-full p-button-danger"></Button>
+        <Button label="Sign Up with Google" icon="pi pi-google" class="w-full p-button-danger" @click="signupWithGoogle()"></Button>
 
         <!-- <div class="mt-6 text-center text-600">
             Don't have an account? <a tabindex="0" class="font-medium text-blue-500">Sign up</a>
