@@ -11,6 +11,12 @@
         <span class="col-12">
           <InputText class="col-12 p-inputtext-lg" type="text" v-model="contents.description" v-on:keyup="save()" placeholder="Description" />
         </span>
+        <h2 class="pl-2 pt-4">タグ</h2>
+        <div class="field col-12 md:col-4">
+          <span class="p-float-label">
+            <MultiSelect id="multiselect" v-model="contents.tags" :options="tags" optionLabel="name" />
+          </span>
+        </div>
         <h2 class="pl-2 pt-4">公開設定</h2>
         <span class="col-2">
           <SelectButton v-model="contents.scope" :options="scopes" @click="save()" />
@@ -50,13 +56,14 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from "vue"
+import { defineComponent, reactive, ref } from "vue"
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
 import { Contents, ContentsId, Quiz } from "@/pb/models/contents_pb.js"
 import { CreateContentsRequest } from "@/pb/fast-writing_pb.js"
 import { UserId } from "@/pb/models/user_pb.js"
 import Store from '@/store/index.js'
 import InputText from 'primevue/inputtext'
+import MultiSelect from 'primevue/multiselect'
 import Button from 'primevue/button'
 import SelectButton from 'primevue/selectbutton'
 import Toast from 'primevue/toast'
@@ -69,6 +76,7 @@ export default defineComponent ({
   name: 'ContentsCreator',
   components: {
     InputText,
+    MultiSelect,
     Button,
     SelectButton,
     Toast,
@@ -79,13 +87,17 @@ export default defineComponent ({
   setup (props) {
     const toast = useToast()
     const scopes = ['private', 'public']
-
+    const tags = ref([
+      {name: 'IT', value: 'IT'},
+      {name: 'Advertisement', value: 'Advertisement'},
+    ])
     const contents = reactive({
       id: props.id,
       title: '',
       description: '',
       creator: '',
       scope: 'private',
+      tags: [],
       quizzes: [{"question": "", "answer": ""}]
     })
 
@@ -101,6 +113,8 @@ export default defineComponent ({
         contents.title = c.title
         contents.description = c.description
         contents.creator = c.creator
+        contents.scope = c.scope
+        contents.tags = c.tags.split(',').map(x => ({name: x, value: x}))
         let list = []
         for(var v of c.quizlistList) {
           list.push({
@@ -119,6 +133,7 @@ export default defineComponent ({
     }
 
     const save = debounce(async () => {
+      console.log(contents)
       let req = createContentsRequest(contents)
       console.log(req)
       const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
@@ -150,6 +165,7 @@ export default defineComponent ({
       c.setTitle(contents.title)
       c.setDescription(contents.description)
       c.setScope(contents.scope)
+      c.setTags(contents.tags.map(x => x.value).join(','))
       req.setContents(c)
       req.setUserid(userId)
       return req
@@ -169,6 +185,7 @@ export default defineComponent ({
     }
     
     return {
+      tags,
       scopes,
       contents,
       save,
