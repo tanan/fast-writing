@@ -232,6 +232,61 @@ func (x *TitleQueryParams) GetTitle() string {
 	return ""
 }
 
+type TagQueryParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Params *QueryParams `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	Tags   string       `protobuf:"bytes,2,opt,name=tags,proto3" json:"tags,omitempty"`
+}
+
+func (x *TagQueryParams) Reset() {
+	*x = TagQueryParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_models_query_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TagQueryParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TagQueryParams) ProtoMessage() {}
+
+func (x *TagQueryParams) ProtoReflect() protoreflect.Message {
+	mi := &file_models_query_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TagQueryParams.ProtoReflect.Descriptor instead.
+func (*TagQueryParams) Descriptor() ([]byte, []int) {
+	return file_models_query_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *TagQueryParams) GetParams() *QueryParams {
+	if x != nil {
+		return x.Params
+	}
+	return nil
+}
+
+func (x *TagQueryParams) GetTags() string {
+	if x != nil {
+		return x.Tags
+	}
+	return ""
+}
+
 var File_models_query_proto protoreflect.FileDescriptor
 
 var file_models_query_proto_rawDesc = []byte{
@@ -257,10 +312,15 @@ var file_models_query_proto_rawDesc = []byte{
 	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x6d,
 	0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
 	0x73, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74,
-	0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x42,
-	0x1c, 0x5a, 0x1a, 0x66, 0x61, 0x73, 0x74, 0x2d, 0x77, 0x72, 0x69, 0x74, 0x69, 0x6e, 0x67, 0x2f,
-	0x70, 0x6b, 0x67, 0x2f, 0x70, 0x62, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x22,
+	0x51, 0x0a, 0x0e, 0x54, 0x61, 0x67, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x12, 0x2b, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x13, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x12,
+	0x0a, 0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x61,
+	0x67, 0x73, 0x42, 0x1c, 0x5a, 0x1a, 0x66, 0x61, 0x73, 0x74, 0x2d, 0x77, 0x72, 0x69, 0x74, 0x69,
+	0x6e, 0x67, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x62, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -275,24 +335,26 @@ func file_models_query_proto_rawDescGZIP() []byte {
 	return file_models_query_proto_rawDescData
 }
 
-var file_models_query_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_models_query_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_models_query_proto_goTypes = []interface{}{
 	(*QueryParams)(nil),             // 0: models.QueryParams
 	(*ContentsQueryParams)(nil),     // 1: models.ContentsQueryParams
 	(*UserContentsQueryParams)(nil), // 2: models.UserContentsQueryParams
 	(*TitleQueryParams)(nil),        // 3: models.TitleQueryParams
-	(*UserId)(nil),                  // 4: models.UserId
+	(*TagQueryParams)(nil),          // 4: models.TagQueryParams
+	(*UserId)(nil),                  // 5: models.UserId
 }
 var file_models_query_proto_depIdxs = []int32{
 	0, // 0: models.ContentsQueryParams.params:type_name -> models.QueryParams
 	0, // 1: models.UserContentsQueryParams.params:type_name -> models.QueryParams
-	4, // 2: models.UserContentsQueryParams.id:type_name -> models.UserId
+	5, // 2: models.UserContentsQueryParams.id:type_name -> models.UserId
 	0, // 3: models.TitleQueryParams.params:type_name -> models.QueryParams
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	0, // 4: models.TagQueryParams.params:type_name -> models.QueryParams
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_models_query_proto_init() }
@@ -350,6 +412,18 @@ func file_models_query_proto_init() {
 				return nil
 			}
 		}
+		file_models_query_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TagQueryParams); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -357,7 +431,7 @@ func file_models_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_models_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

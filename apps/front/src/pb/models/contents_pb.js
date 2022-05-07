@@ -287,7 +287,8 @@ proto.models.Contents.toObject = function(includeInstance, msg) {
     scope: jspb.Message.getFieldWithDefault(msg, 5, ""),
     quizlistList: jspb.Message.toObjectList(msg.getQuizlistList(),
     proto.models.Quiz.toObject, includeInstance),
-    lastUpdated: (f = msg.getLastUpdated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
+    lastUpdated: (f = msg.getLastUpdated()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    tags: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -354,6 +355,10 @@ proto.models.Contents.deserializeBinaryFromReader = function(msg, reader) {
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setLastUpdated(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTags(value);
       break;
     default:
       reader.skipField();
@@ -434,6 +439,13 @@ proto.models.Contents.serializeBinaryToWriter = function(message, writer) {
       7,
       f,
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
+  f = message.getTags();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
     );
   }
 };
@@ -620,6 +632,24 @@ proto.models.Contents.prototype.clearLastUpdated = function() {
  */
 proto.models.Contents.prototype.hasLastUpdated = function() {
   return jspb.Message.getField(this, 7) != null;
+};
+
+
+/**
+ * optional string tags = 8;
+ * @return {string}
+ */
+proto.models.Contents.prototype.getTags = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.models.Contents} returns this
+ */
+proto.models.Contents.prototype.setTags = function(value) {
+  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 

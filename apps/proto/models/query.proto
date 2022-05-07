@@ -23,3 +23,8 @@ message TitleQueryParams {
   QueryParams params = 1;
   string title = 2;
 }
+
+message TagQueryParams {
+  QueryParams params = 1;
+  string tags = 2;
+}

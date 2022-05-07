@@ -436,6 +436,67 @@ proto.fastwriting.WritingServicePromiseClient.prototype.getContentsList =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.models.TagQueryParams,
+ *   !proto.models.ContentsList>}
+ */
+const methodDescriptor_WritingService_GetContentsListByTags = new grpc.web.MethodDescriptor(
+  '/fastwriting.WritingService/GetContentsListByTags',
+  grpc.web.MethodType.UNARY,
+  models_query_pb.TagQueryParams,
+  models_contents_pb.ContentsList,
+  /**
+   * @param {!proto.models.TagQueryParams} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  models_contents_pb.ContentsList.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.models.TagQueryParams} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.models.ContentsList)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.models.ContentsList>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.fastwriting.WritingServiceClient.prototype.getContentsListByTags =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/fastwriting.WritingService/GetContentsListByTags',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_GetContentsListByTags,
+      callback);
+};
+
+
+/**
+ * @param {!proto.models.TagQueryParams} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.models.ContentsList>}
+ *     Promise that resolves to the response
+ */
+proto.fastwriting.WritingServicePromiseClient.prototype.getContentsListByTags =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/fastwriting.WritingService/GetContentsListByTags',
+      request,
+      metadata || {},
+      methodDescriptor_WritingService_GetContentsListByTags);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.models.UserContentsQueryParams,
  *   !proto.models.ContentsList>}
  */

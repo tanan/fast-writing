@@ -16,6 +16,7 @@ service UserService {
 service WritingService {
   rpc GetContents (models.ContentsId) returns (models.Contents) {}
   rpc GetContentsList (models.ContentsQueryParams) returns (models.ContentsList) {}
+  rpc GetContentsListByTags (models.TagQueryParams) returns (models.ContentsList) {}
   rpc GetUserContentsList (models.UserContentsQueryParams) returns (models.ContentsList) {}
   rpc CreateUserContents (CreateContentsRequest) returns (CreateContentsResponse) {}
   rpc DeleteUserContents (DeleteContentsRequest) returns (DeleteResponse) {}

@@ -17,7 +17,7 @@ message Contents {
   string scope = 5;
   repeated Quiz quizList = 6;
   google.protobuf.Timestamp last_updated = 7;
-  
+  string tags = 8;
 }
 
 message ContentsList {

@@ -181,6 +181,7 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 type WritingServiceClient interface {
 	GetContents(ctx context.Context, in *models.ContentsId, opts ...grpc.CallOption) (*models.Contents, error)
 	GetContentsList(ctx context.Context, in *models.ContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
+	GetContentsListByTags(ctx context.Context, in *models.TagQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
 	GetUserContentsList(ctx context.Context, in *models.UserContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error)
 	CreateUserContents(ctx context.Context, in *CreateContentsRequest, opts ...grpc.CallOption) (*CreateContentsResponse, error)
 	DeleteUserContents(ctx context.Context, in *DeleteContentsRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
@@ -206,6 +207,15 @@ func (c *writingServiceClient) GetContents(ctx context.Context, in *models.Conte
 func (c *writingServiceClient) GetContentsList(ctx context.Context, in *models.ContentsQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error) {
 	out := new(models.ContentsList)
 	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/GetContentsList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *writingServiceClient) GetContentsListByTags(ctx context.Context, in *models.TagQueryParams, opts ...grpc.CallOption) (*models.ContentsList, error) {
+	out := new(models.ContentsList)
+	err := c.cc.Invoke(ctx, "/fastwriting.WritingService/GetContentsListByTags", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -245,6 +255,7 @@ func (c *writingServiceClient) DeleteUserContents(ctx context.Context, in *Delet
 type WritingServiceServer interface {
 	GetContents(context.Context, *models.ContentsId) (*models.Contents, error)
 	GetContentsList(context.Context, *models.ContentsQueryParams) (*models.ContentsList, error)
+	GetContentsListByTags(context.Context, *models.TagQueryParams) (*models.ContentsList, error)
 	GetUserContentsList(context.Context, *models.UserContentsQueryParams) (*models.ContentsList, error)
 	CreateUserContents(context.Context, *CreateContentsRequest) (*CreateContentsResponse, error)
 	DeleteUserContents(context.Context, *DeleteContentsRequest) (*DeleteResponse, error)
@@ -259,6 +270,9 @@ func (UnimplementedWritingServiceServer) GetContents(context.Context, *models.Co
 }
 func (UnimplementedWritingServiceServer) GetContentsList(context.Context, *models.ContentsQueryParams) (*models.ContentsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetContentsList not implemented")
+}
+func (UnimplementedWritingServiceServer) GetContentsListByTags(context.Context, *models.TagQueryParams) (*models.ContentsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetContentsListByTags not implemented")
 }
 func (UnimplementedWritingServiceServer) GetUserContentsList(context.Context, *models.UserContentsQueryParams) (*models.ContentsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserContentsList not implemented")
@@ -313,6 +327,24 @@ func _WritingService_GetContentsList_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WritingServiceServer).GetContentsList(ctx, req.(*models.ContentsQueryParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WritingService_GetContentsListByTags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(models.TagQueryParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WritingServiceServer).GetContentsListByTags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/fastwriting.WritingService/GetContentsListByTags",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WritingServiceServer).GetContentsListByTags(ctx, req.(*models.TagQueryParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -385,6 +417,10 @@ var WritingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetContentsList",
 			Handler:    _WritingService_GetContentsList_Handler,
+		},
+		{
+			MethodName: "GetContentsListByTags",
+			Handler:    _WritingService_GetContentsListByTags_Handler,
 		},
 		{
 			MethodName: "GetUserContentsList",
