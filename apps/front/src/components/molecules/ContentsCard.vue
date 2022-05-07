@@ -51,7 +51,7 @@ export default defineComponent({
         return
       }
       let date = new Date(v.seconds*1000)
-      return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate()
+      return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()
     }
 
     return {
