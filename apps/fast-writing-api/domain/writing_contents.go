@@ -10,6 +10,7 @@ type Contents struct {
 	Title       string
 	Description string
 	Scope       string
+	Tags        string
 	QuizList    []Quiz `json:"quizlist"`
 	LastUpdated time.Time
 }

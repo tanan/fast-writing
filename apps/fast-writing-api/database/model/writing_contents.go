@@ -11,6 +11,7 @@ type Contents struct {
 	Title       string         `gorm:"column:title"`
 	Description string         `gorm:"column:description"`
 	Scope       string         `gorm:"column:scope"`
+	Tags        string         `gorm:"column:tags"`
 	LastUpdated time.Time      `gorm:"column:last_updated"`
 	Quiz        datatypes.JSON `gorm:"column:quiz"`
 }

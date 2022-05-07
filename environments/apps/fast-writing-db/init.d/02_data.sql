@@ -4,5 +4,5 @@ insert into user values
 ;
 
 insert into writing_contents values
-(1, 'fast-writing-db', 'title1', 'これは説明です。', 'public', CURRENT_TIMESTAMP(), '[{"question" : "私は誰ですか？", "answer" : "Who am I?"}, {"question" : "今朝ロンドンは雨が降っています。", "answer" : "It is rainy in London this morning."}]')
+(1, 'fast-writing-db', 'title1', 'これは説明です。', 'public', NULL, CURRENT_TIMESTAMP(), '[{"question" : "私は誰ですか？", "answer" : "Who am I?"}, {"question" : "今朝ロンドンは雨が降っています。", "answer" : "It is rainy in London this morning."}]')
 ;

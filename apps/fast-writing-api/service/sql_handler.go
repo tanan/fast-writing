@@ -8,6 +8,7 @@ type SQLHandler interface {
 	UpdateUser(user domain.User) (domain.UserId, error)
 	FindContentsById(id domain.ContentsId) (domain.Contents, error)
 	FindContentsList(limit int32, offset int32) ([]*domain.Contents, error)
+	FindContentsListByTags(tags string, limit int32, offset int32) ([]*domain.Contents, error)
 	FindContentsListByUserId(userId domain.UserId, limit int32, offset int32) ([]*domain.Contents, error)
 	CreateContents(contents domain.Contents, userId domain.UserId) (domain.Contents, error)
 	DeleteContents(userId domain.UserId, contentsId domain.ContentsId) (int64, error)

@@ -20,6 +20,7 @@ create table writing_contents
   title varchar(256) not null,
   description varchar(256) not null,
   scope varchar(16) not null,
+  tags varchar(256),
   last_updated datetime default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   quiz json
 )
