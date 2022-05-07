@@ -2,7 +2,7 @@
   <div class="writing-quiz-page">
     <div class="quiz-page">
       <MainHeader />
-      <QuizHeader class="quiz-header" :contents="contents" :interval="getInterval()" />
+      <QuizHeader class="quiz-header" :contents="contents" />
       <QuizList class="quiz-list" />
     </div>
   </div>
@@ -28,27 +28,10 @@ export default defineComponent({
     QuizHeader,
   },
   setup () {
-    const contents = reactive({
-      title: '',
-      description: '',
-      creator: '',
-      lastUpdated: '',
-      indecies: [],
-      questions: [],
-      answers: []
-    })
+    const contents = reactive({})
 
     const route = useRoute()
     const router = useRouter()
-
-    const getInterval = () => {
-      let item = localStorage.getItem('interval')
-      if (!item) {
-          return
-      }
-      let interval = JSON.parse(item)
-      return interval.interval
-    }
 
     const createQuizList = (quizList) => {
       let list = []
@@ -79,12 +62,12 @@ export default defineComponent({
       contents.description = obj.description
       contents.creator = obj.creator
       contents.lastUpdated = obj.lastUpdated
+      contents.tags = obj.tags
       createQuizList(resp.toObject().quizlistList)
     })
 
     return {
       contents,
-      getInterval,
     }
   }
 })

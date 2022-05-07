@@ -14,6 +14,11 @@
           <div class="last-updated align-items-center ml-2">{{ getUpdatedDate(contents.lastUpdated) }}</div>
         </div>
       </div>
+      <div class="flex">
+        <div class="tags mt-2">
+          <Tag class="m-1" severity="success" v-for="tag in getTags(contents.tags)" :key="tag" :value="tag"></Tag>
+        </div>
+      </div>
     </template>
     <template #content>
         <div class="description">{{ contents.description }}</div>
@@ -33,12 +38,14 @@
 import { defineComponent } from 'vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
+import Tag from 'primevue/tag'
 
 export default defineComponent({
   name: 'ContentsCard',
   components: {
     Card,
     Button,
+    Tag,
   },
   props: {
     contents: Object,
@@ -54,9 +61,14 @@ export default defineComponent({
       return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()
     }
 
+    const getTags = (tags) => {
+      return tags.split(',')
+    }
+
     return {
       hasIcon,
       getUpdatedDate,
+      getTags,
     }
   },
 })

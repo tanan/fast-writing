@@ -81,6 +81,7 @@ export default defineComponent({
           description: v.description,
           creator: v.creator,
           scope: v.scope,
+          tags: v.tags,
         }
         if (type === "user") {
           contents.userContentsList.push(c)
