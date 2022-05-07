@@ -154,6 +154,7 @@ func (s *WritingService) toContents(contents domain.Contents) *models.Contents {
 		Title:       contents.Title,
 		Description: contents.Description,
 		Creator:     contents.Creator,
+		Scope:       contents.Scope,
 		Tags:        contents.Tags,
 		QuizList:    s.encodeQuizList(contents.QuizList),
 		LastUpdated: timestamppb.New(contents.LastUpdated),

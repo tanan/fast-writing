@@ -66,6 +66,7 @@ func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.User
 		Title:       contents.Title,
 		Description: contents.Description,
 		Scope:       contents.Scope,
+		Tags:        contents.Tags,
 		LastUpdated: time.Now(),
 		Quiz:        j,
 	}
