@@ -8,7 +8,7 @@
         mt-2 mb-4 col-offset-1 col-4 lg:col-offset-3 lg:col-1 lg:mt-4
         flex align-items-center justify-content-center font-bold border-round cursor-pointer"
       @click="addNewQuiz()">{{ getLabel() }}</div>
-    <div class="flex h-30rem"></div>
+    <div class="flex h-4rem"></div>
   </div>
 </template>
 
