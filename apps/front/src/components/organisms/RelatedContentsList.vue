@@ -18,8 +18,7 @@ import { defineComponent, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Store from '@/store/index.js'
 import { WritingServiceClient } from "@/pb/fast-writing_grpc_web_pb.js"
-import { QueryParams, UserContentsQueryParams } from "@/pb/models/query_pb.js"
-import { UserId } from "@/pb/models/user_pb.js"
+import { QueryParams, TagQueryParams } from "@/pb/models/query_pb.js"
 import ContentsCard from "@/components/molecules/ContentsCard.vue"
 
 const client = new WritingServiceClient(`${process.env.VUE_APP_WRITING_API_ENDPOINT}`, null, null)
@@ -52,16 +51,14 @@ export default defineComponent({
       }
     }
 
-    const getUserContentsList = async () => {
-      let req = new UserContentsQueryParams()
+    const getContentsListByTags = async () => {
+      let req = new TagQueryParams()
       let queryParams = new QueryParams()
-      let userId = new UserId()
       req.setParams(queryParams)
-      userId.setId(Store.state.userId)
-      req.setId(userId)
+      req.setTags("IT")
       const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
       
-      client.getUserContentsList(req, metadata, (err, resp) => {
+      client.getContentsListByTags(req, metadata, (err, resp) => {
         if (err) {
           console.log(err)
           if (err.code === 2) {
@@ -81,7 +78,7 @@ export default defineComponent({
       })
     }
 
-    getUserContentsList()
+    getContentsListByTags()
 
     return {
       contents,

@@ -62,7 +62,7 @@ export default defineComponent({
     }
 
     const getTags = (tags) => {
-      return tags.split(',')
+      return tags === "" ? [] : tags.split(',')
     }
 
     return {

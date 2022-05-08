@@ -22,7 +22,7 @@ func (h *SQLHandler) FindContentsList(limit int32, offset int32) ([]*domain.Cont
 func (h *SQLHandler) FindContentsListByTags(tags string, limit int32, offset int32) ([]*domain.Contents, error) {
 	var m []model.Contents
 	// TODO 検索するタグは１つのみ設定される想定。ESを稼働し始めたら複数タグに対応する
-	db := h.Conn.Where("id > ? and scope = ? and tags like '%?%'", offset, "public", tags).Order("id").Limit(int(limit)).Find(&m)
+	db := h.Conn.Where("id > ? and scope = ? and tags like ?", offset, "public", "%"+tags+"%").Order("id").Limit(int(limit)).Find(&m)
 	if db.Error != nil {
 		return []*domain.Contents{}, errors.New("cannot find contents list: " + db.Error.Error())
 	}

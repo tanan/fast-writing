@@ -14,7 +14,7 @@
         <h2 class="pl-2 pt-4">タグ</h2>
         <div class="field col-12 md:col-4">
           <span class="p-float-label">
-            <MultiSelect id="multiselect" v-model="contents.tags" :options="tags" optionLabel="name" />
+            <MultiSelect id="multiselect" v-model="contents.tags" :options="tags" optionLabel="name" v-on:change="save()" />
           </span>
         </div>
         <h2 class="pl-2 pt-4">公開設定</h2>
@@ -88,8 +88,26 @@ export default defineComponent ({
     const toast = useToast()
     const scopes = ['private', 'public']
     const tags = ref([
-      {name: 'IT', value: 'IT'},
-      {name: 'Advertisement', value: 'Advertisement'},
+      {name: 'Arts & Entertainment', value: 'Arts & Entertainment'},
+      {name: 'Automotive', value: 'Automotive'},
+      {name: 'Business', value: 'Business'},
+      {name: 'Careers', value: 'Careers'},
+      {name: 'Education', value: 'Education'},
+      {name: 'Family & Parenting', value: 'Family & Parenting'},
+      {name: 'Health & Fitness', value: 'Health & Fitness'},
+      {name: 'Food & Drink', value: 'Food & Drink'},
+      {name: 'Hobbies & Interests', value: 'Hobbies & Interests'},
+      {name: 'Home & Garden', value: 'Home & Garden'},
+      {name: 'Politics', value: 'Politics'},
+      {name: 'News', value: 'News'},
+      {name: 'Science', value: 'Science'},
+      {name: 'Pets', value: 'Pets'},
+      {name: 'Sports', value: 'Sports'},
+      {name: 'Fashion', value: 'Fashion'},
+      {name: 'Technology & Computing', value: 'Technology & Computing'},
+      {name: 'Travel', value: 'Travel'},
+      {name: 'Shopping', value: 'Shopping'},
+      {name: 'Uncategorized', value: 'Uncategorized'},
     ])
     const contents = reactive({
       id: props.id,
@@ -114,7 +132,7 @@ export default defineComponent ({
         contents.description = c.description
         contents.creator = c.creator
         contents.scope = c.scope
-        contents.tags = c.tags.split(',').map(x => ({name: x, value: x}))
+        contents.tags = c.tags === "" ? [] : c.tags.split(',').map(x => ({name: x, value: x}))
         let list = []
         for(var v of c.quizlistList) {
           list.push({
