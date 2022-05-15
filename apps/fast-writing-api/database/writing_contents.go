@@ -55,7 +55,7 @@ func (h *SQLHandler) FindContentsById(id domain.ContentsId) (domain.Contents, er
 	if err != nil {
 		return domain.Contents{}, errors.New("failed to marshal json: " + err.Error())
 	}
-	return *h.toContents(m, user, quizJson), nil
+	return *h.toContents(m, user.Name, quizJson), nil
 }
 
 func (h *SQLHandler) CreateContents(contents domain.Contents, userId domain.UserId) (domain.Contents, error) {
@@ -92,21 +92,36 @@ func (h *SQLHandler) DeleteContents(userId domain.UserId, contentsId domain.Cont
 
 func (h *SQLHandler) toContentsList(m []model.Contents) ([]*domain.Contents, error) {
 	var contentsList []*domain.Contents
+	var userList map[string]string
 	for _, v := range m {
+		if userName, ok := h.contains(v.UserId, userList); ok {
+			contentsList = append(contentsList, h.toContents(v, userName, nil))
+			continue
+		}
 		var user model.User
 		db := h.Conn.Where("id = ?", v.UserId).First(&user)
 		if db.Error != nil {
 			return []*domain.Contents{}, errors.New("cannot find user by id: " + db.Error.Error())
 		}
-		contentsList = append(contentsList, h.toContents(v, user, nil))
+		userList[user.Id] = user.Name
+		contentsList = append(contentsList, h.toContents(v, user.Name, nil))
 	}
 	return contentsList, nil
 }
 
-func (h *SQLHandler) toContents(contents model.Contents, user model.User, quizJson []byte) *domain.Contents {
+func (h *SQLHandler) contains(userId string, userList map[string]string) (string, bool) {
+	for k, v := range userList {
+		if userId == k {
+			return v, true
+		}
+	}
+	return "", false
+}
+
+func (h *SQLHandler) toContents(contents model.Contents, userName string, quizJson []byte) *domain.Contents {
 	return &domain.Contents{
 		ContentsId:  domain.ContentsId(contents.Id),
-		Creator:     user.Name,
+		Creator:     userName,
 		Title:       contents.Title,
 		Description: contents.Description,
 		Scope:       contents.Scope,
