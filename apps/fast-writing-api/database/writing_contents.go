@@ -92,7 +92,7 @@ func (h *SQLHandler) DeleteContents(userId domain.UserId, contentsId domain.Cont
 
 func (h *SQLHandler) toContentsList(m []model.Contents) ([]*domain.Contents, error) {
 	var contentsList []*domain.Contents
-	var userList map[string]string
+	userList := map[string]string{}
 	for _, v := range m {
 		if userName, ok := h.contains(v.UserId, userList); ok {
 			contentsList = append(contentsList, h.toContents(v, userName, nil))
