@@ -4,7 +4,7 @@
       <MainHeader />
       <QuizHeader class="quiz-header" :contents="contents" />
       <QuizList class="quiz-list" />
-      <RelatedContentsList />
+      <RelatedContentsList v-if="contents.tags !== undefined" :tags="contents.tags" />
     </div>
   </div>
 </template>

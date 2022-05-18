@@ -28,13 +28,24 @@ export default defineComponent({
   components: {
     ContentsCard,
   },
-  setup () {
+  props: {
+    tags: String,
+  },
+  setup (props) {
     const route = useRoute()
     const router = useRouter()
 
     const contents = reactive({
       contentsList: [],
     })
+
+    const getTag = (tags) => {
+      if (tags === undefined) {
+        return "Unrecognized"
+      }
+      console.log(tags)
+      return tags.split(',')[0]
+    }
 
     const toContentsList = (list) => {
       for(var v of list) {
@@ -55,7 +66,8 @@ export default defineComponent({
       let req = new TagQueryParams()
       let queryParams = new QueryParams()
       req.setParams(queryParams)
-      req.setTags("IT")
+      console.log(props.tags)
+      req.setTags(getTag(props.tags))
       const metadata = { 'authorization': 'Bearer ' + Store.state.userToken }
       
       client.getContentsListByTags(req, metadata, (err, resp) => {
