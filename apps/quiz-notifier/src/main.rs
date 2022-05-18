@@ -1,32 +1,29 @@
 mod rest;
 mod driver;
 mod error;
+mod schema;
 
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use std::env;
+use log::{debug, error, log_enabled, info, Level};
 
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
+#[macro_use]
+extern crate serde;
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate derive_getters;
+#[macro_use]
+extern crate derive_new;
+#[cfg(test)]
+extern crate mock_it;
 
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
-}
+fn main() {
+    if env::var("RUST_LOG").ok().is_none() {
+        env::set_var("RUST_LOG", "info");
+    }
+    env_logger::init();
 
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
-}
+    if let Err(e) = rest::build() {
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new()
-            .service(hello)
-            .service(echo)
-            .route("/hey", web::get().to(manual_hello))
-    })
-    .bind(("0.0.0.0", 8080))?
-    .run()
-    .await
+    }
 }

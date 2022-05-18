@@ -1,6 +1,7 @@
-use std::fmt::format;
 use diesel::r2d2;
 use crate::error::Error;
+
+pub mod user_db;
 
 impl From<r2d2::Error> for Error {
     fn from(error: r2d2::Error) -> Error {
