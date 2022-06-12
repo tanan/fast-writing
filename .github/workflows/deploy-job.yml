@@ -31,7 +31,8 @@ jobs:
         run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: Build Image for Fast Writing
         run: |-
-          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_JOB_NAME:$tag -f apps/$FAST_WRITING_JOB_NAME/Dockerfile .
+          cd ./apps/$FAST_WRITING_JOB_NAME
+          docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_JOB_NAME:$tag .
       # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
           gcloud auth configure-docker asia-northeast1-docker.pkg.dev
