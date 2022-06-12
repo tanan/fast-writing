@@ -27,6 +27,8 @@ jobs:
           service_account: github-actions@anan-project.iam.gserviceaccount.com
 
       # Build docker image
+      - name: Set Env
+        run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: Build Image for Fast Writing
         run: |-
           docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/$PRODUCT_NAME/$FAST_WRITING_JOB_NAME:$tag -f apps/$FAST_WRITING_JOB_NAME/Dockerfile .
