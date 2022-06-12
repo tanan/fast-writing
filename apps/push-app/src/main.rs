@@ -35,7 +35,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let slack_url = env::var("SLACK_URL").expect("slack url must be set.");
     let client = reqwest::Client::new();
-    client.post(slack_url).body(body.to_string()).send().await?;
+    let res = client.post(slack_url).body(body.to_string()).send().await?;
+    println!("{}", &res.text().await?);
 
     Ok(())
 }
