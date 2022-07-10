@@ -14,8 +14,13 @@ service UserService {
 }
 
 service WritingService {
-  rpc GetContents (models.ContentsId) returns (models.Contents) {}
-  rpc GetContentsList (models.ContentsQueryParams) returns (models.ContentsList) {}
+  rpc GetContents (models.ContentsId) returns (models.Contents) {
+    option (google.api.http) = { get: "/contents/{id}" };
+  }
+  rpc GetContentsList (models.ContentsQueryParams) returns (models.ContentsList) {
+    // `GET /contents?limit=1&offset=0&id=xxxx`
+    option (google.api.http) = { get: "/contents" };
+  }
   rpc GetContentsListByTags (models.TagQueryParams) returns (models.ContentsList) {}
   rpc GetUserContentsList (models.UserContentsQueryParams) returns (models.ContentsList) {}
   rpc CreateUserContents (CreateContentsRequest) returns (CreateContentsResponse) {}
