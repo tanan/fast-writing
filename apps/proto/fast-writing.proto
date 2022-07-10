@@ -1,6 +1,7 @@
 syntax = "proto3";
 package fastwriting;
 
+import "google/api/annotations.proto";
 import "models/query.proto";
 import "models/user.proto";
 import "models/contents.proto";

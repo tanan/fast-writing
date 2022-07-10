@@ -21,6 +21,8 @@ var global = (function() {
   return Function('return this')();
 }.call(null));
 
+var google_api_annotations_pb = require('./google/api/annotations_pb.js');
+goog.object.extend(proto, google_api_annotations_pb);
 var models_query_pb = require('./models/query_pb.js');
 goog.object.extend(proto, models_query_pb);
 var models_user_pb = require('./models/user_pb.js');
