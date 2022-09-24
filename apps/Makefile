@@ -6,6 +6,6 @@ build:
 	cp -pr fast-writing/pkg/pb/* ../pkg/pb/
 	rm -rf fast-writing google.golang.org
 descriptor:
-	protoc -I./proto --go_out=. --experimental_allow_proto3_optional --include_imports --include_source_info --descriptor_set_out=api_descriptor.pb --go-grpc_out=require_unimplemented_servers=false:. ./proto/**/*.proto
+	protoc -I./proto --go_out=. --include_imports --include_source_info --descriptor_set_out=api_descriptor.pb --go-grpc_out=require_unimplemented_servers=false:. ./proto/*.proto
 	cp -rp api_descriptor.pb ../environments/endpoints/
 	rm -rf fast-writing api_descriptor.pb google.golang.org

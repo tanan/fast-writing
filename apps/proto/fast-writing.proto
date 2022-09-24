@@ -19,7 +19,7 @@ service WritingService {
     option (google.api.http) = { get: "/contents/{id}" };
   }
   rpc GetContentsList (models.ContentsQueryParams) returns (models.ContentsList) {
-    // `GET /contents?limit=1&offset=0&id=xxxx`
+    // `GET /contents?params.limit=1&params.offset=0`
     option (google.api.http) = { get: "/contents" };
   }
   rpc GetContentsListByTags (models.TagQueryParams) returns (models.ContentsList) {}
