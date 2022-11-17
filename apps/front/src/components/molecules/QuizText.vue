@@ -25,12 +25,6 @@ export default defineComponent ({
   },
   setup (props) {
     const isDisplayAnswer = ref(props.isDisplayAnswer)
-    const getAnswer = () => {
-      if (props.answer === "") {
-        return ""
-      }
-      return "A. " + props.answer
-    }
 
     const showButton = () => {
       return !isDisplayAnswer.value
@@ -52,7 +46,7 @@ export default defineComponent ({
         uttr.text = props.quiz.question
         uttr.lang = 'ja'
       } else {
-        uttr.text = props.answer
+        uttr.text = props.quiz.answer
         uttr.lang = 'en-US'
       }
       speechSynthesis.speak(uttr)
@@ -63,7 +57,6 @@ export default defineComponent ({
       showButton,
       click,
       getIndex,
-      getAnswer,
       speak,
     }
   }
