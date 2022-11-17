@@ -1,10 +1,10 @@
 <template>
   <div class="quiz-text fadein animation-duration-500">
-    <div class="question">{{ getIndex(quiz.index) }}. {{ quiz.question }}</div>
+    <div class="question" @click="speak('ja')">{{ getIndex(quiz.index) }}. {{ quiz.question }}</div>
     <div class="answer mt-2">A. 
       <Button v-if="!isDisplayAnswer" label="解答を表示" icon="pi pi-plus" class="button p-button-sm p-button-danger ml-2" @click="click()" />
       <transition name="answer">
-        <span v-if="isDisplayAnswer" class="answer-text">{{ quiz.answer }}</span>
+        <span v-if="isDisplayAnswer" class="answer-text" @click="speak('en')">{{ quiz.answer }}</span>
       </transition>
     </div>
   </div>
@@ -46,6 +46,17 @@ export default defineComponent ({
       return parseInt(i) + 1
     }
 
+    const speak = (lang) => {
+      let uttr = new SpeechSynthesisUtterance()
+      if(lang == 'ja') {
+        uttr.text = props.quiz.question
+        uttr.lang = 'ja'
+      } else {
+        uttr.text = props.answer
+        uttr.lang = 'en-US'
+      }
+      speechSynthesis.speak(uttr)
+    }
 
     return {
       isDisplayAnswer,
@@ -53,6 +64,7 @@ export default defineComponent ({
       click,
       getIndex,
       getAnswer,
+      speak,
     }
   }
 })
