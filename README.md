@@ -1,1 +1,2 @@
 # fast-writing
+test
